@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "apsis-autogen"
-version = "0.1.1"
+version = "0.1.1+extended"
 description = "apsis AutoGen front-end: extract a built AutoGen orchestration into the apsis IR"
 requires-python = ">=3.9"
 # No dependency on the framework: the front-end reads both the 0.2 API (pyautogen) and the 0.4 API

@@ -1,0 +1,19 @@
+{
+  "id": "18-copilotkit-5605",
+  "issue_url": "https://github.com/CopilotKit/CopilotKit/issues/5605",
+  "source": [
+    "https://github.com/CopilotKit/CopilotKit/blob/9f9c415d98c3f586e47471e29eecffe5f76976e7/examples/canvas/gemini/agent/stack_agent.py"
+  ],
+  "license": "MIT",
+  "framework": "langgraph",
+  "entry": "graph.py:stack_analysis_graph",
+  "expected_findings": [
+    "target-resolution/static-end-next-to-route@analyze->__end__"
+  ],
+  "note": "`analyze` has a static edge to END while it routes on to `end` with `Command(goto=\"end\")`, and `end` is the declared finish point; the edge to END schedules nothing, so the drawn end of the graph is not where runs end. The repository fetches and the Gemini call are left out.",
+  "fixed": {
+    "entry": "fixed/graph.py:stack_analysis_graph",
+    "fix_url": "https://github.com/CopilotKit/CopilotKit/pull/5634",
+    "fix_note": "The static edge from `analyze` goes to `end`."
+  }
+}

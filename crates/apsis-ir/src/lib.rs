@@ -74,6 +74,11 @@ pub enum Reducer {
     Append,
     BinaryOp(String),
     Custom(String),
+    /// Keeps the last write of a step and drops the current value and the step's other writes.
+    Overwrite,
+    /// Appends messages, replaces a message with the id of one it holds, and applies removals (LangGraph's
+    /// `add_messages`).
+    Messages,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -291,6 +296,26 @@ pub mod attr {
     pub const FANOUT: &str = "fanout";
     /// Flag: the step replaces the whole state instead of updating the channels it names.
     pub const FULL_STATE_UPDATE: &str = "full_state_update";
+    /// Comma-separated outputs whose value the step steps by addition or subtraction; absent when not tracked.
+    pub const COUNTERS: &str = "counters";
+    /// Comma-separated channels the step writes with a value built from the channel's current value.
+    pub const EXTENDS: &str = "extends";
+    /// Comma-separated channels the step writes with new content that leaves the channel's current value out.
+    pub const REPLACES: &str = "replaces";
+    /// Comma-separated channels the step may write several times in one step, once per call of one of its tools.
+    pub const REPEATED_WRITES: &str = "repeated_writes";
+    /// Flag: the step runs only once no other step of the run is pending.
+    pub const DEFER: &str = "defer";
+    /// Comma-separated objects that outlive a run (module-level, or captured when the workflow was built) and that
+    /// the step's code changes, each `<access path>:<type>@<identity>`.
+    pub const MUTATES: &str = "mutates";
+    /// Comma-separated containers (dict, list, set) the step reads from the object it belongs to, each
+    /// `<attribute>:<type>@<identity>`.
+    pub const HOLDS: &str = "holds";
+    /// Comma-separated event types the step waits for under a key it does not choose.
+    pub const WAITS_FOR: &str = "waits_for";
+    /// What the engine derives that key from: `event` (the event type alone) or `work-item` (also the waiting run).
+    pub const WAIT_KEY: &str = "wait_key";
     /// The input that binds [`super::Node::requires_vars`].
     pub const TEMPLATE_VALUES_INPUT: &str = "template_values_input";
     pub const STREAM: &str = "stream";
@@ -307,6 +332,46 @@ pub mod attr {
     pub const SHARED_WORKFLOW: &str = "shared_workflow";
     /// Flag on a workflow: a run starts from the channels its previous run left.
     pub const KEEPS_STATE: &str = "keeps_state";
+    /// Flag on a workflow: its edges and routes stay inside it; a step of another workflow is no target.
+    pub const SELF_CONTAINED: &str = "self_contained";
+    /// On a workflow: the long-term store its runs read and write, `<type>@<identity>`.
+    pub const STORE: &str = "store";
+    /// On a workflow: the checkpoint its run resumes from, `<saver type>@<where it saves>#<thread id>`.
+    pub const CHECKPOINT: &str = "checkpoint";
+    /// On a workflow: comma-separated `<key>=<value>` the run is configured with, beside its thread id.
+    pub const RUN_CONFIG: &str = "run_config";
+    /// On a step: comma-separated `<tool>:<method>.<argument>=<value>` calls its tools make on objects captured when
+    /// they were built, with arguments captured then too, where the tool reads no run config.
+    pub const FIXED_CALLS: &str = "fixed_calls";
+    /// On a step: comma-separated `<tool>:<method>.<key>` keys a dict its tools build lacks where a method they
+    /// hand it to reads them.
+    pub const MISSING_KEYS: &str = "missing_keys";
+    /// On a workflow: the graph it is a run of; runs of one graph hold the objects of its steps by construction.
+    pub const RUN_OF: &str = "run_of";
+    /// On a workflow: comma-separated `configurable.<key>` and `context.<key>` the run is given.
+    pub const RUN_INPUTS: &str = "run_inputs";
+    /// On a step: comma-separated keys of the run context or the configurable it cannot run without.
+    pub const REQUIRES_RUN_INPUT: &str = "requires_run_input";
+    /// On a step: comma-separated `<tool>:<Class>.<attribute>` counters objects its tools hold keep on the instance,
+    /// which `with_config` does not carry to the instance it builds.
+    pub const REWRAP_RESETS: &str = "rewrap_resets";
+    /// On a step: comma-separated channels it writes with an update it returns from inside a loop, after the loop's
+    /// first item.
+    pub const SINGLE_PASS_WRITES: &str = "single_pass_writes";
+    /// Flag on a step: it calls tools.
+    pub const RUNS_TOOLS: &str = "runs_tools";
+    /// On a step: comma-separated `<part>:<collection>`: it builds tool messages for the calls in `part`, picked
+    /// out of `collection` by a condition, and for no other item of it.
+    pub const UNANSWERED_CALLS: &str = "unanswered_calls";
+    /// On a step: comma-separated functions it reaches that build a tool message whose call id is a fresh value.
+    pub const UNPAIRED_TOOL_IDS: &str = "unpaired_tool_ids";
+    /// Flag on a step of a host: it starts runs of a workflow.
+    pub const STARTS_RUNS: &str = "starts_runs";
+    /// On a step of a host: comma-separated `<field>:<type>@<identity>` fields of a long-lived object it assigns.
+    pub const SETS: &str = "sets";
+    /// On a step of a host: comma-separated `<field>:<type>@<identity>` fields the thread id of a run it resumes is
+    /// read from.
+    pub const RESUME_THREAD: &str = "resume_thread";
     /// On a workflow: comma-separated channels the run's input or the engine sets, with no step writing them.
     pub const PROVIDED_CHANNELS: &str = "provided_channels";
     /// Prefix: `supertypes:<T>` lists the types a message of type `T` sent by the step is also an instance of.
@@ -340,6 +405,10 @@ pub mod attr {
     pub const ROUTER_UNRESOLVED: &str = "router_unresolved:";
     /// Prefix, per branch, flag: the routing function returns a list of targets, which all run.
     pub const ROUTER_FANOUT: &str = "router_fanout:";
+    /// Prefix, per branch: the state keys the routing function compares with a bound before it returns.
+    pub const ROUTER_LIMIT: &str = "router_limit:";
+    /// Prefix, per branch: the targets the routing function returns ahead of that test, comma-separated.
+    pub const ROUTER_BEFORE_LIMIT: &str = "router_before_limit:";
 }
 
 /// Values of [`Edge::branch`] with a fixed meaning.

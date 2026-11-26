@@ -7,7 +7,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>apsis-agent-framework-dotnet</AssemblyName>
     <RootNamespace>Apsis.AgentFramework.Dotnet</RootNamespace>
-    <Version>0.1.1</Version>
+    <Version>0.1.1+extended</Version>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 

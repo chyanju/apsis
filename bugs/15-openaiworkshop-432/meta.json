@@ -1,0 +1,19 @@
+{
+  "id": "15-openaiworkshop-432",
+  "issue_url": "https://github.com/microsoft/OpenAIWorkshop/issues/432",
+  "source": [
+    "https://github.com/microsoft/OpenAIWorkshop/blob/9c91bf73faa035b31120c143a68a852014138e29/agentic_ai/agents/agent_framework/multi_agent/reflection_agent.py"
+  ],
+  "license": "MIT",
+  "framework": "agent-framework",
+  "entry": "graph.py:workflow",
+  "expected_findings": [
+    "interrupt-ordering/output-bypasses-gate@refine"
+  ],
+  "note": "`chat_async` sends each refined response back to the reviewer only `if attempt < self._max_refinements - 1`, so the refinement of the last attempt is returned without review. The module writes the loop, which the project runs around two Agent Framework agents, as a workflow with an executor per step.",
+  "fixed": {
+    "entry": "fixed/graph.py:workflow",
+    "fix_url": "https://github.com/microsoft/OpenAIWorkshop/pull/433",
+    "fix_note": "Every refinement goes to the reviewer, and the response is returned once the reviewer approves it or the attempts run out."
+  }
+}

@@ -161,7 +161,7 @@ fn double_route_static_edge_overrides_dynamic_route() {
         vec![],
     );
     assert_eq!(fired(&TargetResolution.check(&w), "target-resolution"), vec!["supervisor->workers"]);
-    // the static edge goes to END, which schedules no step
+    // the static edge goes to END, which schedules no step but declares an end the route overrides
     let mut analyze = bn("analyze");
     analyze.declared_targets = vec!["end".into()];
     let w2 = bsp(
@@ -175,7 +175,7 @@ fn double_route_static_edge_overrides_dynamic_route() {
         ],
         vec![],
     );
-    assert!(fired(&TargetResolution.check(&w2), "target-resolution").is_empty());
+    assert_eq!(rule_locations(&TargetResolution.check(&w2)), vec!["static-end-next-to-route@analyze->__end__"]);
     // the dynamic route can only name the static target
     let mut start_flow = bn("start_flow");
     start_flow.declared_targets = vec!["chat".into()];
@@ -233,7 +233,7 @@ fn fan_in_at_unequal_depths_needs_a_barrier() {
     assert!(fired(&ChannelWriteMerge.check(&w2), "channel-write-merge").is_empty());
     let w3 = bsp(nodes(bn("d")), edges(EdgeKind::Conditional, Some("route")), vec![]);
     assert!(fired(&ChannelWriteMerge.check(&w3), "channel-write-merge").is_empty());
-    // branches of equal depth arrive together
+    // branches of equal depth arrive together, and the join runs once only while they keep pace
     let w4 = bsp(
         vec![bn("a"), bn("b"), bn("c"), bn("d")],
         vec![
@@ -246,7 +246,7 @@ fn fan_in_at_unequal_depths_needs_a_barrier() {
         ],
         vec![],
     );
-    assert!(fired(&ChannelWriteMerge.check(&w4), "channel-write-merge").is_empty());
+    assert_eq!(rule_locations(&ChannelWriteMerge.check(&w4)), vec!["same-step-fan-in@d"]);
 }
 
 #[test]
@@ -261,9 +261,12 @@ fn step_that_no_route_leads_to() {
         vec![],
     );
     assert_eq!(fired(&ReadinessLiveness.check(&w), "readiness-liveness"), vec!["stray"]);
-    // `branch` now ends the run without an edge to END
+    // without the edge to END no step routes there, so the steps with no way on are dead ends
     w.edges.pop();
-    assert_eq!(fired(&ReadinessLiveness.check(&w), "readiness-liveness"), vec!["stray"]);
+    assert_eq!(
+        rule_locations(&ReadinessLiveness.check(&w)),
+        vec!["no-terminal@branch", "no-terminal@stray", "unreachable-node@stray"]
+    );
     // an unresolved route from `branch` may reach `stray` but does not clear the finding
     w.nodes[1].attrs.insert("goto_unresolved".into(), "true".into());
     let found = rule_locations(&analyze(&Program { workflows: vec![w] }));
@@ -353,6 +356,298 @@ fn cycle_with_declared_end_exit_is_bounded() {
 }
 
 #[test]
+fn steps_that_change_one_long_lived_object_share_it_across_runs() {
+    let mut recall = bn("recall");
+    recall.attrs.insert("mutates".into(), "client.session_token:SdkClient@0x1".into());
+    let mut remember = bn("remember");
+    remember.attrs.insert("mutates".into(), "client.session_token:SdkClient@0x1".into());
+    let edges = vec![
+        kedge("__start__", "recall", EdgeKind::Control, None),
+        kedge("recall", "remember", EdgeKind::Control, None),
+        kedge("remember", "__end__", EdgeKind::Control, None),
+    ];
+    let w = bsp(vec![recall, remember], edges.clone(), vec![]);
+    assert_eq!(rule_locations(&SharedInstanceAliasing.check(&w)), vec!["shared-object-mutation@recall:client"]);
+    let w2 = bsp(vec![bn("recall"), bn("remember")], edges, vec![]);
+    assert!(fired(&SharedInstanceAliasing.check(&w2), "shared-instance-aliasing").is_empty());
+}
+
+#[test]
+fn separately_built_workflows_whose_steps_read_one_container_share_it() {
+    let build = |id: &str, holds: &str| {
+        let mut step = bn("handle");
+        step.attrs.insert("holds".into(), holds.into());
+        let mut w = bsp(vec![step], vec![kedge("__start__", "handle", EdgeKind::Control, None)], vec![]);
+        w.id = Some(id.into());
+        w
+    };
+    let shared = Program { workflows: vec![build("w1", "memory:dict@0x1"), build("w2", "memory:dict@0x1")] };
+    assert_eq!(rule_locations(&SharedInstanceAliasing.check_program(&shared)), vec!["shared-container@handle:memory"]);
+    let own = Program { workflows: vec![build("w1", "memory:dict@0x1"), build("w2", "memory:dict@0x2")] };
+    assert!(SharedInstanceAliasing.check_program(&own).is_empty());
+    let one = Program { workflows: vec![build("w1", "memory:dict@0x1")] };
+    assert!(SharedInstanceAliasing.check_program(&one).is_empty());
+}
+
+#[test]
+fn workflows_of_separate_runs_that_keep_one_store_share_it() {
+    let run = |id: &str, store: &str| {
+        let mut w = bsp(vec![bn("agent")], vec![kedge("__start__", "agent", EdgeKind::Control, None)], vec![]);
+        w.id = Some(id.into());
+        w.attrs.insert("store".into(), store.into());
+        w
+    };
+    let shared = Program { workflows: vec![run("run1", "InMemoryStore@0x1"), run("run2", "InMemoryStore@0x1")] };
+    assert_eq!(rule_locations(&SharedInstanceAliasing.check_program(&shared)), vec!["shared-store@run1:store"]);
+    let own = Program { workflows: vec![run("run1", "InMemoryStore@0x1"), run("run2", "InMemoryStore@0x2")] };
+    assert!(SharedInstanceAliasing.check_program(&own).is_empty());
+}
+
+#[test]
+fn runs_of_differently_shaped_workflows_that_resume_from_one_checkpoint() {
+    let run = |id: &str, first: &str, checkpoint: &str| {
+        let mut w = bsp(
+            vec![bn(first), bn("trader")],
+            vec![kedge("__start__", first, EdgeKind::Control, None), kedge(first, "trader", EdgeKind::Control, None)],
+            vec![],
+        );
+        w.id = Some(id.into());
+        w.attrs.insert("checkpoint".into(), checkpoint.into());
+        w
+    };
+    let program = |a: Workflow, b: Workflow| Program { workflows: vec![a, b] };
+    let found = |p: &Program| rule_locations(&SharedInstanceAliasing.check_program(p));
+    let saver = "SqliteSaver@/data/NVDA.db#7f3a";
+    assert_eq!(found(&program(run("run1", "market", saver), run("run2", "news", saver))), vec!["shared-checkpoint@run1:checkpoint"]);
+    // one shape resuming its own checkpoint, or two shapes with a thread each
+    assert!(found(&program(run("run1", "market", saver), run("run2", "market", saver))).is_empty());
+    assert!(found(&program(run("run1", "market", saver), run("run2", "news", "SqliteSaver@/data/NVDA.db#91c2"))).is_empty());
+}
+
+#[test]
+fn a_list_a_cycle_keeps_extending_holds_the_entries_of_earlier_passes() {
+    let graph = |planner_replaces: &str| {
+        let mut execute = bn("execute");
+        execute.attrs.insert("extends".into(), "completed".into());
+        let mut plan = bn("plan");
+        plan.attrs.insert("replaces".into(), planner_replaces.into());
+        let completed = chan("completed", Reducer::LastValue, &["execute", "plan"], &["execute"]);
+        let tasks = chan("tasks", Reducer::LastValue, &["plan"], &["execute"]);
+        let mut w = bsp(
+            vec![plan, execute, bn("judge")],
+            vec![
+                kedge("__start__", "plan", EdgeKind::Control, None),
+                kedge("plan", "execute", EdgeKind::Control, None),
+                kedge("execute", "judge", EdgeKind::Control, None),
+                kedge("judge", "plan", EdgeKind::Conditional, Some("route")),
+                kedge("judge", "__end__", EdgeKind::Conditional, Some("route")),
+            ],
+            vec![Channel { type_repr: "list[dict]".into(), ..completed }, Channel { type_repr: "list[dict]".into(), ..tasks }],
+        );
+        w.framework = "langgraph".into();
+        w
+    };
+    let found = |w: &Workflow| {
+        rule_locations(&ChannelWriteMerge.check(w)).into_iter().filter(|f| f.starts_with("accumulated-across-passes@")).collect::<Vec<_>>()
+    };
+    assert_eq!(found(&graph("tasks")), vec!["accumulated-across-passes@execute.completed"]);
+    // a step of the cycle that starts the list anew, or no items planned anew on each pass
+    assert!(found(&graph("tasks,completed")).is_empty());
+    assert!(found(&graph("")).is_empty());
+}
+
+#[test]
+fn runs_of_different_users_share_a_tool_that_reads_no_run_config() {
+    let run = |id: &str, user: &str, fixed: Option<&str>| {
+        let mut tools = bn("tools");
+        if let Some(calls) = fixed {
+            tools.attrs.insert("fixed_calls".into(), calls.into());
+        }
+        let mut w = bsp(vec![bn("agent"), tools], vec![kedge("__start__", "agent", EdgeKind::Control, None)], vec![]);
+        w.id = Some(id.into());
+        w.attrs.insert("run_config".into(), format!("user_id={user}"));
+        w
+    };
+    let calls = Some("retain:aretain.bank_id=user-123");
+    let found = |a: Workflow, b: Workflow| rule_locations(&SharedInstanceAliasing.check_program(&Program { workflows: vec![a, b] }));
+    assert_eq!(found(run("run1", "alice", calls), run("run2", "bob", calls)), vec!["config-blind-tool@tools:retain"]);
+    // one user, or a tool that reads the run config
+    assert!(found(run("run1", "alice", calls), run("run2", "alice", calls)).is_empty());
+    assert!(found(run("run1", "alice", None), run("run2", "bob", None)).is_empty());
+}
+
+#[test]
+fn a_resume_that_takes_its_thread_id_from_a_field_every_run_start_sets() {
+    let host = |resume_from: &str| {
+        let mut start = bn("invoke");
+        start.attrs.insert("starts_runs".into(), "true".into());
+        start.attrs.insert("sets".into(), "_current_thread_id:Producer@0x1".into());
+        let mut resume = bn("resume");
+        resume.attrs.insert("resume_thread".into(), resume_from.into());
+        let mut w = wf(vec![start, resume], vec![], None);
+        w.id = Some("host".into());
+        w
+    };
+    assert_eq!(
+        rule_locations(&SharedInstanceAliasing.check(&host("_current_thread_id:Producer@0x1"))),
+        vec!["shared-resume-slot@resume:_current_thread_id"]
+    );
+    // a field no run start sets
+    assert!(SharedInstanceAliasing.check(&host("_pending:Producer@0x1")).is_empty());
+}
+
+#[test]
+fn a_tool_whose_objects_lose_their_count_when_re_wrapped() {
+    let mut tools = bn("tools");
+    tools.attrs.insert("rewrap_resets".into(), "task:StreamingRunnable._consecutive_failures".into());
+    let w = bsp(vec![bn("model"), tools], vec![kedge("__start__", "model", EdgeKind::Control, None)], vec![]);
+    assert_eq!(rule_locations(&CycleTermination.check(&w)), vec!["counter-reset-on-rewrap@tools:task._consecutive_failures"]);
+    let w2 = bsp(vec![bn("model"), bn("tools")], vec![kedge("__start__", "model", EdgeKind::Control, None)], vec![]);
+    assert!(CycleTermination.check(&w2).is_empty());
+}
+
+#[test]
+fn a_step_that_needs_a_run_input_that_some_runs_are_not_given() {
+    let run = |id: &str, inputs: &str| {
+        let mut guard = bn("before_agent");
+        guard.attrs.insert("requires_run_input".into(), "thread_id".into());
+        let mut w = bsp(vec![guard, bn("model")], vec![kedge("__start__", "before_agent", EdgeKind::Control, None)], vec![]);
+        w.id = Some(id.into());
+        w.attrs.insert("run_inputs".into(), inputs.into());
+        w
+    };
+    let found = |runs: Vec<Workflow>| rule_locations(&TypeContract.check_program(&Program { workflows: runs }));
+    assert_eq!(
+        found(vec![run("run1", "configurable.thread_id"), run("run2", "context.user_id")]),
+        vec!["unprovided-run-input@before_agent:thread_id"]
+    );
+    // given in either container
+    assert!(found(vec![run("run1", "configurable.thread_id"), run("run2", "context.thread_id,context.user_id")]).is_empty());
+}
+
+#[test]
+fn a_step_that_returns_its_update_from_inside_a_loop() {
+    let mut summarizer = bn("summarizer");
+    summarizer.attrs.insert("single_pass_writes".into(), "messages".into());
+    let w = bsp(vec![summarizer], vec![kedge("__start__", "summarizer", EdgeKind::Control, None)], vec![]);
+    assert_eq!(rule_locations(&ChannelWriteMerge.check(&w)), vec!["single-pass-write@summarizer.messages"]);
+    let w2 = bsp(vec![bn("summarizer")], vec![kedge("__start__", "summarizer", EdgeKind::Control, None)], vec![]);
+    assert!(ChannelWriteMerge.check(&w2).is_empty());
+}
+
+#[test]
+fn a_step_that_answers_part_of_the_tool_calls_and_ends_the_run() {
+    let workflow = |aggregate_to: &str, kind: EdgeKind, with_tool_step: bool| {
+        let mut aggregate = bn("aggregate");
+        aggregate.attrs.insert("unanswered_calls".into(), "backend:results".into());
+        let mut run_tool = bn("run_tool");
+        if with_tool_step {
+            run_tool.attrs.insert("runs_tools".into(), "true".into());
+        }
+        wf(
+            vec![bn("chat"), run_tool, aggregate],
+            vec![
+                kedge("__start__", "chat", EdgeKind::Control, None),
+                kedge("chat", "run_tool", EdgeKind::Control, None),
+                kedge("run_tool", "aggregate", EdgeKind::Control, None),
+                kedge("aggregate", aggregate_to, kind, None),
+            ],
+            None,
+        )
+    };
+    let found = |w: &Workflow| fired(&TypeContract.check(w), "type-contract");
+    assert_eq!(found(&workflow("__end__", EdgeKind::Control, true)), vec!["aggregate:backend"]);
+    // a step that runs tools comes next, a router ends the run, or the workflow runs no tools
+    assert!(found(&workflow("run_tool", EdgeKind::Control, true)).is_empty());
+    assert!(found(&workflow("__end__", EdgeKind::Conditional, true)).is_empty());
+    assert!(found(&workflow("__end__", EdgeKind::Control, false)).is_empty());
+}
+
+#[test]
+fn a_tool_message_whose_call_id_is_a_fresh_value() {
+    let mut chat = bn("chat");
+    chat.attrs.insert("unpaired_tool_ids".into(), "to_wire_message".into());
+    let mut aggregate = bn("aggregate");
+    aggregate.attrs.insert("unpaired_tool_ids".into(), "to_wire_message".into());
+    let w = wf(vec![chat, aggregate], vec![kedge("__start__", "chat", EdgeKind::Control, None)], None);
+    assert_eq!(rule_locations(&TypeContract.check(&w)), vec!["unpaired-tool-message@chat:to_wire_message"]);
+}
+
+#[test]
+fn a_tool_that_hands_a_method_a_dict_without_a_key_it_reads() {
+    let mut tools = bn("tools");
+    tools.attrs.insert("missing_keys".into(), "editor:_handle_rename.old_path".into());
+    let w = bsp(vec![bn("model"), tools], vec![kedge("__start__", "model", EdgeKind::Control, None)], vec![]);
+    assert_eq!(rule_locations(&TypeContract.check(&w)), vec!["missing-handoff-key@tools:editor._handle_rename"]);
+    let w2 = bsp(vec![bn("model"), bn("tools")], vec![kedge("__start__", "model", EdgeKind::Control, None)], vec![]);
+    assert!(fired(&TypeContract.check(&w2), "type-contract").is_empty());
+}
+
+#[test]
+fn a_step_on_a_review_loop_that_yields_the_output_itself() {
+    let workflow = |refine_yields: bool| {
+        let step = |id: &str, yields: bool| {
+            let mut n = bn(id);
+            n.attrs.insert("workflow_output_types".into(), if yields { "str".into() } else { String::new() });
+            n
+        };
+        let mut w = wf(
+            vec![step("primary", false), step("reviewer", false), step("refine", refine_yields), step("deliver", true)],
+            vec![
+                kedge("primary", "reviewer", EdgeKind::Control, None),
+                kedge("reviewer", "deliver", EdgeKind::Conditional, Some("approved")),
+                kedge("reviewer", "refine", EdgeKind::Conditional, Some("rejected")),
+                kedge("refine", "reviewer", EdgeKind::Control, None),
+            ],
+            None,
+        );
+        w.execution_model = ExecutionModel::GroupChatSpeaker;
+        w
+    };
+    assert_eq!(rule_locations(&InterruptOrdering.check(&workflow(true))), vec!["output-bypasses-gate@refine"]);
+    // the output leaves through the approved branch only
+    assert!(InterruptOrdering.check(&workflow(false)).is_empty());
+}
+
+#[test]
+fn concurrent_instances_of_a_step_that_wait_under_one_key_take_each_others_answer() {
+    let mut review = bn("review");
+    review.attrs.insert("fanout".into(), "true".into());
+    review.attrs.insert("waits_for".into(), "HumanResponseEvent".into());
+    review.attrs.insert("wait_key".into(), "event".into());
+    let mut w = wf(vec![review.clone()], vec![], None);
+    w.execution_model = ExecutionModel::Other("llamaindex-workflow".into());
+    assert_eq!(rule_locations(&InterruptOrdering.check(&w)), vec!["shared-wait-key@review"]);
+    // a key per waiting run, or a single instance
+    w.nodes[0].attrs.insert("wait_key".into(), "work-item".into());
+    assert!(InterruptOrdering.check(&w).is_empty());
+    w.nodes[0] = review;
+    w.nodes[0].attrs.remove("fanout");
+    assert!(InterruptOrdering.check(&w).is_empty());
+}
+
+#[test]
+fn a_self_contained_workflow_that_leads_to_a_step_of_another_one() {
+    let journey = |id: &str, edges: Vec<Edge>| {
+        let mut w = wf(vec![bn(&format!("{id}/root")), bn(&format!("{id}/s1"))], edges, None);
+        w.execution_model = ExecutionModel::Other("parlant-journey".into());
+        w.id = Some(id.into());
+        w.attrs.insert("self_contained".into(), "true".into());
+        w
+    };
+    let a = journey("a", vec![kedge("a/root", "a/s1", EdgeKind::Control, None), kedge("a/s1", "b/s1", EdgeKind::Control, None)]);
+    let b = journey("b", vec![kedge("b/root", "b/s1", EdgeKind::Control, None)]);
+    let foreign = |p: &Program| {
+        rule_locations(&TargetResolution.check_program(p)).into_iter().filter(|f| f.starts_with("foreign-target@")).collect::<Vec<_>>()
+    };
+    assert_eq!(foreign(&Program { workflows: vec![a.clone(), b.clone()] }), vec!["foreign-target@a/s1->b/s1"]);
+    // a workflow whose steps may route into the other workflows of the program
+    let mut open = a;
+    open.attrs.remove("self_contained");
+    assert!(foreign(&Program { workflows: vec![open, b] }).is_empty());
+}
+
+#[test]
 fn self_loop_without_counter_is_a_runaway() {
     let mut chat = bn("chat");
     chat.declared_targets = vec!["chat".into(), "tools".into(), "__end__".into()];
@@ -366,8 +661,130 @@ fn self_loop_without_counter_is_a_runaway() {
     let w = bsp(vec![chat.clone(), bn("tools")], edges.clone(), vec![]);
     assert_eq!(rule_locations(&CycleTermination.check(&w)), vec!["self-loop-without-counter@chat"]);
     chat.outputs.push(osock("retries", "int", false));
-    let w2 = bsp(vec![chat, bn("tools")], edges, vec![]);
+    let w2 = bsp(vec![chat.clone(), bn("tools")], edges.clone(), vec![]);
     assert!(fired(&CycleTermination.check(&w2), "cycle-termination").is_empty());
+    // an integer the step only writes back is no counter
+    chat.attrs.insert("counters".into(), "".into());
+    let w3 = bsp(vec![chat.clone(), bn("tools")], edges.clone(), vec![]);
+    assert_eq!(rule_locations(&CycleTermination.check(&w3)), vec!["self-loop-without-counter@chat"]);
+    chat.attrs.insert("counters".into(), "retries".into());
+    let w4 = bsp(vec![chat, bn("tools")], edges, vec![]);
+    assert!(fired(&CycleTermination.check(&w4), "cycle-termination").is_empty());
+}
+
+#[test]
+fn a_route_returned_ahead_of_the_loop_limit_bypasses_it() {
+    let mut process = bn("process");
+    process.attrs.insert("router_limit:route".into(), "step_count".into());
+    process.attrs.insert("router_before_limit:route".into(), "coder,finish".into());
+    let counter = Channel {
+        name: "step_count".into(),
+        type_repr: "int".into(),
+        reducer: Reducer::LastValue,
+        writers: vec!["coder".into()],
+        readers: vec![],
+    };
+    let edges = vec![
+        kedge("__start__", "process", EdgeKind::Control, None),
+        kedge("process", "coder", EdgeKind::Conditional, Some("route")),
+        kedge("process", "finish", EdgeKind::Conditional, Some("route")),
+        kedge("coder", "process", EdgeKind::Control, None),
+        kedge("finish", "__end__", EdgeKind::Control, None),
+    ];
+    let w = bsp(vec![process.clone(), bn("coder"), bn("finish")], edges.clone(), vec![counter.clone()]);
+    assert_eq!(rule_locations(&CycleTermination.check(&w)), vec!["loop-limit-bypassed@process"]);
+    // the limit is tested first: only the route out of the loop precedes nothing
+    process.attrs.insert("router_before_limit:route".into(), "finish".into());
+    let w2 = bsp(vec![process, bn("coder"), bn("finish")], edges, vec![counter]);
+    assert!(fired(&CycleTermination.check(&w2), "cycle-termination").is_empty());
+}
+
+#[test]
+fn new_content_written_over_an_accumulated_list_loses_it() {
+    let mut agent = bn("agent");
+    agent.attrs.insert("extends".into(), "messages".into());
+    let mut review = bn("review");
+    review.attrs.insert("replaces".into(), "messages".into());
+    let ch = |reducer: Reducer| Channel {
+        name: "messages".into(),
+        type_repr: "list[BaseMessage]".into(),
+        reducer,
+        writers: vec!["agent".into(), "review".into()],
+        readers: vec![],
+    };
+    let edges = vec![
+        kedge("__start__", "agent", EdgeKind::Control, None),
+        kedge("agent", "review", EdgeKind::Control, None),
+        kedge("review", "__end__", EdgeKind::Control, None),
+    ];
+    let w = bsp(vec![agent.clone(), review.clone()], edges.clone(), vec![ch(Reducer::LastValue)]);
+    assert_eq!(rule_locations(&ChannelWriteMerge.check(&w)), vec!["accumulated-channel-overwrite@review.messages"]);
+    let w2 = bsp(vec![agent, review], edges, vec![ch(Reducer::Messages)]);
+    assert!(fired(&ChannelWriteMerge.check(&w2), "channel-write-merge").is_empty());
+}
+
+#[test]
+fn a_message_list_merged_by_concatenation_keeps_copies_and_removals() {
+    let ch = |reducer: Reducer| Channel {
+        name: "messages".into(),
+        type_repr: "list[AnyMessage]".into(),
+        reducer,
+        writers: vec!["llm".into()],
+        readers: vec![],
+    };
+    let edges = vec![kedge("__start__", "llm", EdgeKind::Control, None), kedge("llm", "__end__", EdgeKind::Control, None)];
+    let w = bsp(vec![bn("llm")], edges.clone(), vec![ch(Reducer::Append)]);
+    assert_eq!(rule_locations(&ChannelWriteMerge.check(&w)), vec!["message-list-concatenation@messages"]);
+    let w2 = bsp(vec![bn("llm")], edges, vec![ch(Reducer::Messages)]);
+    assert!(fired(&ChannelWriteMerge.check(&w2), "channel-write-merge").is_empty());
+}
+
+#[test]
+fn an_overwrite_reducer_loses_the_writes_of_a_tool_node_but_the_last() {
+    let mut tools = bn("tools");
+    tools.attrs.insert("repeated_writes".into(), "notes".into());
+    let ch = |reducer: Reducer| Channel {
+        name: "notes".into(),
+        type_repr: "dict[str, str]".into(),
+        reducer,
+        writers: vec!["tools".into()],
+        readers: vec![],
+    };
+    let edges = vec![kedge("__start__", "tools", EdgeKind::Control, None), kedge("tools", "__end__", EdgeKind::Control, None)];
+    let w = bsp(vec![tools.clone()], edges.clone(), vec![ch(Reducer::Overwrite)]);
+    assert_eq!(rule_locations(&ChannelWriteMerge.check(&w)), vec!["concurrent-last-value-writes@notes"]);
+    let w2 = bsp(vec![tools], edges, vec![ch(Reducer::Custom("merge_dicts".into()))]);
+    assert!(fired(&ChannelWriteMerge.check(&w2), "channel-write-merge").is_empty());
+}
+
+#[test]
+fn writers_on_a_cycle_can_share_a_superstep() {
+    // `gate` activates `a` and `b` together on every pass of the loop through `join`
+    let mut gate = bn("gate");
+    gate.attrs.insert("router_fanout:route".into(), "true".into());
+    let mut join = bn("join");
+    join.attrs.insert("defer".into(), "true".into());
+    let ch = Channel {
+        name: "out".into(),
+        type_repr: "str".into(),
+        reducer: Reducer::LastValue,
+        writers: vec!["a".into(), "b".into()],
+        readers: vec![],
+    };
+    let edges = vec![
+        kedge("__start__", "gate", EdgeKind::Control, None),
+        kedge("gate", "a", EdgeKind::Conditional, Some("route")),
+        kedge("gate", "b", EdgeKind::Conditional, Some("route")),
+        kedge("a", "join", EdgeKind::Control, None),
+        kedge("b", "join", EdgeKind::Control, None),
+        kedge("join", "gate", EdgeKind::Control, None),
+    ];
+    let w = bsp(vec![gate.clone(), bn("a"), bn("b"), join.clone()], edges.clone(), vec![ch.clone()]);
+    assert_eq!(rule_locations(&ChannelWriteMerge.check(&w)), vec!["concurrent-last-value-writes@out"]);
+    // a router that selects one target runs one of them per pass
+    gate.attrs.clear();
+    let w2 = bsp(vec![gate, bn("a"), bn("b"), join], edges, vec![ch]);
+    assert!(fired(&ChannelWriteMerge.check(&w2), "channel-write-merge").is_empty());
 }
 
 #[test]
@@ -404,6 +821,21 @@ fn unordered_writers_of_a_lastvalue_channel_collide() {
         vec![ch(Reducer::LastValue)],
     );
     assert!(fired(&ChannelWriteMerge.check(&w3), "channel-write-merge").is_empty());
+    // the two branches of a route that selects one target never run in the same pass
+    let mut f = bn("f");
+    f.attrs.insert("router_returns:route".into(), "a,b".into());
+    let w4 = bsp(
+        vec![f, bn("a"), bn("b")],
+        vec![
+            kedge("__start__", "f", EdgeKind::Control, None),
+            kedge("f", "a", EdgeKind::Conditional, Some("route")),
+            kedge("f", "b", EdgeKind::Conditional, Some("route")),
+            kedge("a", "__end__", EdgeKind::Control, None),
+            kedge("b", "__end__", EdgeKind::Control, None),
+        ],
+        vec![ch(Reducer::LastValue)],
+    );
+    assert!(fired(&ChannelWriteMerge.check(&w4), "channel-write-merge").is_empty());
 }
 
 #[test]

@@ -1,0 +1,2 @@
+crewai==0.193.2
+langchain-openai==1.3.3

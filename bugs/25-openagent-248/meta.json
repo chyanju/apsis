@@ -1,0 +1,19 @@
+{
+  "id": "25-openagent-248",
+  "issue_url": "https://github.com/Haohao-end/openagent/issues/248",
+  "source": [
+    "https://github.com/Haohao-end/openagent/blob/7190f2172ca5452e7bac0c583a6df22c6d7eda2c/api/internal/core/workflow/workflow.py"
+  ],
+  "license": "MIT",
+  "framework": "langgraph",
+  "entry": "graph.py:graph",
+  "expected_findings": [
+    "target-resolution/label-outside-path-map@if_else_00000000-0000-0000-0000-000000000002:false"
+  ],
+  "note": "The workflow builder takes the path map of an `if_else` node from the edges the user drew, while the node's routing function returns `true` or `false`; with one side unconnected, here `false`, that label is missing from the map and the run fails with KeyError.",
+  "fixed": {
+    "entry": "fixed/graph.py:graph",
+    "fix_url": "https://github.com/Haohao-end/openagent/pull/264",
+    "fix_note": "An unconnected side of an `if_else` node is mapped to END."
+  }
+}

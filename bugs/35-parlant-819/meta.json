@@ -1,0 +1,15 @@
+{
+  "id": "35-parlant-819",
+  "issue_url": "https://github.com/emcie-co/parlant/issues/819",
+  "source": [
+    "https://github.com/emcie-co/parlant/blob/b5142aea5462ed0075a2815a10b3709522f430c2/src/parlant/sdk.py",
+    "https://github.com/emcie-co/parlant/blob/b5142aea5462ed0075a2815a10b3709522f430c2/src/parlant/core/journeys.py"
+  ],
+  "framework": "parlant",
+  "environment": "parlant-3.3.1",
+  "entry": "graph.py:journeys",
+  "expected_findings": [
+    "target-resolution/foreign-target@journey-one/root->journey-two/s1"
+  ],
+  "note": "The SDK lets a transition of one journey target a state of another: `journey1.initial_state.transition_to(state=...)` stores an edge of Journey One whose target is a state of Journey Two, and projecting Journey One to guidelines later fails with KeyError. The module authors both journeys on a server with a stub language service and reads them from `JourneyStore`; it leaves the server before parlant evaluates the journeys, the step that fails on the foreign state."
+}

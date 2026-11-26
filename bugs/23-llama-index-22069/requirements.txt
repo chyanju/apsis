@@ -1,0 +1,4 @@
+llama-index-core==0.14.22
+llama-index-workflows==2.22.0
+llama-index-protocols-ag-ui==0.3.1
+fastapi==0.138.0

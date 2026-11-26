@@ -1,0 +1,25 @@
+{
+  "id": "01-langflow-13846",
+  "issue_url": "https://github.com/langflow-ai/langflow/issues/13846",
+  "source": [
+    "https://github.com/langflow-ai/langflow/blob/f58914bc84c504ee3111fa6a3abb0989cff585f9/src/lfx/src/lfx/base/agents/crewai/crew.py",
+    "https://github.com/langflow-ai/langflow/blob/f58914bc84c504ee3111fa6a3abb0989cff585f9/src/lfx/src/lfx/components/crewai/crewai.py",
+    "https://github.com/langflow-ai/langflow/blob/f58914bc84c504ee3111fa6a3abb0989cff585f9/src/lfx/src/lfx/components/crewai/sequential_task.py",
+    "https://github.com/langflow-ai/langflow/blob/f58914bc84c504ee3111fa6a3abb0989cff585f9/src/lfx/src/lfx/components/crewai/sequential_task_agent.py",
+    "https://github.com/langflow-ai/langflow/blob/f58914bc84c504ee3111fa6a3abb0989cff585f9/src/lfx/src/lfx/components/crewai/sequential_crew.py"
+  ],
+  "license": "MIT",
+  "framework": "crewai",
+  "environment": "crewai-0.193.2",
+  "entry": "graph.py:crew_builds",
+  "expected_findings": [
+    "shared-instance-aliasing/shared-instance@agent1",
+    "shared-instance-aliasing/shared-instance@task1"
+  ],
+  "note": "Langflow's CrewAI components build the crew from the agents and tasks the component holds, and Langflow keeps a built component for the next request. The module wires Agent, Sequential Task and Sequential Crew components and builds the crew component twice, as two requests would; both crews hold the same agent and task objects, so state CrewAI keeps on them passes from one request to the next. The components are Langflow's, reduced to what building a crew runs; the language model is the object a model component outputs, with a placeholder key.",
+  "fixed": {
+    "entry": "fixed/graph.py:crew_builds",
+    "fix_url": "https://github.com/langflow-ai/langflow/pull/13852",
+    "fix_note": "Each build takes copies of the agents and tasks; the reference has the component code after this repair and those of 02-langflow-13847 and 03-langflow-13848."
+  }
+}

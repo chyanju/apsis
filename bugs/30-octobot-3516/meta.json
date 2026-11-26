@@ -1,0 +1,19 @@
+{
+  "id": "30-octobot-3516",
+  "issue_url": "https://github.com/Drakkar-Software/OctoBot/issues/3516",
+  "source": [
+    "https://github.com/Drakkar-Software/OctoBot/blob/6e7aeea77e121bd92511420ee9d08b869518c5b2/packages/agents/octobot_agents/agent/channels/deep_agent.py"
+  ],
+  "framework": "langgraph",
+  "environment": "langgraph-deepagents-0.6.11",
+  "entry": "../29-octobot-3515/graph.py:serving",
+  "expected_findings": [
+    "shared-instance-aliasing/shared-resume-slot@resume_with_decisions:_current_thread_id"
+  ],
+  "note": "The producer that serves every request on a channel keeps the thread id of the run it started last in `_current_thread_id`, and `resume_with_decisions` (behind `approve_all_interrupts` and `reject_all_interrupts`) resumes that thread when the caller passes none. With two runs waiting for the approval of a trade, the approval meant for the first resumes the second. The module, written after OctoBot's producer without its code, gives the producer with the runs of two requests.",
+  "fixed": {
+    "entry": "../29-octobot-3515/fixed/graph.py:serving",
+    "fix_url": "https://github.com/Drakkar-Software/OctoBot/pull/3631",
+    "fix_note": "The producer keeps no current thread id, and a resume without an explicit thread id raises."
+  }
+}

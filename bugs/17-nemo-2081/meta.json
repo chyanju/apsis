@@ -1,0 +1,19 @@
+{
+  "id": "17-nemo-2081",
+  "issue_url": "https://github.com/NVIDIA/NeMo-Agent-Toolkit/issues/2081",
+  "source": [
+    "https://github.com/NVIDIA/NeMo-Agent-Toolkit/blob/68ce9b1f0d2edb419fdde130286d516fde40d2d7/examples/frameworks/multi_frameworks/src/nat_multi_frameworks/register.py"
+  ],
+  "license": "Apache-2.0",
+  "framework": "langgraph",
+  "entry": "../12-nemo-2083/graph.py:graph",
+  "expected_findings": [
+    "target-resolution/label-outside-path-map@supervisor:supevisor"
+  ],
+  "note": "The router of `supervisor` returns `supevisor` when no worker is chosen yet, a label its path map `{workers, end}` lacks; LangGraph raises KeyError. The workflow is the one of 12-nemo-2083.",
+  "fixed": {
+    "entry": "../12-nemo-2083/fixed/graph.py:graph",
+    "fix_url": "https://github.com/NVIDIA/NeMo-Agent-Toolkit/pull/2089",
+    "fix_note": "The router returns `supervisor`, and the path map lists `supervisor`, `workers` and `end`."
+  }
+}

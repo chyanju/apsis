@@ -14,7 +14,7 @@
   </p>
 </div>
 
-Apsis detects workflow bugs, defects in a workflow's wired logic that misroute, stall, or corrupt its actions, without running the workflow. A front-end per framework extracts a built workflow into a language-neutral IR (JSON), and a Rust backend runs the twelve detectors of the paper's catalog over it. Front-ends cover Haystack, LangGraph, AutoGen, Microsoft Agent Framework (its Python and .NET SDKs), Langflow and Flowise.
+Apsis detects workflow bugs, defects in a workflow's wired logic that misroute, stall, or corrupt its actions, without running the workflow. A front-end per framework extracts a built workflow into a language-neutral IR (JSON), and a Rust backend runs the twelve detectors of the paper's catalog over it. Front-ends cover Haystack, LangGraph, AutoGen, Microsoft Agent Framework (its Python and .NET SDKs), Langflow, Flowise, CrewAI, LlamaIndex workflows, parlant journeys and PydanticAI agents.
 
 > [!NOTE]
 > Apsis accompanies the paper *Automated Safety Analysis for Agentic Workflows* (ICSE 2027). The research artifact of the paper, version 0.1.0 with the results it reports, is archived at [10.5281/zenodo.24408668](https://doi.org/10.5281/zenodo.24408668).
@@ -65,13 +65,17 @@ python3 -m apsis_langgraph graph.py:graph -o ir.json
 | framework | source |
 |---|---|
 | `haystack` | `file.py:attribute` or `module:attribute` naming a `Pipeline`, or a serialized `pipeline.yaml` |
-| `langgraph` | `file.py:attribute` naming a `StateGraph`, compiled or not |
+| `langgraph` | `file.py:attribute` naming a `StateGraph`, compiled or not, or a list of runs, each a compiled graph or a `(graph, config)` pair, read as a workflow of the program with its long-term store and the checkpoint it resumes from; `{"host": object, "runs": [...]}` adds the methods of an object that start and resume runs |
 | `autogen` | `file.py:attribute` naming a group chat, a team or a runtime |
 | `agent-framework` | `file.py:attribute` naming a `Workflow`, or `project.csproj:Type.Member` for the .NET SDK |
 | `langflow` | an exported `flow.json` |
 | `flowise` | an exported chatflow or agentflow `flow.json` |
+| `crewai` | `file.py:attribute` naming a built `Crew`, or a list of crews, each a workflow of the program |
+| `llamaindex` | `file.py:attribute` naming a built LlamaIndex `Workflow`, or a list of workflows, each a workflow of the program |
+| `parlant` | `file.py:attribute` naming parlant journeys as `(journey, nodes, edges)` triples, as `JourneyStore` lists them |
+| `pydantic-ai` | `file.py:attribute` naming an `Agent` with the deps of a run, as an `(agent, deps)` pair, or a list of pairs; each run its tools start is a workflow of the program |
 
-A Python workflow is imported and inspected, never run. Its front-end runs under the `python3` on `PATH`, so run apsis in the environment where the framework and the front-end are installed; a Langflow or Flowise flow needs only its front-end (`pip install ./frontends/common ./frontends/langflow`). A workflow of the .NET SDK is read by the front-end in `frontends/agent-framework-dotnet/`, which apsis runs as `apsis-agent-framework-dotnet` from `PATH`; its [README](frontends/agent-framework-dotnet/README.md) shows how to build it.
+A Python workflow is imported and inspected, never run; for a PydanticAI agent the front-end also calls, once and with a test model in place of the agent's model, the tools that start runs of other agents, to read the deps those runs are given. Its front-end runs under the `python3` on `PATH`, so run apsis in the environment where the framework and the front-end are installed; a Langflow or Flowise flow needs only its front-end (`pip install ./frontends/common ./frontends/langflow`). A workflow of the .NET SDK is read by the front-end in `frontends/agent-framework-dotnet/`, which apsis runs as `apsis-agent-framework-dotnet` from `PATH`; its [README](frontends/agent-framework-dotnet/README.md) shows how to build it.
 
 ## Examples
 
@@ -94,16 +98,26 @@ python3 scripts/evaluate.py
 
 See [benchmarks/README.md](benchmarks/README.md) for what the script prints and how the benchmarks are organized.
 
+## Bugs
+
+`bugs/` holds bugs that Apsis found in open-source projects, each as the workflow of the project at a commit that has the bug. To check that the analyzer reports them:
+
+```
+python3 scripts/check_bugs.py
+```
+
+See [bugs/README.md](bugs/README.md) for what the script prints and how the bugs are organized.
+
 ## Docker
 
-The `Dockerfile` builds an image with the analyzer, the environments of the benchmark suite with their front-ends, and the .NET front-end; the container needs no network:
+The `Dockerfile` builds an image with the analyzer, the environments of the benchmark suite and of the bugs with their front-ends, and the .NET front-end; the container needs no network:
 
 ```
 docker build -t apsis .
 docker run --rm -it --network none apsis
 ```
 
-In the container, `apsis` is on `PATH` and the environments are set up, so `python3 scripts/evaluate.py` runs directly; `apsis analyze` runs in the environment of the workflow's framework (`. .envs/langgraph/bin/activate`; Langflow and Flowise flows need none).
+In the container, `apsis` is on `PATH` and the environments are set up, so `python3 scripts/evaluate.py` and `python3 scripts/check_bugs.py` run directly; `apsis analyze` runs in the environment of the workflow's framework (`. .envs/langgraph/bin/activate`; Langflow and Flowise flows need none).
 
 ## Tests
 
@@ -112,6 +126,7 @@ cargo test                                         # one test per rule, and the 
 python3 -m unittest discover -s frontends/tests    # the front-end parts that need no framework
 dotnet test frontends/agent-framework-dotnet/tests  # the .NET front-end (needs the .NET SDK 10)
 python3 scripts/evaluate.py --check-expected       # every finding, against those recorded with --write-expected
+python3 scripts/check_bugs.py                      # every bug in bugs/ is reported
 ```
 
 ## License

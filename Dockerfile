@@ -1,4 +1,4 @@
-# Apsis with the environments of the benchmark suite and the .NET front-end, set up to run offline.
+# Apsis with the environments of the benchmark suite and the bugs and the .NET front-end, set up to run offline.
 #   docker build -t apsis .
 #   docker run --rm -it --network none apsis
 

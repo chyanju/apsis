@@ -1,0 +1,22 @@
+{
+  "id": "33-aix-db-222",
+  "issue_url": "https://github.com/apconw/Aix-DB/issues/222",
+  "source": [
+    "https://github.com/apconw/Aix-DB/blob/9d2e15e7436e98b0c221ab1df5b94a0e45787647/agent/text2sql/analysis/graph.py",
+    "https://github.com/apconw/Aix-DB/blob/9d2e15e7436e98b0c221ab1df5b94a0e45787647/agent/text2sql/analysis/early_recommender_helper.py",
+    "https://github.com/apconw/Aix-DB/blob/9d2e15e7436e98b0c221ab1df5b94a0e45787647/agent/text2sql/analysis/parallel_collector.py",
+    "https://github.com/apconw/Aix-DB/blob/9d2e15e7436e98b0c221ab1df5b94a0e45787647/agent/text2sql/analysis/unified_collector.py",
+    "https://github.com/apconw/Aix-DB/blob/9d2e15e7436e98b0c221ab1df5b94a0e45787647/agent/text2sql/state/agent_state.py"
+  ],
+  "framework": "langgraph",
+  "entry": "graph.py:graph",
+  "expected_findings": [
+    "shared-instance-aliasing/shared-object-mutation@early_recommender:_recommender_futures"
+  ],
+  "note": "`early_recommender` registers each run's background task in the module-level dict `_recommender_futures`, and only `unified_collector` removes the entry, so a run that fails before it leaves the entry and the state copy it holds. The run's task id is also not a key of `AgentState`, so LangGraph drops it from the update and `unified_collector` never removes the entry.",
+  "fixed": {
+    "entry": "fixed/graph.py:graph",
+    "fix_url": "https://github.com/apconw/Aix-DB/pull/238",
+    "fix_note": "The task's future is a key of the run's state, `sql_executor` routes failures to `sql_error_handler`, which cancels it, and the module-level dict is gone."
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "id": "29-octobot-3515",
+  "issue_url": "https://github.com/Drakkar-Software/OctoBot/issues/3515",
+  "source": [
+    "https://github.com/Drakkar-Software/OctoBot/blob/6e7aeea77e121bd92511420ee9d08b869518c5b2/packages/agents/octobot_agents/agent/channels/deep_agent.py"
+  ],
+  "framework": "langgraph",
+  "environment": "langgraph-deepagents-0.6.11",
+  "entry": "graph.py:runs",
+  "expected_findings": [
+    "shared-instance-aliasing/shared-store@run1:store"
+  ],
+  "note": "A channel producer lives for the whole process and serves every request on its channel. It builds its deep agent once, with an `InMemoryStore` it creates once, and routes `/memories/` to that store, so the requests of different accounts read and write one store; a thread id separates checkpoints, not the store. The module, written after OctoBot's producer without its code, lists the graph the producer gives two requests.",
+  "fixed": {
+    "entry": "fixed/graph.py:runs",
+    "fix_url": "https://github.com/Drakkar-Software/OctoBot/pull/3631",
+    "fix_note": "The producer keeps a store and a deep agent per thread id."
+  }
+}

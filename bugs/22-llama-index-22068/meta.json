@@ -1,0 +1,21 @@
+{
+  "id": "22-llama-index-22068",
+  "issue_url": "https://github.com/run-llama/llama_index/issues/22068",
+  "source": [
+    "https://github.com/run-llama/llama_index/blob/9f66e8a649856524ef0ff081a23d58cd071b6ae4/llama-index-integrations/protocols/llama-index-protocols-ag-ui/llama_index/protocols/ag_ui/utils.py",
+    "https://github.com/run-llama/llama_index/blob/9f66e8a649856524ef0ff081a23d58cd071b6ae4/llama-index-integrations/protocols/llama-index-protocols-ag-ui/llama_index/protocols/ag_ui/agent.py"
+  ],
+  "framework": "llamaindex",
+  "environment": "llamaindex-0.14.22",
+  "entry": "../23-llama-index-22069/graph.py:workflows",
+  "expected_findings": [
+    "type-contract/unpaired-tool-message@aggregate_tool_calls:llama_index_message_to_ag_ui_message"
+  ],
+  "note": "The steps send the chat history to the client as AG-UI messages through `llama_index_message_to_ag_ui_message`, which gives a tool message without a `tool_call_id` a fresh `uuid4` as its call id. That message names no tool call, and the id comes back into the chat history on the next turn. The workflow is the AG-UI chat workflow that bugs/23-llama-index-22069 builds.",
+  "fixed": {
+    "entry": "../23-llama-index-22069/graph.py:workflows",
+    "environment": "llamaindex-0.14.23-ag-ui-0.3.4",
+    "fix_url": "https://github.com/run-llama/llama_index/pull/22103",
+    "fix_note": "From llama-index-protocols-ag-ui 0.3.3 the conversion raises for a tool message without a call id."
+  }
+}

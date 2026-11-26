@@ -1,0 +1,22 @@
+{
+  "id": "08-hindsight-2442",
+  "issue_url": "https://github.com/vectorize-io/hindsight/issues/2442",
+  "source": [
+    "https://github.com/vectorize-io/hindsight/blob/9dafadc7eb562dc1edce1fa1ec25f69ea83ff65d/hindsight-integrations/langgraph/hindsight_langgraph/tools.py",
+    "https://github.com/vectorize-io/hindsight/blob/9dafadc7eb562dc1edce1fa1ec25f69ea83ff65d/hindsight-integrations/langgraph/README.md"
+  ],
+  "license": "MIT",
+  "framework": "langgraph",
+  "entry": "graph.py:runs",
+  "expected_findings": [
+    "shared-instance-aliasing/config-blind-tool@tools:hindsight_retain",
+    "shared-instance-aliasing/config-blind-tool@tools:hindsight_recall",
+    "shared-instance-aliasing/config-blind-tool@tools:hindsight_reflect"
+  ],
+  "note": "`create_hindsight_tools` takes the memory bank when the tools are built, and the tools pass that `bank_id` to every retain, recall and reflect call; they take no run config. An agent built once at startup, as in the README's Quick Start, then stores and recalls the memories of every user in one bank, whatever `user_id` a request is configured with. The module gives the agent with the runs of two users.",
+  "fixed": {
+    "entry": "fixed/graph.py:runs",
+    "fix_url": "https://github.com/vectorize-io/hindsight/pull/2443",
+    "fix_note": "The tools take the run config and, when built without a bank, resolve the bank of each call from `config[\"configurable\"][\"user_id\"]`."
+  }
+}

@@ -6,13 +6,17 @@ use std::path::PathBuf;
 use std::process::Command;
 
 /// The supported frameworks, each with the Python module of its front-end.
-pub const FRONTENDS: [(&str, &str); 6] = [
+pub const FRONTENDS: [(&str, &str); 10] = [
     ("haystack", "apsis_haystack"),
     ("langgraph", "apsis_langgraph"),
     ("autogen", "apsis_autogen"),
     ("agent-framework", "apsis_agent_framework"),
     ("langflow", "apsis_langflow"),
     ("flowise", "apsis_flowise"),
+    ("crewai", "apsis_crewai"),
+    ("llamaindex", "apsis_llamaindex"),
+    ("parlant", "apsis_parlant"),
+    ("pydantic-ai", "apsis_pydantic_ai"),
 ];
 
 #[derive(Debug)]

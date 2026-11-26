@@ -28,6 +28,10 @@ FRONTEND_MODULE = {
     "agent-framework": "apsis_agent_framework",
     "langflow": "apsis_langflow",
     "flowise": "apsis_flowise",
+    "crewai": "apsis_crewai",
+    "llamaindex": "apsis_llamaindex",
+    "parlant": "apsis_parlant",
+    "pydantic-ai": "apsis_pydantic_ai",
 }
 FRAMEWORKS = ["haystack", "langgraph", "flowise", "langflow", "autogen", "agent-framework"]
 CATEGORIES = [
@@ -97,14 +101,19 @@ class Runner:
         return python
 
     def run(self, framework, name):
-        """Extract and analyze one artifact. Returns {'findings': [[detector, rule, location], ...]} or {'error': ...}."""
+        """Extract and analyze one artifact of the benchmark suite; the result is that of `analyze`."""
         case_dir = os.path.join(self.tree, "benchmarks", framework, name)
-        started = time.time()
         try:
             meta = load_json(os.path.join(case_dir, "meta.json"))
             python = None if ".csproj:" in meta["entry"] else self.interpreter(framework, name, case_dir)
         except (OSError, ValueError) as e:
             return {"error": str(e)}
+        return self.analyze(framework, name, os.path.join(case_dir, meta["entry"]), python)
+
+    def analyze(self, framework, name, source, python):
+        """Run the front-end of `framework` on `source` under `python`, then the analyzer on its IR.
+        Returns {'findings': [[detector, rule, location], ...]} or {'error': ...}."""
+        started = time.time()
         env = {k: v for k, v in os.environ.items()
                if k in ("PATH", "HOME", "LANG", "LC_ALL", "TMPDIR") or k.startswith(("DOTNET_", "NUGET_"))}
         env["PYTHONPATH"] = os.pathsep.join(
@@ -113,8 +122,7 @@ class Runner:
         env["PYTHONDONTWRITEBYTECODE"] = "1"
         ir_path = os.path.join(self.workdir, "ir", name + ".json")
         cwd = tempfile.mkdtemp(dir=os.path.join(self.workdir, "cwd"))
-        source = os.path.join(case_dir, meta["entry"])
-        if ".csproj:" in meta["entry"]:
+        if ".csproj:" in source:
             if not os.path.exists(self.dotnet_frontend):
                 return {"error": f"the .NET front-end is not at {self.dotnet_frontend}; run scripts/setup_envs.py dotnet"}
             launcher = ["dotnet"] if self.dotnet_frontend.endswith(".dll") else []

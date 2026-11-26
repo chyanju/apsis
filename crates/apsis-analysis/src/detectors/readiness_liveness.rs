@@ -15,7 +15,7 @@ impl Detector for ReadinessLiveness {
     }
 
     fn check(&self, wf: &Workflow) -> Vec<Finding> {
-        check(wf, &BTreeSet::new())
+        check(wf, &BTreeSet::new(), true)
     }
 
     fn check_program(&self, prog: &Program) -> Vec<Finding> {
@@ -27,18 +27,24 @@ impl Detector for ReadinessLiveness {
             .filter(|n| n.flag(attr::COMMAND_PARENT))
             .flat_map(|n| n.declared_targets.iter().map(String::as_str))
             .collect();
+        // a sub-workflow ends when its parent continues, so only a top-level workflow needs a way to END
+        let embedded: BTreeSet<&str> = prog
+            .workflows
+            .iter()
+            .flat_map(|w| w.nodes.iter().filter_map(|n| n.subflow_ref.as_ref().map(|r| r.workflow.as_str())))
+            .collect();
         prog.workflows
             .iter()
             .flat_map(|w| {
                 let entered: BTreeSet<&str> =
                     w.nodes.iter().map(|n| n.id.as_str()).filter(|id| routed_from_child.contains(id)).collect();
-                check(w, &entered)
+                check(w, &entered, !w.id.as_deref().is_some_and(|id| embedded.contains(id)))
             })
             .collect()
     }
 }
 
-fn check(wf: &Workflow, entered_from_outside: &BTreeSet<&str>) -> Vec<Finding> {
+fn check(wf: &Workflow, entered_from_outside: &BTreeSet<&str>, top_level: bool) -> Vec<Finding> {
     let mut out = Vec::new();
     if matches!(wf.execution_model, ExecutionModel::DataflowReadiness) {
         dataflow_readiness(wf, &mut out);
@@ -50,8 +56,38 @@ fn check(wf: &Workflow, entered_from_outside: &BTreeSet<&str>) -> Vec<Finding> {
     loops_seeded_from_their_own_cycle(wf, &mut out);
     if matches!(wf.execution_model, ExecutionModel::BspSuperstep) {
         unreachable_steps(wf, entered_from_outside, &mut out);
+        if top_level {
+            ends_without_terminal(wf, &mut out);
+        }
     }
     out
+}
+
+/// no-terminal (LangGraph): no step of a top-level workflow routes to END; each step with no way on is a dead end
+/// where the run stops without reaching END.
+fn ends_without_terminal(wf: &Workflow, out: &mut Vec<Finding>) {
+    if wf.framework != "langgraph" {
+        return;
+    }
+    let unresolved = |n: &Node| n.flag(attr::GOTO_UNRESOLVED) || n.branch_attrs(attr::ROUTER_UNRESOLVED).next().is_some();
+    let ends = wf.edges.iter().any(|e| e.to.node == END)
+        || wf.nodes.iter().any(|n| n.declared_targets.iter().any(|t| t == END) || unresolved(n));
+    if ends {
+        return;
+    }
+    for n in wf.nodes.iter().filter(|n| n.id != START && n.id != END) {
+        if !wf.edges.iter().any(|e| e.from.node == n.id) && n.declared_targets.is_empty() {
+            out.push(Finding::new(
+                NAME,
+                "no-terminal",
+                &n.id,
+                format!(
+                    "step `{}` has no way on and no step of the workflow routes to END: the run stops after it without reaching END, so its end is never declared",
+                    n.id
+                ),
+            ));
+        }
+    }
 }
 
 fn is_fed(wf: &Workflow, n: &Node, s: &InputSocket) -> bool {

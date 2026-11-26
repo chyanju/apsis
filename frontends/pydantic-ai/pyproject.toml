@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "apsis-pydantic-ai"
+version = "0.1.1+extended"
+description = "apsis PydanticAI front-end: read agents and the runs their tools start into the apsis IR"
+requires-python = ">=3.10"
+dependencies = ["pydantic-ai-slim>=1.0"]
+
+[tool.setuptools]
+packages = ["apsis_pydantic_ai"]

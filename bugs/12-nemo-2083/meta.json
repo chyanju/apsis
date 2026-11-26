@@ -1,0 +1,19 @@
+{
+  "id": "12-nemo-2083",
+  "issue_url": "https://github.com/NVIDIA/NeMo-Agent-Toolkit/issues/2083",
+  "source": [
+    "https://github.com/NVIDIA/NeMo-Agent-Toolkit/blob/68ce9b1f0d2edb419fdde130286d516fde40d2d7/examples/frameworks/multi_frameworks/src/nat_multi_frameworks/register.py"
+  ],
+  "license": "Apache-2.0",
+  "framework": "langgraph",
+  "entry": "graph.py:graph",
+  "expected_findings": [
+    "target-resolution/double-route@supervisor->workers"
+  ],
+  "note": "`supervisor` has a conditional edge that routes to `workers` or END and also a static edge to `workers`, so `workers` runs on every pass, also when the router selects END.",
+  "fixed": {
+    "entry": "fixed/graph.py:graph",
+    "fix_url": "https://github.com/NVIDIA/NeMo-Agent-Toolkit/pull/2089",
+    "fix_note": "Removes the static edge; the same change repairs the router's labels (17-nemo-2081)."
+  }
+}

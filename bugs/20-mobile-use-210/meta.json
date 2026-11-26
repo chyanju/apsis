@@ -1,0 +1,19 @@
+{
+  "id": "20-mobile-use-210",
+  "issue_url": "https://github.com/minitap-ai/mobile-use/issues/210",
+  "source": [
+    "https://github.com/minitap-ai/mobile-use/blob/887fcec5a3f54e8ca69513c98ebd0ebfc2b41375/minitap/mobile_use/agents/summarizer/summarizer.py"
+  ],
+  "license": "Apache-2.0",
+  "framework": "langgraph",
+  "entry": "../19-mobile-use-208/graph.py:graph",
+  "expected_findings": [
+    "channel-write-merge/single-pass-write@summarizer.messages"
+  ],
+  "note": "The summarizer removes the messages above `MAX_MESSAGES_IN_HISTORY`, but its `return` sits inside the loop over the overflow candidates, so a pass returns after the first candidate and removes at most one message; the history stays above the cap for as many passes as it is over. The workflow is the mobile-use graph of bugs/19-mobile-use-208, at the same commit.",
+  "fixed": {
+    "entry": "fixed/graph.py:graph",
+    "fix_url": "https://github.com/minitap-ai/mobile-use/pull/211",
+    "fix_note": "The summarizer returns the removals after its loop."
+  }
+}

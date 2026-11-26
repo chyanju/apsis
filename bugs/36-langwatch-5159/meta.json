@@ -1,0 +1,14 @@
+{
+  "id": "36-langwatch-5159",
+  "issue_url": "https://github.com/langwatch/langwatch/issues/5159",
+  "source": [
+    "https://github.com/langwatch/langwatch/blob/6fb56752f26b194053b18fbfaaa67d331dbb3ce3/langwatch/src/features/onboarding/regions/observability/codegen/snippets/python/langgraph.snippet.py"
+  ],
+  "license": "Apache-2.0",
+  "framework": "langgraph",
+  "entry": "graph.py:agent",
+  "expected_findings": [
+    "channel-write-merge/message-list-concatenation@messages"
+  ],
+  "note": "The onboarding snippet defines its own `MessagesState` whose `messages` are merged with `operator.add` instead of `add_messages`, so a message written again with its id is kept twice and a `RemoveMessage` is stored instead of removing. The LangWatch instrumentation is left out and the model is a stub."
+}

@@ -1,0 +1,20 @@
+{
+  "id": "11-nemo-2084",
+  "issue_url": "https://github.com/NVIDIA/NeMo-Agent-Toolkit/issues/2084",
+  "source": [
+    "https://github.com/NVIDIA/NeMo-Agent-Toolkit/blob/68ce9b1f0d2edb419fdde130286d516fde40d2d7/examples/custom_functions/automated_description_generation/src/nat_automated_description_generation/utils/workflow_utils.py",
+    "https://github.com/NVIDIA/NeMo-Agent-Toolkit/blob/68ce9b1f0d2edb419fdde130286d516fde40d2d7/examples/custom_functions/automated_description_generation/src/nat_automated_description_generation/utils/description_generation.py"
+  ],
+  "license": "Apache-2.0",
+  "framework": "langgraph",
+  "entry": "graph.py:graph",
+  "expected_findings": [
+    "channel-write-merge/concurrent-last-value-writes@summaries"
+  ],
+  "note": "`map_batch_summaries` sends one `create_batch_summary` task per batch, and every task writes `summaries`, a key without a reducer; with two or more batches the writes of one superstep collide and LangGraph raises InvalidUpdateError.",
+  "fixed": {
+    "entry": "fixed/graph.py:graph",
+    "fix_url": "https://github.com/NVIDIA/NeMo-Agent-Toolkit/pull/2090",
+    "fix_note": "Declares the reducer `operator.add` on `summaries`."
+  }
+}

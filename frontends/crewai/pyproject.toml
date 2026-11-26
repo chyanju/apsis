@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "apsis-crewai"
+version = "0.1.1+extended"
+description = "apsis CrewAI front-end: read built crews into the apsis IR"
+requires-python = ">=3.10"
+dependencies = ["crewai>=0.100"]
+
+[tool.setuptools]
+packages = ["apsis_crewai"]

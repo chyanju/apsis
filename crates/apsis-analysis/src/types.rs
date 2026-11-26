@@ -70,15 +70,31 @@ pub(crate) fn nullable(t: &str) -> bool {
         || t.split(['|', ',']).any(|p| matches!(p.trim().trim_end_matches(']').trim(), "None" | "NoneType"))
 }
 
-/// `int`, possibly optional or wrapped in `Annotated[int, ...]`.
-pub(crate) fn is_integer(t: &str) -> bool {
+/// The type inside `Annotated[T, ...]`, else the type itself.
+fn unannotated(t: &str) -> String {
     let n = without_whitespace(t);
-    let body = n
-        .strip_prefix("Annotated[")
+    n.strip_prefix("Annotated[")
         .and_then(|s| s.strip_suffix(']'))
         .map(|s| split_top_level(s).into_iter().next().unwrap_or_default())
-        .unwrap_or(n.clone());
-    members(&body).iter().any(|m| m == "int")
+        .unwrap_or(n.clone())
+}
+
+/// A list or sequence type, possibly optional, qualified (`typing.List[T]`) or wrapped in `Annotated`.
+pub(crate) fn is_list(t: &str) -> bool {
+    members(&unannotated(t)).iter().any(|m| {
+        let head = m.split('[').next().unwrap_or(m).to_lowercase();
+        matches!(head.rsplit('.').next(), Some("list" | "sequence"))
+    })
+}
+
+/// A list of chat messages (`list[AnyMessage]`, `list[BaseMessage]`, ...).
+pub(crate) fn is_message_list(t: &str) -> bool {
+    is_list(t) && t.contains("Message")
+}
+
+/// `int`, possibly optional or wrapped in `Annotated[int, ...]`.
+pub(crate) fn is_integer(t: &str) -> bool {
+    members(&unannotated(t)).iter().any(|m| m == "int")
 }
 
 /// Without coercion every member of `ot` must be in `it`; under coercion (visual builders) they share a member.

@@ -1,0 +1,22 @@
+{
+  "id": "27-datagen-30",
+  "issue_url": "https://github.com/starpig1129/DATAGEN/issues/30",
+  "source": [
+    "https://github.com/starpig1129/DATAGEN/blob/0e191ef5e0b3e7b689f5b82c1f116d5fd5ff2d76/src/core/workflow.py",
+    "https://github.com/starpig1129/DATAGEN/blob/0e191ef5e0b3e7b689f5b82c1f116d5fd5ff2d76/src/core/router.py",
+    "https://github.com/starpig1129/DATAGEN/blob/0e191ef5e0b3e7b689f5b82c1f116d5fd5ff2d76/src/core/state.py",
+    "https://github.com/starpig1129/DATAGEN/blob/0e191ef5e0b3e7b689f5b82c1f116d5fd5ff2d76/src/core/node.py"
+  ],
+  "license": "MIT",
+  "framework": "langgraph",
+  "entry": "../14-datagen-29/graph.py:graph",
+  "expected_findings": [
+    "channel-write-merge/accumulated-channel-overwrite@HumanReview.messages"
+  ],
+  "note": "`messages` has no reducer, so a write replaces the list. The agent nodes write it back with their message appended, but `human_review_node` writes only the reviewer's request, which drops the conversation so far. The workflow is the one of 14-datagen-29.",
+  "fixed": {
+    "entry": "../14-datagen-29/fixed/graph.py:graph",
+    "fix_url": "https://github.com/starpig1129/DATAGEN/commit/267e6186e28c0c466389e8ae49ae17bfaf2851c2",
+    "fix_note": "Declares the reducer `add_messages` on `messages`."
+  }
+}

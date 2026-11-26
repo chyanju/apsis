@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Create the environments the front-ends need to analyze the benchmark suite.
+"""Create the environments the front-ends need to analyze the benchmark suite and the bugs.
 
     python3 scripts/setup_envs.py                 # all environments
     python3 scripts/setup_envs.py langgraph       # only the named ones
 
-An environment with a lock file, benchmarks/environments/<name>.txt, gets exactly the packages it pins.
+An environment with a lock file, environments/<name>.txt next to the environments.json that lists it, gets
+exactly the packages it pins.
 """
 from __future__ import annotations
 
@@ -18,8 +19,8 @@ import subprocess
 import sys
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-LOCKS = os.path.join(REPO, "benchmarks", "environments")
-FRAMEWORKS = ("agent-framework", "autogen", "haystack", "langgraph")  # the front-ends an environment can serve
+SUITES = ("benchmarks", "bugs")  # each lists environments in environments.json, with lock files in environments/
+FRAMEWORKS = ("agent-framework", "autogen", "crewai", "haystack", "langgraph", "llamaindex", "parlant", "pydantic-ai")  # the front-ends an environment can serve
 
 
 def normalized(package):
@@ -29,8 +30,9 @@ def normalized(package):
 def install_command(python, name, entry):
     """The pip command of an environment, from its lock file if it has one; (None, reason) if the lock disagrees."""
     pip = [python, "-m", "pip", "install", "--quiet", "--disable-pip-version-check"]
-    lock = os.path.join(LOCKS, name + ".txt")
-    if not os.path.exists(lock):
+    lock = next((p for p in (os.path.join(REPO, suite, "environments", name + ".txt") for suite in SUITES)
+                 if os.path.exists(p)), None)
+    if lock is None:
         return pip + entry["requirements"], None
     pins = {}
     with open(lock, encoding="utf-8") as f:
@@ -42,7 +44,8 @@ def install_command(python, name, entry):
         package, version = req.split("==", 1)
         if pins.get(normalized(package.split("[")[0])) != version:
             return None, f"{os.path.relpath(lock, REPO)} does not pin {req}"
-    return pip + ["--no-deps", "--only-binary=:all:", "-r", lock], None
+    sdists = entry.get("sdists", [])  # packages that publish no wheel, built from their source release
+    return pip + ["--no-deps", "--only-binary=:all:"] + ([f"--no-binary={','.join(sdists)}"] if sdists else []) + ["-r", lock], None
 
 
 def link_frontends(target, name):
@@ -115,8 +118,12 @@ def main():
                     help="let each environment import its framework's front-end, so `apsis analyze` runs in it")
     args = ap.parse_args()
 
-    with open(os.path.join(REPO, "benchmarks", "environments.json"), encoding="utf-8") as f:
-        spec = json.load(f)["environments"]
+    spec = {}
+    for suite in SUITES:
+        path = os.path.join(REPO, suite, "environments.json")
+        if os.path.exists(path):
+            with open(path, encoding="utf-8") as f:
+                spec.update(json.load(f)["environments"])
     known = sorted(spec) + ["dotnet"]
     unknown = [n for n in args.names if n not in known]
     if unknown:

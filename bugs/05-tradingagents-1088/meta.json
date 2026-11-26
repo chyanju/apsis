@@ -1,0 +1,28 @@
+{
+  "id": "05-tradingagents-1088",
+  "issue_url": "https://github.com/TauricResearch/TradingAgents/issues/1088",
+  "source": [
+    "https://github.com/TauricResearch/TradingAgents/blob/85946c2f60768ab2dae23a5a36cd927662feef94/tradingagents/graph/setup.py",
+    "https://github.com/TauricResearch/TradingAgents/blob/85946c2f60768ab2dae23a5a36cd927662feef94/tradingagents/graph/conditional_logic.py",
+    "https://github.com/TauricResearch/TradingAgents/blob/85946c2f60768ab2dae23a5a36cd927662feef94/tradingagents/agents/utils/agent_states.py"
+  ],
+  "license": "Apache-2.0",
+  "framework": "langgraph",
+  "entry": "graph.py:graph",
+  "expected_findings": [
+    "target-resolution/label-outside-path-map@Aggressive Analyst:Aggressive Analyst",
+    "target-resolution/label-outside-path-map@Aggressive Analyst:Neutral Analyst",
+    "target-resolution/label-outside-path-map@Conservative Analyst:Aggressive Analyst",
+    "target-resolution/label-outside-path-map@Conservative Analyst:Conservative Analyst",
+    "target-resolution/label-outside-path-map@Neutral Analyst:Conservative Analyst",
+    "target-resolution/label-outside-path-map@Neutral Analyst:Neutral Analyst",
+    "target-resolution/label-outside-path-map@Bull Researcher:Bull Researcher",
+    "target-resolution/label-outside-path-map@Bear Researcher:Bear Researcher"
+  ],
+  "note": "The routers `should_continue_risk_analysis` and `should_continue_debate` each serve several conditional edges, and every edge's path map lists only two of the labels its router can return; a return of another label, such as the router's fall-through, fails the run.",
+  "fixed": {
+    "entry": "fixed/graph.py:graph",
+    "fix_url": "https://github.com/TauricResearch/TradingAgents/commit/b47a828a4f53202b2e0173f518f94dfba0be246a",
+    "fix_note": "The edges of a router share one path map with every label the router returns."
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "id": "28-memanto-884",
+  "issue_url": "https://github.com/moorcheh-ai/memanto/issues/884",
+  "source": [
+    "https://github.com/moorcheh-ai/memanto/blob/6300c80cda271fa1d3ae9b5cef3f5db105ceb915/integrations/langgraph/langgraph_memanto/nodes.py",
+    "https://github.com/moorcheh-ai/memanto/blob/6300c80cda271fa1d3ae9b5cef3f5db105ceb915/integrations/langgraph/README.md"
+  ],
+  "license": "MIT",
+  "framework": "langgraph",
+  "entry": "graph.py:graph",
+  "expected_findings": [
+    "shared-instance-aliasing/shared-object-mutation@recall:client"
+  ],
+  "note": "The workflow of the integration's README: `recall` and `remember` are built around one `SdkClient`, and when a call fails without a session both set `client.session_token` to the token of the run's `agent_id`. The client lives as long as the compiled graph, so concurrent runs for different agents overwrite each other's token and read or write another agent's memories. `SdkClient` is reduced to the methods the nodes call.",
+  "fixed": {
+    "entry": "fixed/graph.py:graph",
+    "fix_url": "https://github.com/moorcheh-ai/memanto/pull/893",
+    "fix_note": "The nodes take a client per agent id from a cache and set up the session on that client."
+  }
+}

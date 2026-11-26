@@ -1,6 +1,6 @@
 //! Relations over the IR graph: successors, reachability, strongly connected components, distances, fan-out.
 
-use apsis_ir::{attr, Edge, EdgeKind, Program, Workflow};
+use apsis_ir::{attr, Edge, EdgeKind, Program, Workflow, START};
 use std::collections::{BTreeSet, HashMap};
 
 pub(crate) type Succ<'a> = HashMap<&'a str, Vec<&'a str>>;
@@ -142,6 +142,70 @@ pub(crate) fn parallel_siblings(succ: &Succ, fanout_succ: &Succ, a: &str, b: &st
     fanout_succ.values().any(|outs| {
         outs.iter().any(|&x| outs.iter().any(|&y| x != y && reaches_or_eq(succ, x, a) && reaches_or_eq(succ, y, b)))
     })
+}
+
+/// The two edges leave one step and may be taken together: they are not alternatives of one route that selects a
+/// single target.
+fn taken_together(wf: &Workflow, e: &Edge, f: &Edge) -> bool {
+    let selects_one = |e: &Edge| {
+        matches!(e.kind, EdgeKind::Conditional)
+            && !e.possible
+            && e.branch.as_deref().is_some_and(|br| {
+                wf.node(&e.from.node).is_some_and(|n| {
+                    let flagged = |prefix: &str| n.attr(&format!("{prefix}{br}")).is_some();
+                    !flagged(attr::ROUTER_FANOUT) && !flagged(attr::ROUTER_UNRESOLVED)
+                })
+            })
+    };
+    e.from.node == f.from.node
+        && e.to.node != f.to.node
+        && !(e.branch == f.branch && selects_one(e) && selects_one(f))
+}
+
+/// Some pass may activate two steps together, one of which is or reaches `a` and the other `b`: two successors
+/// of one step, unless they are alternatives of one route that selects a single target. A step no edge leads to
+/// is started from outside the wiring at a time the graph does not show, so it may run with any other.
+pub(crate) fn may_run_together(wf: &Workflow, succ: &Succ, a: &str, b: &str) -> bool {
+    let reach = |x: &str, y: &str| reaches_or_eq(succ, x, a) && reaches_or_eq(succ, y, b);
+    let siblings = wf
+        .edges
+        .iter()
+        .any(|e| wf.edges.iter().any(|f| taken_together(wf, e, f) && reach(&e.to.node, &f.to.node)));
+    let entered: BTreeSet<&str> = wf.edges.iter().map(|e| e.to.node.as_str()).collect();
+    let mut unwired = wf.nodes.iter().map(|n| n.id.as_str()).filter(|&id| id != START && !entered.contains(id));
+    siblings || unwired.any(|x| reaches_or_eq(succ, x, a) || reaches_or_eq(succ, x, b))
+}
+
+/// Pairs of steps that may run in the same superstep of the bulk-synchronous model, cycles included: after a step
+/// activates two successors together, a step `k` supersteps along one of them and a step `k` supersteps along the
+/// other. A deferred step runs alone, so paths end before it.
+pub(crate) fn same_superstep(wf: &Workflow) -> BTreeSet<(&str, &str)> {
+    let succ = succ_map(wf);
+    let runs = |id: &str| wf.node(id).is_some_and(|n| !n.flag(attr::DEFER));
+    let horizon = 2 * wf.nodes.len() + 2;
+    let layers = |x: &str| -> Vec<BTreeSet<&str>> {
+        let mut out: Vec<BTreeSet<&str>> = Vec::new();
+        let mut cur: BTreeSet<&str> = wf.node(x).filter(|_| runs(x)).map(|n| n.id.as_str()).into_iter().collect();
+        while !cur.is_empty() && out.len() < horizon {
+            let next = cur.iter().flat_map(|n| succ.get(n).into_iter().flatten().copied()).filter(|s| runs(s)).collect();
+            out.push(std::mem::replace(&mut cur, next));
+        }
+        out
+    };
+    let mut pairs = BTreeSet::new();
+    for e in &wf.edges {
+        for f in wf.edges.iter().filter(|f| taken_together(wf, e, f) && e.to.node < f.to.node) {
+            let (lx, ly) = (layers(&e.to.node), layers(&f.to.node));
+            for (sx, sy) in lx.iter().zip(&ly) {
+                for &a in sx {
+                    for &b in sy.iter().filter(|&&b| b != a) {
+                        pairs.insert(if a < b { (a, b) } else { (b, a) });
+                    }
+                }
+            }
+        }
+    }
+    pairs
 }
 
 /// Fan-out edges `(n, t)` only the program shows: a workflow embedded by `n` routes to `t` (`command_parent`).

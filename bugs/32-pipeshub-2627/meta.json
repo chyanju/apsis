@@ -1,0 +1,19 @@
+{
+  "id": "32-pipeshub-2627",
+  "issue_url": "https://github.com/pipeshub-ai/pipeshub-ai/issues/2627",
+  "source": [
+    "https://github.com/pipeshub-ai/pipeshub-ai/blob/3012a92bfd032e527e24b8dbaa87f7138493638c/backend/python/app/modules/agents/deep/graph.py",
+    "https://github.com/pipeshub-ai/pipeshub-ai/blob/3012a92bfd032e527e24b8dbaa87f7138493638c/backend/python/app/modules/agents/deep/state.py",
+    "https://github.com/pipeshub-ai/pipeshub-ai/blob/3012a92bfd032e527e24b8dbaa87f7138493638c/backend/python/app/modules/agents/deep/sub_agent.py",
+    "https://github.com/pipeshub-ai/pipeshub-ai/blob/3012a92bfd032e527e24b8dbaa87f7138493638c/backend/python/app/modules/agents/deep/aggregator.py",
+    "https://github.com/pipeshub-ai/pipeshub-ai/blob/3012a92bfd032e527e24b8dbaa87f7138493638c/backend/python/app/modules/agents/deep/orchestrator.py",
+    "https://github.com/pipeshub-ai/pipeshub-ai/blob/3012a92bfd032e527e24b8dbaa87f7138493638c/backend/python/app/modules/agents/deep/orchestrator_critic.py"
+  ],
+  "license": "Apache-2.0",
+  "framework": "langgraph",
+  "entry": "graph.py:deep_agent_graph",
+  "expected_findings": [
+    "channel-write-merge/accumulated-across-passes@execute_sub_agents.completed_tasks"
+  ],
+  "note": "`execute_sub_agents` starts from the `completed_tasks` of earlier passes and appends the results of the new tasks, and the retry and continue routes of the aggregator lead back to the orchestrator without clearing it. The orchestrator plans each pass with plain task ids such as `task_1`, so a task of a later pass can reuse an id, and a task depending on it is given the stale result of the earlier pass beside the new one."
+}

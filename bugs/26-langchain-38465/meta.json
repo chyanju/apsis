@@ -1,0 +1,21 @@
+{
+  "id": "26-langchain-38465",
+  "issue_url": "https://github.com/langchain-ai/langchain/issues/38465",
+  "source": [
+    "https://github.com/langchain-ai/langchain/blob/a979105085bce1659cda1dec64c61d9ec57df4aa/libs/partners/anthropic/langchain_anthropic/middleware/anthropic_tools.py"
+  ],
+  "framework": "langgraph",
+  "environment": "langgraph-anthropic-1.4.8",
+  "entry": "graph.py:agents",
+  "expected_findings": [
+    "type-contract/missing-handoff-key@tools:str_replace_based_edit_tool._handle_rename",
+    "type-contract/missing-handoff-key@tools:memory._handle_rename"
+  ],
+  "note": "The file tool of langchain-anthropic's text-editor and memory middleware puts `path`, and the arguments the call passes, in an `args` dict and hands it to the handler of the command; `_handle_rename` reads `args[\"old_path\"]`, a key the tool never sets, so every rename fails with a KeyError, in the state-backed and in the filesystem-backed middleware. The module builds an agent with each pair of middleware.",
+  "fixed": {
+    "entry": "graph.py:agents",
+    "environment": "langgraph-anthropic-1.5.5",
+    "fix_url": "https://github.com/langchain-ai/langchain/pull/39293",
+    "fix_note": "langchain-anthropic 1.5.5 puts the path under `old_path` as well."
+  }
+}

@@ -28,7 +28,35 @@ impl Detector for TargetResolution {
             .iter()
             .flat_map(|w| w.nodes.iter().flat_map(|n| std::iter::once(n.id.as_str()).chain(n.name.as_deref())))
             .collect();
-        prog.workflows.iter().flat_map(|w| check(w, &names)).collect()
+        let mut out: Vec<Finding> = prog.workflows.iter().flat_map(|w| check(w, &names)).collect();
+        foreign_targets(prog, &mut out);
+        out
+    }
+}
+
+/// foreign-target: a workflow whose edges stay inside it has an edge or route to a step of another workflow.
+fn foreign_targets(prog: &Program, out: &mut Vec<Finding>) {
+    for wf in prog.workflows.iter().filter(|w| w.attrs.get(attr::SELF_CONTAINED).is_some_and(|v| v == "true")) {
+        let owner = |t: &str| prog.workflows.iter().find(|o| o.id != wf.id && o.node(t).is_some());
+        let targets = wf
+            .edges
+            .iter()
+            .map(|e| (e.from.node.as_str(), e.to.node.as_str()))
+            .chain(wf.nodes.iter().flat_map(|n| n.declared_targets.iter().map(|t| (n.id.as_str(), t.as_str()))));
+        for (from, to) in targets.filter(|(_, to)| wf.node(to).is_none() && !SENTINELS.contains(to)) {
+            if let Some(other) = owner(to) {
+                out.push(Finding::new(
+                    NAME,
+                    "foreign-target",
+                    format!("{from}->{to}"),
+                    format!(
+                        "`{from}` of `{}` leads to `{to}`, a step of `{}`; the workflow's edges stay inside it, so the step is not one it can reach",
+                        wf.id.as_deref().unwrap_or("main"),
+                        other.id.as_deref().unwrap_or("main")
+                    ),
+                ));
+            }
+        }
     }
 }
 
@@ -167,6 +195,19 @@ fn double_routes(wf: &Workflow, out: &mut Vec<Finding>) {
         let static_targets: BTreeSet<&str> =
             wf.edges.iter().filter(|e| e.from.node == n.id && is_static_edge(e)).map(|e| e.to.node.as_str()).collect();
         let confined_to = |t: &str| dynamic.len() == 1 && dynamic.contains(t);
+        // static-end-next-to-route: a static edge to END schedules nothing, so it declares an end the route overrides.
+        let onward: Vec<&str> = dynamic.iter().copied().filter(|d| *d != END).collect();
+        if static_targets.contains(END) && !onward.is_empty() {
+            out.push(Finding::new(
+                NAME,
+                "static-end-next-to-route",
+                format!("{}->{END}", n.id),
+                format!(
+                    "step `{}` has a static edge to END and also routes dynamically to {onward:?}: the edge to END schedules nothing, so the end it declares contradicts where the run goes",
+                    n.id
+                ),
+            ));
+        }
         for &t in static_targets.iter().filter(|&&t| t != END && !confined_to(t)) {
             let others: Vec<&str> = dynamic.iter().copied().filter(|d| *d != t).collect();
             out.push(Finding::new(

@@ -1,0 +1,21 @@
+{
+  "id": "10-decepticon-722",
+  "issue_url": "https://github.com/PurpleAILAB/Decepticon/issues/722",
+  "source": [
+    "https://github.com/PurpleAILAB/Decepticon/blob/eee169940fe25b67d3ccf98d3e78e871d32d321c/packages/decepticon/decepticon/core/subagent_streaming.py",
+    "https://github.com/PurpleAILAB/Decepticon/blob/eee169940fe25b67d3ccf98d3e78e871d32d321c/packages/decepticon/decepticon/agents/standard/decepticon.py"
+  ],
+  "license": "Apache-2.0",
+  "framework": "langgraph",
+  "environment": "langgraph-deepagents-0.6.8",
+  "entry": "graph.py:graph",
+  "expected_findings": [
+    "cycle-termination/counter-reset-on-rewrap@tools:task._consecutive_failures"
+  ],
+  "note": "`StreamingRunnable` counts consecutive failures of its sub-agent on the instance and returns a TERMINAL marker at the third, the signal the orchestrator stops re-delegating on. Its `__init__` sets the count to zero, and `RunnableBinding.with_config` builds a new instance through `__init__`, so a re-wrapped sub-agent counts from zero again. The module builds the orchestrator with one wrapped sub-agent.",
+  "fixed": {
+    "entry": "fixed/graph.py:graph",
+    "fix_url": "https://github.com/PurpleAILAB/Decepticon/pull/729",
+    "fix_note": "`StreamingRunnable.with_config` copies the failure count to the instance it builds."
+  }
+}

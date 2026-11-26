@@ -1,0 +1,20 @@
+{
+  "id": "21-llama-index-22066",
+  "issue_url": "https://github.com/run-llama/llama_index/issues/22066",
+  "source": [
+    "https://github.com/run-llama/llama_index/blob/9f66e8a649856524ef0ff081a23d58cd071b6ae4/llama-index-integrations/protocols/llama-index-protocols-ag-ui/llama_index/protocols/ag_ui/agent.py"
+  ],
+  "framework": "llamaindex",
+  "environment": "llamaindex-0.14.22",
+  "entry": "../23-llama-index-22069/graph.py:workflows",
+  "expected_findings": [
+    "type-contract/unanswered-tool-call@aggregate_tool_calls:backend_tool_calls"
+  ],
+  "note": "`aggregate_tool_calls` splits the tool results of a model turn into frontend and backend calls and builds tool messages for the backend calls only; when the turn had frontend calls it saves the chat history and stops the run. The frontend calls of the saved assistant message have no tool message, and the next model call on that history is rejected. The workflow is the AG-UI chat workflow that bugs/23-llama-index-22069 builds.",
+  "fixed": {
+    "entry": "../23-llama-index-22069/graph.py:workflows",
+    "environment": "llamaindex-0.14.23-ag-ui-0.3.4",
+    "fix_url": "https://github.com/run-llama/llama_index/pull/22109",
+    "fix_note": "llama-index-protocols-ag-ui 0.3.4 builds tool messages for the backend and the frontend calls."
+  }
+}

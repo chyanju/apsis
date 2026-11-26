@@ -1,0 +1,22 @@
+{
+  "id": "06-tradingagents-1089",
+  "issue_url": "https://github.com/TauricResearch/TradingAgents/issues/1089",
+  "source": [
+    "https://github.com/TauricResearch/TradingAgents/blob/85946c2f60768ab2dae23a5a36cd927662feef94/tradingagents/graph/checkpointer.py",
+    "https://github.com/TauricResearch/TradingAgents/blob/85946c2f60768ab2dae23a5a36cd927662feef94/tradingagents/graph/trading_graph.py",
+    "https://github.com/TauricResearch/TradingAgents/blob/85946c2f60768ab2dae23a5a36cd927662feef94/tradingagents/graph/setup.py"
+  ],
+  "license": "Apache-2.0",
+  "framework": "langgraph",
+  "environment": "langgraph-sqlite-3.1.0",
+  "entry": "graph.py:runs",
+  "expected_findings": [
+    "shared-instance-aliasing/shared-checkpoint@run1:checkpoint"
+  ],
+  "note": "`propagate` compiles the graph of the selected analysts with the SQLite saver of the ticker and runs it under a thread id made from the ticker and the date alone. A run that stops leaves a checkpoint; a run of the same ticker and date with other analysts selected resumes it, continuing the state and the next steps of the other graph. The module gives the two runs of the issue: the market analyst, then the news analyst.",
+  "fixed": {
+    "entry": "fixed/graph.py:runs",
+    "fix_url": "https://github.com/TauricResearch/TradingAgents/commit/daf1da9c351fb333c4af6b9efb041ab591187dd1",
+    "fix_note": "The thread id also carries the run's signature: the selected analysts, the debate and risk depths and the asset mode."
+  }
+}

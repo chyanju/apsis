@@ -1,6 +1,6 @@
 //! `cycle-termination` (β2 runaway-loop): a cycle the workflow cannot leave.
 
-use crate::graph::{is_cycle, sccs, succ_over, Succ};
+use crate::graph::{is_cycle, reaches_or_eq, sccs, succ_over, Succ};
 use crate::types::is_integer;
 use crate::{Detector, Finding};
 use apsis_ir::{attr, Edge, EdgeKind, ExecutionModel, Node, NodeKind, Workflow, END};
@@ -64,14 +64,63 @@ impl Detector for CycleTermination {
                         "self-loop-without-counter",
                         &n.id,
                         format!(
-                            "step `{}` routes to itself and writes no integer counter, so nothing bounds the number of passes but the engine's iteration limit",
+                            "step `{}` routes to itself and advances no integer counter, so nothing bounds the number of passes but the engine's iteration limit",
                             n.id
                         ),
                     )
                 }));
             }
         }
+        if !visual && !group_chat {
+            bypassed_limits(wf, &succ, &mut out);
+            counters_lost_on_rewrap(wf, &mut out);
+        }
         out
+    }
+}
+
+/// counter-reset-on-rewrap: a tool dispatches to objects that keep a counter on the instance, and re-wrapping one
+/// with `with_config` gives an instance without the count.
+fn counters_lost_on_rewrap(wf: &Workflow, out: &mut Vec<Finding>) {
+    for n in &wf.nodes {
+        for item in n.attr(attr::REWRAP_RESETS).into_iter().flat_map(|v| v.split(',')) {
+            let Some((tool, counter)) = item.split_once(':') else { continue };
+            let (class, field) = counter.rsplit_once('.').unwrap_or(("object", counter));
+            out.push(Finding::new(
+                NAME,
+                "counter-reset-on-rewrap",
+                format!("{}:{tool}.{field}", n.id),
+                format!(
+                    "tool `{tool}` of step `{}` dispatches to `{class}` objects that count in `{field}` on the instance, and `with_config` builds a new instance without the count: a re-wrapped object counts from zero again, so a cap on the count is reached later or not at all",
+                    n.id
+                ),
+            ));
+        }
+    }
+}
+
+/// loop-limit-bypassed: a routing function ends its cycle when a counter passes a bound, but returns targets on
+/// the cycle ahead of that test.
+fn bypassed_limits(wf: &Workflow, succ: &Succ, out: &mut Vec<Finding>) {
+    let is_counter = |key: &str| wf.channels.iter().any(|c| c.name == key && is_integer(&c.type_repr));
+    for r in &wf.nodes {
+        for (branch, keys) in r.branch_attrs(attr::ROUTER_LIMIT) {
+            let counters: Vec<&str> = keys.split(',').filter(|k| is_counter(k)).collect();
+            let early = r.attr(&format!("{}{branch}", attr::ROUTER_BEFORE_LIMIT)).unwrap_or("");
+            let staying: Vec<&str> =
+                early.split(',').filter(|t| !t.is_empty() && reaches_or_eq(succ, t, &r.id)).collect();
+            if !counters.is_empty() && !staying.is_empty() {
+                out.push(Finding::new(
+                    NAME,
+                    "loop-limit-bypassed",
+                    &r.id,
+                    format!(
+                        "the routing function of `{}` ends the loop when {counters:?} passes its bound, but returns {staying:?} ahead of that test; these routes stay on the cycle, so a run that keeps taking them ends only at the engine's iteration limit",
+                        r.id
+                    ),
+                ));
+            }
+        }
     }
 }
 
@@ -110,7 +159,10 @@ fn reschedules_itself(wf: &Workflow, n: &Node) -> bool {
     (n.declared_targets.contains(&n.id) && self_edge(false)) || self_edge(true)
 }
 
-/// The step writes an integer channel, a counter a guard can bound.
+/// The step advances an integer channel, a counter a guard can bound; any integer output when steps are not tracked.
 fn advances_a_counter(n: &Node) -> bool {
-    n.outputs.iter().any(|o| is_integer(&o.type_repr))
+    let stepped: Option<Vec<&str>> = n.attr(attr::COUNTERS).map(|v| v.split(',').collect());
+    n.outputs
+        .iter()
+        .any(|o| is_integer(&o.type_repr) && stepped.as_ref().is_none_or(|s| s.contains(&o.name.as_str())))
 }

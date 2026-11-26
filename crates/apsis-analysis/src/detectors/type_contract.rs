@@ -26,6 +26,7 @@ impl Detector for TypeContract {
         for wf in &prog.workflows {
             typed_bindings(prog, wf, &mut out);
         }
+        unprovided_run_inputs(prog, &mut out);
         out
     }
 }
@@ -55,10 +56,105 @@ fn typed_bindings(prog: &Program, wf: &Workflow, out: &mut Vec<Finding>) {
     }
 }
 
+/// unprovided-run-input: a step cannot run without a key of the run context or the configurable, and runs are given
+/// it in neither.
+fn unprovided_run_inputs(prog: &Program, out: &mut Vec<Finding>) {
+    let mut missing: std::collections::BTreeMap<(&str, &str), Vec<&str>> = std::collections::BTreeMap::new();
+    for wf in &prog.workflows {
+        let Some(inputs) = wf.attrs.get(attr::RUN_INPUTS) else { continue };
+        let given: BTreeSet<&str> = inputs.split(',').filter_map(|i| i.split_once('.').map(|(_, k)| k)).collect();
+        for n in &wf.nodes {
+            for key in n.attr(attr::REQUIRES_RUN_INPUT).into_iter().flat_map(|v| v.split(',')) {
+                if !given.contains(key) {
+                    missing.entry((n.id.as_str(), key)).or_default().push(wf.id.as_deref().unwrap_or("main"));
+                }
+            }
+        }
+    }
+    for ((step, key), runs) in missing {
+        out.push(Finding::new(
+            NAME,
+            "unprovided-run-input",
+            format!("{step}:{key}"),
+            format!(
+                "step `{step}` cannot run without `{key}` from the run context or the configurable, and runs {runs:?} are given it in neither: they fail when they reach it"
+            ),
+        ));
+    }
+}
+
+/// unanswered-tool-call and unpaired-tool-message: a model's tool calls and the tool messages that answer them pair
+/// by call id. A step answers only part of the calls and ends the run itself, with no step that runs tools next; or
+/// a step builds a tool message whose call id is a fresh value.
+fn tool_call_pairing(wf: &Workflow, out: &mut Vec<Finding>) {
+    let runs_tools = |id: &str| {
+        wf.node(id).is_some_and(|t| matches!(t.kind, NodeKind::Tool) || t.flag(attr::RUNS_TOOLS) || t.attr("tools").is_some())
+    };
+    let mut reported: BTreeSet<&str> = BTreeSet::new();
+    for n in &wf.nodes {
+        // the calls a step leaves out can still be answered by a step that runs tools next; a router that ends the
+        // run decides on the calls still open
+        let tools_next = wf.edges.iter().any(|e| e.from.node == n.id && runs_tools(&e.to.node));
+        let ends_itself = wf
+            .edges
+            .iter()
+            .any(|e| e.from.node == n.id && e.to.node == apsis_ir::END && !matches!(e.kind, EdgeKind::Conditional));
+        // a workflow that runs no tools gives a model no tools to call but those its steps answer themselves
+        let open = ends_itself && !tools_next && wf.nodes.iter().any(|t| runs_tools(&t.id));
+        for item in n.attr(attr::UNANSWERED_CALLS).into_iter().flat_map(|v| v.split(',')).filter(|_| open) {
+            let (part, of) = item.split_once(':').unwrap_or((item, "?"));
+            out.push(Finding::new(
+                NAME,
+                "unanswered-tool-call",
+                format!("{}:{part}", n.id),
+                format!(
+                    "step `{}` builds tool messages for the calls in `{part}`, a part of `{of}` picked by a condition, for none of the others, and ends the run: the history it leaves holds calls without a tool message, which a model rejects",
+                    n.id
+                ),
+            ));
+        }
+        for function in n.attr(attr::UNPAIRED_TOOL_IDS).into_iter().flat_map(|v| v.split(',')) {
+            if !reported.insert(function) {
+                continue;
+            }
+            out.push(Finding::new(
+                NAME,
+                "unpaired-tool-message",
+                format!("{}:{function}", n.id),
+                format!(
+                    "`{function}`, reached from step `{}`, builds a tool message whose call id is a fresh value where the id is missing: the message names no tool call, and a model rejects a history that holds it",
+                    n.id
+                ),
+            ));
+        }
+    }
+}
+
+/// missing-handoff-key: a tool hands a dict to a method that reads a key the tool never puts in it.
+fn missing_handoff_keys(wf: &Workflow, out: &mut Vec<Finding>) {
+    for n in &wf.nodes {
+        for item in n.attr(attr::MISSING_KEYS).into_iter().flat_map(|v| v.split(',')) {
+            let Some((tool, at)) = item.split_once(':') else { continue };
+            let Some((method, key)) = at.rsplit_once('.') else { continue };
+            out.push(Finding::new(
+                NAME,
+                "missing-handoff-key",
+                format!("{}:{tool}.{method}", n.id),
+                format!(
+                    "tool `{tool}` of step `{}` hands its arguments to `{method}`, which reads the key `{key}` that the tool never sets: every call that reaches `{method}` fails",
+                    n.id
+                ),
+            ));
+        }
+    }
+}
+
 fn check(wf: &Workflow, declared_elsewhere: &BTreeSet<&str>) -> Vec<Finding> {
     let mut out = Vec::new();
     typed_edges(wf, &mut out);
     streams(wf, &mut out);
+    missing_handoff_keys(wf, &mut out);
+    tool_call_pairing(wf, &mut out);
     match wf.execution_model {
         ExecutionModel::BspSuperstep => undeclared_channel_writes(wf, declared_elsewhere, &mut out),
         ExecutionModel::GroupChatSpeaker => message_routing(wf, &mut out),

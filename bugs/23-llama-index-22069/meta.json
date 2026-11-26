@@ -1,0 +1,21 @@
+{
+  "id": "23-llama-index-22069",
+  "issue_url": "https://github.com/run-llama/llama_index/issues/22069",
+  "source": [
+    "https://github.com/run-llama/llama_index/blob/9f66e8a649856524ef0ff081a23d58cd071b6ae4/llama-index-integrations/protocols/llama-index-protocols-ag-ui/llama_index/protocols/ag_ui/router.py",
+    "https://github.com/run-llama/llama_index/blob/9f66e8a649856524ef0ff081a23d58cd071b6ae4/llama-index-integrations/protocols/llama-index-protocols-ag-ui/llama_index/protocols/ag_ui/agent.py"
+  ],
+  "framework": "llamaindex",
+  "environment": "llamaindex-0.14.22",
+  "entry": "graph.py:workflows",
+  "expected_findings": [
+    "shared-instance-aliasing/shared-container@chat:initial_state"
+  ],
+  "note": "`get_default_workflow_factory` builds an `AGUIChatWorkflow` per request around the operator's `initial_state` dict, and the workflow keeps that dict. Every workflow the factory builds holds the same dict, and the `chat` step seeds each run's state with a shallow copy of it, so lists and dicts inside it are shared by all runs. The module builds two workflows, as two requests would.",
+  "fixed": {
+    "entry": "graph.py:workflows",
+    "environment": "llamaindex-0.14.23",
+    "fix_url": "https://github.com/run-llama/llama_index/pull/22189",
+    "fix_note": "llama-index-protocols-ag-ui 0.3.2 deep-copies the initial state when it builds the workflow and when a run starts."
+  }
+}

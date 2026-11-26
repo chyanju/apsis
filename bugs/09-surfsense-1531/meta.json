@@ -1,0 +1,20 @@
+{
+  "id": "09-surfsense-1531",
+  "issue_url": "https://github.com/MODSetter/SurfSense/issues/1531",
+  "source": [
+    "https://github.com/MODSetter/SurfSense/blob/b54eff648e591d08fcbb3ff7532cf63cbb9d7436/surfsense_backend/app/agents/video_presentation/graph.py",
+    "https://github.com/MODSetter/SurfSense/blob/b54eff648e591d08fcbb3ff7532cf63cbb9d7436/surfsense_backend/app/agents/video_presentation/state.py"
+  ],
+  "license": "Apache-2.0",
+  "framework": "langgraph",
+  "entry": "graph.py:graph",
+  "expected_findings": [
+    "channel-write-merge/same-step-fan-in@generate_slide_scene_codes"
+  ],
+  "note": "`create_presentation_slides` fans out to `create_slide_audio` and `assign_slide_themes`, which join `generate_slide_scene_codes` through two separate edges instead of a barrier. Both branches take one step, so the join runs once; when one branch takes a step more, it runs once per branch.",
+  "fixed": {
+    "entry": "fixed/graph.py:graph",
+    "fix_url": "https://github.com/MODSetter/SurfSense/pull/1563",
+    "fix_note": "The join is one barrier edge, `add_edge([\"create_slide_audio\", \"assign_slide_themes\"], ...)`."
+  }
+}

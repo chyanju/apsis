@@ -1,0 +1,24 @@
+{
+  "id": "19-mobile-use-208",
+  "issue_url": "https://github.com/minitap-ai/mobile-use/issues/208",
+  "source": [
+    "https://github.com/minitap-ai/mobile-use/blob/887fcec5a3f54e8ca69513c98ebd0ebfc2b41375/minitap/mobile_use/graph/graph.py",
+    "https://github.com/minitap-ai/mobile-use/blob/887fcec5a3f54e8ca69513c98ebd0ebfc2b41375/minitap/mobile_use/graph/state.py",
+    "https://github.com/minitap-ai/mobile-use/blob/887fcec5a3f54e8ca69513c98ebd0ebfc2b41375/minitap/mobile_use/agents/orchestrator/orchestrator.py",
+    "https://github.com/minitap-ai/mobile-use/blob/887fcec5a3f54e8ca69513c98ebd0ebfc2b41375/minitap/mobile_use/agents/executor/executor.py",
+    "https://github.com/minitap-ai/mobile-use/blob/887fcec5a3f54e8ca69513c98ebd0ebfc2b41375/minitap/mobile_use/agents/executor/tool_node.py",
+    "https://github.com/minitap-ai/mobile-use/blob/887fcec5a3f54e8ca69513c98ebd0ebfc2b41375/minitap/mobile_use/tools/scratchpad.py"
+  ],
+  "license": "Apache-2.0",
+  "framework": "langgraph",
+  "entry": "graph.py:graph",
+  "expected_findings": [
+    "channel-write-merge/concurrent-last-value-writes@scratchpad"
+  ],
+  "note": "`scratchpad` and `agents_thoughts` use the reducer `take_last`, which keeps only the last write of a step. `executor_tools` runs one call per tool call of the executor's message, and each `save_note` call writes `scratchpad` from the same state, so of two notes saved in one step only the last survives. `post_cortex_gate` can also run `orchestrator` and `executor` in one step, and both write `agents_thoughts`. The device tools are left out; the scratchpad tools are the project's.",
+  "fixed": {
+    "entry": "fixed/graph.py:graph",
+    "fix_url": "https://github.com/minitap-ai/mobile-use/pull/209",
+    "fix_note": "`scratchpad` merges its writes with `merge_dicts`; `agents_thoughts` keeps `take_last`."
+  }
+}

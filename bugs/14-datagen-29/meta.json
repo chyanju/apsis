@@ -1,0 +1,22 @@
+{
+  "id": "14-datagen-29",
+  "issue_url": "https://github.com/starpig1129/DATAGEN/issues/29",
+  "source": [
+    "https://github.com/starpig1129/DATAGEN/blob/0e191ef5e0b3e7b689f5b82c1f116d5fd5ff2d76/src/core/workflow.py",
+    "https://github.com/starpig1129/DATAGEN/blob/0e191ef5e0b3e7b689f5b82c1f116d5fd5ff2d76/src/core/router.py",
+    "https://github.com/starpig1129/DATAGEN/blob/0e191ef5e0b3e7b689f5b82c1f116d5fd5ff2d76/src/core/state.py",
+    "https://github.com/starpig1129/DATAGEN/blob/0e191ef5e0b3e7b689f5b82c1f116d5fd5ff2d76/src/core/node.py"
+  ],
+  "license": "MIT",
+  "framework": "langgraph",
+  "entry": "graph.py:graph",
+  "expected_findings": [
+    "cycle-termination/loop-limit-bypassed@Process"
+  ],
+  "note": "`process_router` ends the `Process` loop when `step_count` exceeds 20, but it tests the counter only after it has returned a valid agent name; while the model keeps naming agents the test is never reached, and the run ends at the recursion limit.",
+  "fixed": {
+    "entry": "fixed/graph.py:graph",
+    "fix_url": "https://github.com/starpig1129/DATAGEN/pull/32",
+    "fix_note": "The router tests `step_count` before it follows a valid agent name; the reference also has the repair of 27-datagen-30."
+  }
+}

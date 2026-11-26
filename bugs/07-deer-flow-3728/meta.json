@@ -1,0 +1,21 @@
+{
+  "id": "07-deer-flow-3728",
+  "issue_url": "https://github.com/bytedance/deer-flow/issues/3728",
+  "source": [
+    "https://github.com/bytedance/deer-flow/blob/90328d5651b22d80e537cc6db8cf54dde551f611/backend/app/gateway/services.py",
+    "https://github.com/bytedance/deer-flow/blob/90328d5651b22d80e537cc6db8cf54dde551f611/backend/packages/harness/deerflow/agents/middlewares/thread_data_middleware.py"
+  ],
+  "license": "MIT",
+  "framework": "langgraph",
+  "environment": "langgraph-langchain-1.3.10",
+  "entry": "graph.py:runs",
+  "expected_findings": [
+    "type-contract/unprovided-run-input@ThreadDataMiddleware.before_agent:thread_id"
+  ],
+  "note": "`build_run_config` puts the thread id the gateway resolved into `configurable` only; a request in the LangGraph 0.6 shape, with a `context`, gets its context as it came and no thread id in either container. The lead agent's thread-data middleware reads the thread id from the runtime context, then from `configurable`, and raises without it, as the memory, sandbox-audit, summarization and loop-detection middleware read it too. The module runs the agent with the config of each request shape the gateway accepts.",
+  "fixed": {
+    "entry": "fixed/graph.py:runs",
+    "fix_url": "https://github.com/bytedance/deer-flow/pull/3735",
+    "fix_note": "`build_run_config` sets `thread_id` in the runtime context of a request that has one."
+  }
+}

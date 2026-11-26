@@ -6,9 +6,10 @@ import sys
 import tempfile
 import types
 import unittest
+import uuid
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-for package in ("common", "langflow", "flowise", "langgraph", "agent-framework", "autogen"):
+for package in ("common", "langflow", "flowise", "langgraph", "agent-framework", "autogen", "crewai", "llamaindex", "parlant", "pydantic-ai"):
     sys.path.insert(0, os.path.join(HERE, "..", package))
 
 from apsis_flowise.extract import extract as flowise_extract  # noqa: E402
@@ -21,11 +22,25 @@ from apsis_agent_framework.channels import _shared_state  # noqa: E402
 from apsis_agent_framework.load import SHARED, _resolve  # noqa: E402
 from apsis_agent_framework.nodes import _host_yields  # noqa: E402
 from apsis_autogen.agentutil import _agent_publishes, _message_sockets  # noqa: E402
+from apsis_crewai.extract import _accepted, _value_type  # noqa: E402
+from apsis_llamaindex.extract import _implicit_waits, _sent  # noqa: E402
+from apsis_parlant.extract import extract as parlant_extract  # noqa: E402
+from apsis_langgraph.host import host_workflow  # noqa: E402
+from apsis_langgraph.load import _checkpoint  # noqa: E402
+from apsis_langgraph.schema import _reducer_of  # noqa: E402
+from apsis_pydantic_ai.changes import changes as pydantic_ai_changes  # noqa: E402
+from apsis_common.toolcalls import pairing_facts  # noqa: E402
+from apsis_pydantic_ai.extract import _shared as pydantic_ai_shared  # noqa: E402
 from apsis_langgraph.astutil import (  # noqa: E402
     _ast_command_send_targets,
+    _fixed_calls,
+    _missing_keys,
     _node_func,
     _node_source_ast,
+    _required_run_inputs,
+    _rewrap_resets,
     _router_return_targets,
+    _single_pass_writes,
 )
 
 
@@ -35,6 +50,369 @@ def written(obj) -> str:
     json.dump(obj, f)
     f.close()
     return f.name
+
+
+class CrewAIModelFields(unittest.TestCase):
+    def test_a_model_field_takes_its_own_types_as_they_are(self):
+        import typing
+
+        class BaseLLM:
+            pass
+
+        class ProviderLLM(BaseLLM):
+            pass
+
+        accepted = _accepted(typing.Union[str, typing.Annotated[BaseLLM, "instance"], typing.Any, None])
+        self.assertEqual(accepted, [str, BaseLLM])
+        self.assertTrue(_value_type(ProviderLLM(), accepted).endswith(".BaseLLM"))
+        self.assertEqual(_value_type("gpt-4o-mini", accepted), "str")
+        self.assertEqual(_value_type(3, accepted), "int")
+
+
+class ResponseEvent:
+    pass
+
+
+class ToolCallEvent:
+    pass
+
+
+async def _waits(ctx):
+    await ctx.wait_for_event(ResponseEvent)
+    await ctx.wait_for_event(ResponseEvent, waiter_id="mine")
+
+
+async def _fans_out(ctx, calls):
+    for _ in calls:
+        ctx.send_event(ToolCallEvent())
+    ctx.send_event(ResponseEvent())
+
+
+class LlamaIndexStepFacts(unittest.TestCase):
+    def test_a_wait_without_a_waiter_id_is_implicit(self):
+        self.assertEqual(_implicit_waits(_waits), [ResponseEvent])
+
+    def test_events_sent_in_a_loop_are_a_fan_out(self):
+        self.assertEqual(set(_sent(_fans_out)), {(ToolCallEvent, True), (ResponseEvent, False)})
+
+
+class Book:
+    def __init__(self):
+        self._items = {}
+
+    def add(self, key, value):
+        self._items[key] = value
+
+    def get(self, key):
+        return self._items.get(key)
+
+
+def _records(ctx, key: str):
+    book = ctx.deps.book
+    book.add(key, 1)
+    book.get(key)
+    ctx.deps.log.append(key)
+    ctx.deps.calls += 1
+
+
+class PydanticAIToolChanges(unittest.TestCase):
+    def test_a_started_run_that_changes_what_it_shares_with_the_run_that_started_it(self):
+        ns = types.SimpleNamespace
+        tool = ns(function=_records, takes_ctx=True)
+        book = Book()
+        parent = ns(book=book, log=[], calls=0)
+        child = ns(book=book, log=[], calls=0)
+        found = pydantic_ai_changes(tool, child)
+        self.assertEqual(found, {("book", "_items", "[]"), ("log", "append()"), ("calls",)})
+        run = ns(deps=child, parent=ns(deps=parent))
+        # the book is the parent's; the log and the counter are the child's own
+        self.assertEqual({c: pydantic_ai_shared(c, run) is not None for c in found},
+                         {("book", "_items", "[]"): True, ("log", "append()"): False, ("calls",): False})
+        # a run handed the deps object itself shares every field of it
+        self.assertIs(pydantic_ai_shared(("calls",), ns(deps=parent, parent=ns(deps=parent))), parent)
+
+
+class BaseChannel:
+    pass
+
+
+class DeltaChannel(BaseChannel):
+    def __init__(self, reducer):
+        self.reducer = reducer
+
+
+class LastValue(BaseChannel):
+    pass
+
+
+def add_messages(left, right):
+    return left + right
+
+
+class Command:
+    def __init__(self, resume=None):
+        self.resume = resume
+
+
+class Producer:
+    def __init__(self):
+        self._agent = None
+        self._current = None
+
+    def agent(self):
+        if self._agent is None:
+            self._agent = object()
+        return self._agent
+
+    async def start(self, message, thread_id=None):
+        self._current = thread_id
+        return await self.agent().ainvoke({"messages": [message]}, config={"configurable": {"thread_id": thread_id}})
+
+    async def resume(self, decisions, thread_id=None):
+        thread_id = thread_id or self._current
+        config = {"configurable": {"thread_id": thread_id}}
+        return await self.agent().ainvoke(Command(resume=decisions), config=config)
+
+
+class Memory:
+    async def aretain(self, **kwargs):
+        return None
+
+
+def memory_tools(bank_id, client):
+    async def retain(content: str) -> str:
+        kwargs = {"bank_id": bank_id, "content": content}
+        await client.aretain(**kwargs)
+        return "stored"
+
+    async def retain_for_run(content: str, config) -> str:
+        await client.aretain(bank_id=config["configurable"]["user_id"], content=content)
+        return "stored"
+
+    return retain, retain_for_run
+
+
+class Editor:
+    def __init__(self):
+        def file_tool(command: str, path: str, new_path: str | None = None):
+            args = {"path": path}
+            if new_path is not None:
+                args["new_path"] = new_path
+            if command == "view":
+                return self._handle_view(args)
+            return self._handle_rename(args)
+
+        self.tool = file_tool
+
+    def _handle_view(self, args):
+        return args["path"]
+
+    def _handle_rename(self, args):
+        return args["old_path"], args["new_path"], args.get("mode")
+
+
+class Wrapper:
+    def __init__(self, bound=None, carry=False):
+        self.bound = bound
+        self.carry = carry
+        object.__setattr__(self, "_failures", 0)
+
+    def with_config(self, config):
+        rebound = type(self)(self.bound, self.carry)
+        if self.carry:
+            object.__setattr__(rebound, "_failures", self._failures)
+        return rebound
+
+    def fail(self):
+        n = int(getattr(self, "_failures", 0)) + 1
+        object.__setattr__(self, "_failures", n)
+
+
+def dispatcher(agents):
+    def task(name: str):
+        return agents[name].fail()
+
+    return task
+
+
+class ToolMessage:
+    def __init__(self, content, tool_call_id):
+        self.content, self.tool_call_id = content, tool_call_id
+
+
+def answer_one_part(results, frontend):
+    backend = [r for r in results if r.name not in frontend]
+    messages = []
+    for r in backend:
+        messages.append(ToolMessage(content=r.output, tool_call_id=r.call_id))
+    return messages
+
+
+def answer_both_parts(results, frontend):
+    backend = [r for r in results if r.name not in frontend]
+    browser = [r for r in results if r.name in frontend]
+    return [ToolMessage(content=r.output, tool_call_id=r.call_id) for r in [*backend, *browser]]
+
+
+def answer_known_tools(calls, tools):
+    out = []
+    for call in calls:
+        if call["name"] in tools:
+            out.append(ToolMessage(content="done", tool_call_id=call["id"]))
+        else:
+            out.append(ToolMessage(content="unknown tool", tool_call_id=call["id"]))
+    return out
+
+
+def as_wire_message(message):
+    return {"role": "tool", "content": message.content, "tool_call_id": message.extra.get("tool_call_id", str(uuid.uuid4()))}
+
+
+def call_with_its_result():
+    call_id = str(uuid.uuid4())
+    return {"id": call_id, "name": "lookup", "args": {}}, ToolMessage(content="ok", tool_call_id=call_id)
+
+
+def trim_in_loop(state):
+    removed = []
+    for msg in state["messages"][:3]:
+        removed.append(msg)
+        return {"messages": removed}
+
+
+def trim_after_loop(state):
+    removed = []
+    for msg in state["messages"][:3]:
+        removed.append(msg)
+    return {"messages": removed}
+
+
+def first_match(state):
+    for msg in state["messages"]:
+        return {"last": msg}
+
+
+class ReadsAnUpdateReturnedFromInsideALoop(unittest.TestCase):
+    def test_the_loop_returns_after_its_first_item(self):
+        self.assertEqual(_single_pass_writes(trim_in_loop), ["messages"])
+        self.assertEqual(_single_pass_writes(trim_after_loop), [])
+        # a loop that only returns its first item builds nothing per item
+        self.assertEqual(_single_pass_writes(first_match), [])
+
+
+class ReadsHowToolMessagesPairWithCalls(unittest.TestCase):
+    def test_tool_messages_for_a_part_picked_by_a_condition(self):
+        self.assertEqual(pairing_facts(answer_one_part), ([("answer_one_part", "backend", "results")], []))
+
+    def test_parts_whose_conditions_cover_every_call(self):
+        self.assertEqual(pairing_facts(answer_both_parts), ([], []))
+        self.assertEqual(pairing_facts(answer_known_tools), ([], []))
+
+    def test_a_call_id_that_is_a_fresh_value(self):
+        answered, fresh = pairing_facts(as_wire_message)
+        self.assertEqual((answered, [f for f, _ in fresh]), ([], ["as_wire_message"]))
+        # a fresh id minted for a call and its result together pairs
+        self.assertEqual(pairing_facts(call_with_its_result), ([], []))
+
+
+class ReadsTheCountersARewrapResets(unittest.TestCase):
+    def test_a_count_kept_on_the_instance_that_with_config_drops(self):
+        self.assertEqual(_rewrap_resets(dispatcher({"recon": Wrapper()})), ["Wrapper._failures"])
+        self.assertEqual(_rewrap_resets(dispatcher({"recon": Wrapper(carry=True)})), [])
+
+
+def get_config():
+    return {}
+
+
+def _needs_thread(state, runtime):
+    context = runtime.context or {}
+    thread_id = context.get("thread_id")
+    if thread_id is None:
+        config = get_config()
+        thread_id = config.get("configurable", {}).get("thread_id")
+    if thread_id is None:
+        raise ValueError("Thread ID is required")
+    user = context.get("user_id")
+    return {"thread": thread_id, "user": user}
+
+
+class ReadsTheRunInputsAStepNeeds(unittest.TestCase):
+    def test_a_key_of_the_context_or_the_configurable_whose_absence_raises(self):
+        # `user_id` is read too, but its absence raises nothing
+        self.assertEqual(_required_run_inputs(_needs_thread), ["thread_id"])
+
+
+class ReadsTheKeysAToolsDictLacks(unittest.TestCase):
+    def test_a_key_the_method_reads_and_the_tool_never_sets(self):
+        self.assertEqual(_missing_keys(Editor().tool), ["_handle_rename.old_path"])
+
+
+class ReadsTheFixedCallsOfATool(unittest.TestCase):
+    def test_a_tool_that_reads_no_run_config_calls_with_values_captured_at_build(self):
+        retain, retain_for_run = memory_tools("user-123", Memory())
+        self.assertEqual(_fixed_calls(retain), ["aretain.bank_id=user-123"])
+        self.assertEqual(_fixed_calls(retain_for_run), [])
+
+
+class ReadsTheHostOfRuns(unittest.TestCase):
+    def test_the_methods_that_start_and_resume_runs_and_the_fields_they_use(self):
+        host = Producer()
+        steps = {n["id"]: n["attrs"] for n in host_workflow(host, {})["nodes"]}
+        ident = f"Producer@{hex(id(host))}"
+        # `agent` starts no run, and the field it sets once is an initialization
+        self.assertEqual(steps, {
+            "resume": {"resume_thread": f"_current:{ident}"},
+            "start": {"starts_runs": "true", "sets": f"_current:{ident}"},
+        })
+
+
+class ReadsTheCheckpointOfARun(unittest.TestCase):
+    def test_sqlite_savers_on_one_file_are_one_checkpoint_store(self):
+        import sqlite3
+
+        ns = types.SimpleNamespace
+        with tempfile.TemporaryDirectory() as d:
+            conns = [sqlite3.connect(os.path.join(d, "NVDA.db")) for _ in range(2)]
+            try:
+                runs = [_checkpoint(ns(checkpointer=ns(conn=c)), {"configurable": {"thread_id": "41fd"}}) for c in conns]
+                self.assertEqual(runs[0], runs[1])
+                self.assertTrue(runs[0].endswith("NVDA.db#41fd"))
+                self.assertIsNone(_checkpoint(ns(checkpointer=ns(conn=conns[0])), None))
+                self.assertIsNone(_checkpoint(ns(checkpointer=None), {"configurable": {"thread_id": "41fd"}}))
+            finally:
+                for c in conns:
+                    c.close()
+
+
+class ReadsTheReducerOfAStateField(unittest.TestCase):
+    def test_a_channel_object_in_the_metadata_gives_its_reducer_and_required_is_looked_through(self):
+        from typing import Annotated, Required
+
+        self.assertEqual(_reducer_of(Required[Annotated[list, DeltaChannel(add_messages)]]), ({"messages": None}, "list"))
+        self.assertEqual(_reducer_of(Annotated[int, LastValue()]), (None, "int"))
+        self.assertEqual(_reducer_of(Annotated[list, LastValue]), (None, "list"))
+        self.assertEqual(_reducer_of(Required[int]), (None, "int"))
+
+
+class ParlantJourneys(unittest.TestCase):
+    def test_a_transition_into_another_journey_names_that_journey_state(self):
+        ns = types.SimpleNamespace
+
+        def journey(jid, title, root, nodes, edges):
+            return (ns(id=jid, title=title, root_id=root),
+                    [ns(id=n, action=n, description="") for n in nodes],
+                    [ns(source=a, target=b, condition=c) for a, b, c in edges])
+
+        ir = parlant_extract([
+            journey("j1", "Journey One", "r1", ["r1", "end"], [("r1", "x2", "jump")]),
+            journey("j2", "Journey Two", "r2", ["r2", "x2", "end"], [("r2", "x2", None), ("x2", "end", None)]),
+        ], {})
+        one, two = ir["workflows"]
+        self.assertEqual(one["attrs"], {"self_contained": "true"})
+        self.assertEqual([(e["from"]["node"], e["to"]["node"]) for e in one["edges"]],
+                         [("__start__", "journey-one/root"), ("journey-one/root", "journey-two/s1")])
+        self.assertEqual([(e["from"]["node"], e["to"]["node"]) for e in two["edges"]][-1], ("journey-two/s1", "__end__"))
 
 
 class RejectsWhatIsNotAFlow(unittest.TestCase):

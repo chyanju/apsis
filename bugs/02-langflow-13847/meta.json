@@ -1,0 +1,24 @@
+{
+  "id": "02-langflow-13847",
+  "issue_url": "https://github.com/langflow-ai/langflow/issues/13847",
+  "source": [
+    "https://github.com/langflow-ai/langflow/blob/f58914bc84c504ee3111fa6a3abb0989cff585f9/src/lfx/src/lfx/base/agents/crewai/crew.py",
+    "https://github.com/langflow-ai/langflow/blob/f58914bc84c504ee3111fa6a3abb0989cff585f9/src/lfx/src/lfx/components/crewai/crewai.py",
+    "https://github.com/langflow-ai/langflow/blob/f58914bc84c504ee3111fa6a3abb0989cff585f9/src/lfx/src/lfx/components/crewai/sequential_task.py",
+    "https://github.com/langflow-ai/langflow/blob/f58914bc84c504ee3111fa6a3abb0989cff585f9/src/lfx/src/lfx/components/crewai/sequential_task_agent.py",
+    "https://github.com/langflow-ai/langflow/blob/f58914bc84c504ee3111fa6a3abb0989cff585f9/src/lfx/src/lfx/components/crewai/sequential_crew.py"
+  ],
+  "license": "MIT",
+  "framework": "crewai",
+  "environment": "crewai-0.193.2",
+  "entry": "../01-langflow-13846/graph.py:crews_sharing_an_agent",
+  "expected_findings": [
+    "shared-instance-aliasing/shared-instance@agent1"
+  ],
+  "note": "The crew components convert each agent's model and tools in place, and an agent wired into several tasks is listed once per task. One Agent component wired into the tasks of two crews gives both crews the same agent object, which each build changes; `crew_reusing_an_agent` in the same module lists one agent twice in one crew. The workflow is the module of 01-langflow-13846.",
+  "fixed": {
+    "entry": "../01-langflow-13846/fixed/graph.py:crews_sharing_an_agent",
+    "fix_url": "https://github.com/langflow-ai/langflow/pull/14399",
+    "fix_note": "A crew lists each agent once and converts a copy of it."
+  }
+}

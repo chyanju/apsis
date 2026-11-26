@@ -69,7 +69,7 @@ fn report_text(wf: &Workflow, findings: &[Finding]) {
         ExecutionModel::BspSuperstep => "bulk-synchronous",
         ExecutionModel::GroupChatSpeaker => "group chat",
         ExecutionModel::VisualDataflow => "visual dataflow",
-        ExecutionModel::Other(_) => "other",
+        ExecutionModel::Other(name) => name.as_str(),
     };
     let version = wf.framework_version.as_deref().map(|v| format!(" v{v}")).unwrap_or_default();
     println!("apsis · {} · {model}{version} · {} nodes, {} edges", wf.framework, wf.nodes.len(), wf.edges.len());

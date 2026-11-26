@@ -1,0 +1,19 @@
+{
+  "id": "13-nemo-2082",
+  "issue_url": "https://github.com/NVIDIA/NeMo-Agent-Toolkit/issues/2082",
+  "source": [
+    "https://github.com/NVIDIA/NeMo-Agent-Toolkit/blob/68ce9b1f0d2edb419fdde130286d516fde40d2d7/packages/nvidia_nat_langchain/src/nat/plugins/langchain/control_flow/router_agent/agent.py"
+  ],
+  "license": "Apache-2.0",
+  "framework": "langgraph",
+  "entry": "graph.py:graph",
+  "expected_findings": [
+    "readiness-liveness/no-terminal@branch"
+  ],
+  "note": "The router agent's graph wires `agent` to `branch` and gives `branch` no way on: no edge to END, no finish point and no route, so a run stops after `branch` without reaching END.",
+  "fixed": {
+    "entry": "fixed/graph.py:graph",
+    "fix_url": "https://github.com/NVIDIA/NeMo-Agent-Toolkit/pull/2088",
+    "fix_note": "Adds the edge from `branch` to END."
+  }
+}

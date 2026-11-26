@@ -18,10 +18,22 @@ START = "__start__"
 END = "__end__"
 
 
+from apsis_common.toolcalls import pairing_attrs
+
+from .host import host_workflow
 from .schema import _builder_schema, _channels_from_schema, _registered_schemas, _required_keys
 from .astutil import (
     _ast_command_send_targets,
+    _counters,
+    _fixed_calls,
+    _missing_keys,
+    _required_run_inputs,
+    _rewrap_resets,
+    _routine,
+    _single_pass_writes,
     _injected_args,
+    _mutations,
+    _node_bodies,
     _node_func,
     _path_func,
     _read_channels,
@@ -29,6 +41,7 @@ from .astutil import (
     _send_only_targets,
     _send_payload_keys,
     _write_info,
+    _write_kinds,
     _node_source_ast,
 )
 from .nodekind import _is_subgraph, _node_kind, _tool_funcs, _tool_names
@@ -66,8 +79,8 @@ def _extract_workflow(builder, wf_id: str | None) -> tuple[dict, list]:
     fanout_targets: set[str] = set()
     for _spec in node_specs.values():
         _f = _node_func(_spec)
-        if _f is not None:
-            fanout_targets.update(_send_only_targets(_f))
+        for _b in _node_bodies(_f) if _f is not None else []:
+            fanout_targets.update(_send_only_targets(_b))
         for _tf in _tool_funcs(_spec):
             fanout_targets.update(_send_only_targets(_tf))
     for _named in branches.values():
@@ -79,9 +92,13 @@ def _extract_workflow(builder, wf_id: str | None) -> tuple[dict, list]:
 
     for name, spec in node_specs.items():
         func = _node_func(spec)
-        goto_targets, uses_parent, has_send, goto_unresolved = (
-            _ast_command_send_targets(func) if func else ([], False, False, False)
-        )
+        # a node that returns the result of another function is read through that function
+        bodies = _node_bodies(func) if func is not None else []
+        goto_targets, uses_parent, has_send, goto_unresolved = [], False, False, False
+        for body in bodies:
+            tg, up, hs, un = _ast_command_send_targets(body)
+            goto_targets += [t for t in tg if t not in goto_targets]
+            uses_parent, has_send, goto_unresolved = uses_parent or up, has_send or hs, goto_unresolved or un
         # A node body that cannot be read may route to any node.
         if func is not None and _node_source_ast(func) is None:
             goto_unresolved = True
@@ -107,9 +124,28 @@ def _extract_workflow(builder, wf_id: str | None) -> tuple[dict, list]:
         outputs = []
         ret_keys: set[str] = set()
         full_update = False
+        extends: set[str] = set()
+        replaces: set[str] = set()
+        counters: set[str] = set()
+        # a tool node runs one call per tool call of the message, each with its own update
+        tool_writes: set[str] = set()
+        changed: dict[int, tuple[str, str]] = {}
         if func is not None:
-            ret_keys, full_update = _write_info(func)
-            reads = _read_channels(func, channel_names)
+            reads: set[str] = set()
+            for body in bodies + tool_funcs:
+                is_tool = body in tool_funcs
+                keys, full = _write_info(body, is_tool)
+                ret_keys |= keys
+                if is_tool:
+                    tool_writes |= keys
+                full_update = full_update or full
+                reads |= _read_channels(body, channel_names)
+                ext, rep = _write_kinds(body, is_tool)
+                extends |= ext
+                replaces |= rep
+                counters |= _counters(body)
+                for k, v in _mutations(body).items():
+                    changed.setdefault(k, v)
             injected = _injected_args(func)
             for cn in sorted(reads):
                 desc = channel_descs.get(cn)
@@ -205,6 +241,38 @@ def _extract_workflow(builder, wf_id: str | None) -> tuple[dict, list]:
             attrs["injected_tool_args"] = "true"
         if full_update:
             attrs["full_state_update"] = "true"
+        if ret_keys:
+            attrs["counters"] = ",".join(sorted(counters & ret_keys))
+        if extends & channel_names:
+            attrs["extends"] = ",".join(sorted(extends & channel_names))
+        if replaces & channel_names:
+            attrs["replaces"] = ",".join(sorted(replaces & channel_names))
+        if tool_writes & channel_names:
+            attrs["repeated_writes"] = ",".join(sorted(tool_writes & channel_names))
+        if changed:
+            attrs["mutates"] = ",".join(sorted(f"{path}:{kind}@{hex(k)}" for k, (path, kind) in changed.items()))
+        tools_by_name = getattr(getattr(spec, "runnable", None), "tools_by_name", None) or {}
+        fixed = [f"{tool}:{call}" for tool, t in tools_by_name.items()
+                 for call in _fixed_calls(getattr(t, "func", None) or getattr(t, "coroutine", None))]
+        if fixed:
+            attrs["fixed_calls"] = ",".join(fixed)
+        missing = [f"{tool}:{key}" for tool, t in tools_by_name.items()
+                   for key in _missing_keys(getattr(t, "func", None) or getattr(t, "coroutine", None))]
+        if missing:
+            attrs["missing_keys"] = ",".join(missing)
+        resets = [f"{tool}:{counter}" for tool, t in tools_by_name.items()
+                  for counter in _rewrap_resets(getattr(t, "func", None) or getattr(t, "coroutine", None))]
+        if resets:
+            attrs["rewrap_resets"] = ",".join(resets)
+        if func is not None:
+            routine = _routine(func)
+            attrs.update(pairing_attrs(routine, owner=getattr(routine, "__self__", None)))
+        single_pass = set(_single_pass_writes(func)) & channel_names
+        if single_pass:
+            attrs["single_pass_writes"] = ",".join(sorted(single_pass))
+        required_inputs = _required_run_inputs(func)
+        if required_inputs:
+            attrs["requires_run_input"] = ",".join(required_inputs)
         if goto_unresolved:
             # over-approximate: a goto target that cannot be evaluated may route anywhere
             attrs["goto_unresolved"] = "true"
@@ -250,7 +318,8 @@ def _extract_workflow(builder, wf_id: str | None) -> tuple[dict, list]:
             path = getattr(branch, "path", None)
             rf = _path_func(path)
             rr = _router_return_targets(rf) if callable(rf) else {
-                "labels": [], "gated": [], "annotation": [], "sends": [], "unresolved": True, "fanout": False}
+                "labels": [], "gated": [], "annotation": [], "sends": [], "unresolved": True, "fanout": False,
+                "limits": {}}
             known = rr["labels"] + [t for t in rr["gated"] + rr["annotation"] + rr["sends"] if t not in rr["labels"]]
             # ends is a dict {label: node} or a list of node names (a path map), or None (no path map).
             targets: list[str] = []
@@ -281,6 +350,18 @@ def _extract_workflow(builder, wf_id: str | None) -> tuple[dict, list]:
                         a[f"router_unresolved:{branch_name}"] = "true"
                     if rr["fanout"]:
                         a[f"router_fanout:{branch_name}"] = "true"
+                    if rr["limits"]:
+                        # the targets the routing function returns ahead of its limit test (any, if unknown),
+                        # other than the one the test itself routes to
+                        def named(labels):
+                            return [ends.get(lb) for lb in labels] if isinstance(ends, dict) else labels
+
+                        early: list[str] = []
+                        for lim in rr["limits"].values():
+                            ahead = targets if lim["unresolved"] else [t for t in named(lim["labels"]) if t in targets]
+                            early += [t for t in ahead if t not in named(lim["exit"])]
+                        a[f"router_limit:{branch_name}"] = ",".join(rr["limits"])
+                        a[f"router_before_limit:{branch_name}"] = ",".join(dict.fromkeys(early))
             # a router annotated with the graph's input schema sees only that schema's channels
             if rf is not None and input_schema is not None and input_schema is not state_schema:
                 try:
@@ -392,13 +473,38 @@ def _instance_id(spec) -> str | None:
 
 
 def extract(builder, provenance: dict) -> dict:
-    """The IR of a ``StateGraph`` builder: a workflow, or a ``Program`` with a workflow per compiled subgraph."""
-    main, children = _extract_workflow(builder, wf_id="main")
+    """The IR of a ``StateGraph`` builder: a workflow, or a ``Program`` with a workflow per compiled subgraph.
+    A list of runs gives a workflow per run, ``run1``, ``run2``, ..., with its store and checkpoint; a host adds
+    the workflow ``host`` of its methods that start and resume runs."""
+    if isinstance(builder, dict):
+        out = extract(builder["runs"], provenance) if builder["runs"] else {"workflows": []}
+        out["workflows"].append(host_workflow(builder["host"], provenance))
+        return out
+    if isinstance(builder, list):
+        workflows = []
+        for i, run in enumerate(builder, 1):
+            runs = _extract_program(run["builder"], f"run{i}", provenance)["workflows"]
+            attrs = runs[0].setdefault("attrs", {})
+            attrs["run_of"] = hex(id(run["builder"]))
+            if run["store"] is not None:
+                attrs["store"] = f"{type(run['store']).__qualname__}@{hex(id(run['store']))}"
+            if run["checkpoint"] is not None:
+                attrs["checkpoint"] = run["checkpoint"]
+            if run["config"]:
+                attrs["run_config"] = ",".join(f"{k}={v}" for k, v in sorted(run["config"].items()))
+            attrs["run_inputs"] = ",".join(run["inputs"])
+            workflows += runs
+        return {"workflows": workflows}
+    return _extract_program(builder, "main", provenance)
+
+
+def _extract_program(builder, root_id: str, provenance: dict) -> dict:
+    main, children = _extract_workflow(builder, wf_id=root_id)
     main["provenance"] = provenance
 
     workflows = [main]
     queue = list(children)
-    seen_ids = {"main"}
+    seen_ids = {root_id}
     while queue:
         cid, cbuilder, keeps_state = queue.pop(0)
         if cid in seen_ids:
@@ -411,6 +517,6 @@ def extract(builder, provenance: dict) -> dict:
         workflows.append(child_wf)
         queue.extend(grandchildren)
 
-    if len(workflows) == 1:
+    if len(workflows) == 1 and root_id == "main":
         return main
     return {"workflows": workflows}

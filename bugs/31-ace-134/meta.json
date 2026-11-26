@@ -1,0 +1,24 @@
+{
+  "id": "31-ace-134",
+  "issue_url": "https://github.com/kayba-ai/agentic-context-engine/issues/134",
+  "source": [
+    "https://github.com/kayba-ai/agentic-context-engine/blob/96f7c9cfea1d7cae74994c391ad7791e6cbf7f6a/ace/core/recursive_agent.py",
+    "https://github.com/kayba-ai/agentic-context-engine/blob/96f7c9cfea1d7cae74994c391ad7791e6cbf7f6a/ace/implementations/sm_tools.py",
+    "https://github.com/kayba-ai/agentic-context-engine/blob/96f7c9cfea1d7cae74994c391ad7791e6cbf7f6a/ace/implementations/skill_manager.py",
+    "https://github.com/kayba-ai/agentic-context-engine/blob/96f7c9cfea1d7cae74994c391ad7791e6cbf7f6a/ace/core/skillbook.py"
+  ],
+  "license": "Apache-2.0",
+  "framework": "pydantic-ai",
+  "environment": "pydantic-ai-1.70.0",
+  "entry": "graph.py:run",
+  "expected_findings": [
+    "shared-instance-aliasing/shared-object-mutation@add_skill:skillbook",
+    "shared-instance-aliasing/shared-object-mutation@add_skill:operations"
+  ],
+  "note": "The `recurse` tool builds a child session's deps by passing every field of its own deps to the deps class, so the child's `skillbook` and `operations` are the parent's objects. The skill tools of the child change them in place: children that the model starts in one response run concurrently on one skillbook and one operations list, and a child that fails leaves its changes in the parent's skillbook while `recurse` reports only that it failed. The module builds the SkillManager with the deps of one run, with a sandbox as in ACE's tests of `recurse`.",
+  "fixed": {
+    "entry": "fixed/graph.py:run",
+    "fix_url": "https://github.com/kayba-ai/agentic-context-engine/pull/143",
+    "fix_note": "`for_child` gives a child a clone of the skillbook and a new operations list, and `commit_child` applies the operations of a child that succeeded to the parent's skillbook."
+  }
+}

@@ -1,8 +1,0 @@
-{
-  "base": "haystack-6359",
-  "framework": "haystack",
-  "families": [
-    "state_concurrency"
-  ],
-  "location_ids": []
-}

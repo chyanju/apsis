@@ -1,8 +1,0 @@
-{
-  "base": "agent-framework-1851",
-  "framework": "agent-framework",
-  "families": [
-    "routing_resolution"
-  ],
-  "location_ids": []
-}

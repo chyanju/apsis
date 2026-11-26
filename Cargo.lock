@@ -4,14 +4,14 @@ version = 4
 
 [[package]]
 name = "apsis-analysis"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "apsis-ir",
 ]
 
 [[package]]
 name = "apsis-cli"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "apsis-analysis",
  "apsis-frontend",
@@ -21,7 +21,7 @@ dependencies = [
 
 [[package]]
 name = "apsis-frontend"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "apsis-ir",
  "serde_json",
@@ -29,7 +29,7 @@ dependencies = [
 
 [[package]]
 name = "apsis-ir"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "serde",
  "serde_json",

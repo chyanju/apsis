@@ -1,8 +1,0 @@
-{
-  "base": "agent-framework-3279",
-  "framework": "agent-framework",
-  "families": [
-    "liveness_termination"
-  ],
-  "location_ids": []
-}

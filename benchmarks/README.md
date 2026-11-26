@@ -12,31 +12,29 @@ The benchmark suite of the paper: 135 benchmarks, workflow bugs taken from the i
 | [agent-framework](agent-framework/) | 26 | `workflow.py` (8), a C# project (18) | `workflow.py:workflow`, `Workflow.csproj:<namespace>.Case.Build` | `agent-framework-core`; the .NET SDK 10 |
 | **total** | **135** | | | |
 
-`evaluation-set.json` lists the benchmarks with their fixed twin and the bug category the paper files them under. Each benchmark's `meta.json` gives its issue and describes the bug and the fix.
+`suite.json` lists the benchmarks with their fixed twin and the bug category the paper files them under. Each benchmark's `meta.json` gives its issue and describes the bug and the fix.
 
-## Running the evaluation and comparing with the paper
+## Running the evaluation
 
 ```
 cargo build --release
 python3 scripts/setup_envs.py        # once: creates .envs/ from environments.json (the C# benchmarks need the .NET SDK 10)
-python3 scripts/evaluate.py --check
+python3 scripts/evaluate.py
 ```
 
 `scripts/evaluate.py` runs every artifact of the benchmark suite through its front-end and `apsis check`, then prints the per-framework table (Table 4 of the paper), the per-category table (the Apsis rows of Table 5) and the recall with and without the behavioral detectors (Fig. 8). A buggy artifact with at least one finding counts as detected; a fixed twin with at least one finding counts as a false positive.
 
-- `paper-results.json` holds the numbers printed in the paper. `--check` compares every count with them and fails if one is worse.
-- `expected-findings.json` holds the findings of every artifact for the current version, each as `detector/rule@location`. `--check-expected` fails if any of them changes; `--write-expected` records a new baseline after an intended change.
+- `--check` compares every count with the numbers the paper reports and fails if one is worse. Those numbers are `benchmarks/paper-results.json` of the paper's artifact (https://doi.org/10.5281/zenodo.24408668); copy that file here, or name it with `--paper`.
+- `--write-expected` records the findings of every artifact, each as `detector/rule@location`, in `benchmarks/expected-findings.json`, and `--check-expected` fails if a later run differs from them.
 - `--by-detector` adds a table of how many buggy artifacts and fixed twins each of the twelve detectors, and each of its rules, fires on.
 - `environments.json` lists the Python environments the front-ends run in and which artifact uses which.
-- The last line of the output is the time per artifact, front-end plus analysis. The paper's analysis time (0.7 s median, 0.8 s mean) is that line for a sequential run, `--jobs 1`, on a 4-core Arm Neoverse-N1 machine; with parallel jobs the artifacts compete for the cores and each takes longer.
+- The last line of the output is the time per artifact, front-end plus analysis. The paper's analysis time is that line for a sequential run, `--jobs 1`, on a 4-core Arm Neoverse-N1 machine; with parallel jobs the artifacts compete for the cores and each takes longer.
 
 ## Layout
 
 ```
 benchmarks/
-  evaluation-set.json             # the 135 benchmarks, their fixed twins and categories
-  paper-results.json              # the numbers the paper reports on them
-  expected-findings.json          # the findings of every artifact, for regression checks
+  suite.json                      # the 135 benchmarks, their fixed twins and categories
   environments.json               # the Python environments the front-ends run in
   environments/<name>.txt         # every package of each environment, with its version
 benchmarks/<framework>/

@@ -1,8 +1,0 @@
-{
-  "base": "agent-framework-2809",
-  "framework": "agent-framework",
-  "families": [
-    "capability_protocol"
-  ],
-  "location_ids": []
-}

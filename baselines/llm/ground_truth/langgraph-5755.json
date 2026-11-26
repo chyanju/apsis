@@ -1,8 +1,0 @@
-{
-  "base": "langgraph-5755",
-  "framework": "langgraph",
-  "families": [
-    "composition"
-  ],
-  "location_ids": []
-}

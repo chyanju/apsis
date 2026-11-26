@@ -5,7 +5,7 @@
 | [running-example/](running-example/) | the running example of the paper: a LangGraph research pipeline whose `verify` step always routes back to `analyze` | `langgraph` |
 | [patterns/](patterns/) | one minimal IR for each clause of the paper's pattern catalog | none |
 
-The commands below assume the analyzer is built (`cargo build --release`) and, for a workflow example, that the front-end of its framework is installed next to the framework, for example `pip install langgraph ./frontends/common ./frontends/langgraph`.
+The commands below assume the analyzer is built (`cargo build --release`) and, for a workflow example, that the front-end of its framework is installed next to the framework, for example `pip install langgraph==1.2.6 ./frontends/common ./frontends/langgraph`.
 
 ## The running example
 

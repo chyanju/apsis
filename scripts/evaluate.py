@@ -4,7 +4,7 @@ and Fig. 8.
 
     cargo build --release
     python3 scripts/setup_envs.py          # once: creates .envs/<environment> (benchmarks/environments.json)
-    python3 scripts/evaluate.py --check    # tables + a cell-by-cell comparison with the paper
+    python3 scripts/evaluate.py            # the tables
 """
 from __future__ import annotations
 
@@ -76,7 +76,7 @@ class Runner:
 
     def interpreter(self, framework, name, case_dir):
         """The Python interpreter the front-end of this artifact runs under (see environments.json)."""
-        env = self.envs["case_overrides"].get(name)
+        env = self.envs["benchmark_overrides"].get(name)
         if env is None:
             requirements = ""
             path = os.path.join(case_dir, "requirements.txt")
@@ -159,7 +159,7 @@ def flagged(result, without=frozenset()):
 
 def print_detectors(cases, results):
     """Per detector and per rule: how many buggy artifacts and how many fixed twins it fires on."""
-    buggy = [c["case"] for c in cases]
+    buggy = [c["buggy"] for c in cases]
     fixed = [c["fixed"] for c in cases]
 
     def fires(names, detector, rule=None):
@@ -183,9 +183,9 @@ def summarize(cases, results):
     for key, field, names in (("per_framework", "framework", FRAMEWORKS), ("per_category", "category", CATEGORIES)):
         for name in names:
             group = [c for c in cases if c[field] == name]
-            tp = sum(flagged(results[c["case"]]) for c in group)
+            tp = sum(flagged(results[c["buggy"]]) for c in group)
             fp = sum(flagged(results[c["fixed"]]) for c in group)
-            st = sum(flagged(results[c["case"]], BEHAVIORAL_DETECTORS) for c in group)
+            st = sum(flagged(results[c["buggy"]], BEHAVIORAL_DETECTORS) for c in group)
             out[key][name] = {"cases": len(group), "tp": tp, "fn": len(group) - tp, "fp": fp,
                               "tn": len(group) - fp, "structural_only_tp": st}
     tot = {k: sum(v[k] for v in out["per_framework"].values()) for k in ("cases", "tp", "fn", "fp", "tn", "structural_only_tp")}
@@ -264,15 +264,21 @@ def main():
     ap.add_argument("--check", action="store_true", help="fail if a number is worse than the paper's")
     ap.add_argument("--paper", metavar="FILE", default=os.path.join(REPO, "benchmarks", "paper-results.json"),
                     help="reference numbers for --check (default: benchmarks/paper-results.json)")
-    ap.add_argument("--check-expected", action="store_true", help="fail if findings differ from expected-findings.json")
-    ap.add_argument("--write-expected", action="store_true", help="rewrite expected-findings.json from this run")
+    ap.add_argument("--check-expected", action="store_true", help="fail if findings differ from those recorded")
+    ap.add_argument("--write-expected", action="store_true", help="record this run's findings in benchmarks/expected-findings.json")
     args = ap.parse_args()
 
     if not os.path.exists(args.apsis):
         sys.exit(f"analyzer not found at {args.apsis}; run `cargo build --release` or pass --apsis")
-    cases = load_json(os.path.join(REPO, "benchmarks", "evaluation-set.json"))["cases"]
+    if args.check and not os.path.exists(args.paper):
+        sys.exit(f"{args.paper} not found: the numbers the paper reports are benchmarks/paper-results.json "
+                 "of its artifact, https://doi.org/10.5281/zenodo.24408668")
+    expected_path = os.path.join(REPO, "benchmarks", "expected-findings.json")
+    if args.check_expected and not args.write_expected and not os.path.exists(expected_path):
+        sys.exit("benchmarks/expected-findings.json not found: record the findings first with --write-expected")
+    cases = load_json(os.path.join(REPO, "benchmarks", "suite.json"))["benchmarks"]
     runner = Runner(args)
-    artifacts = [(c["framework"], n) for c in cases for n in (c["case"], c["fixed"])]
+    artifacts = [(c["framework"], n) for c in cases for n in (c["buggy"], c["fixed"])]
     started = time.time()
     with concurrent.futures.ThreadPoolExecutor(args.jobs) as pool:
         outcome = list(pool.map(lambda a: runner.run(*a), artifacts))
@@ -295,11 +301,10 @@ def main():
         for n, e in sorted(errors.items()):
             print(f"  {n}: {e}")
     if args.list:
-        print("\nMissed benchmarks:", ", ".join(c["case"] for c in cases if not flagged(results[c["case"]])) or "none")
+        print("\nMissed benchmarks:", ", ".join(c["buggy"] for c in cases if not flagged(results[c["buggy"]])) or "none")
         print("Flagged fixed twins:", ", ".join(c["fixed"] for c in cases if flagged(results[c["fixed"]])) or "none")
 
-    expected_path = os.path.join(REPO, "benchmarks", "expected-findings.json")
-    measured = {n: [f"{d}/{rule}@{loc}" for d, rule, loc in r.get("findings", [])] for n, r in sorted(results.items())}
+    measured ={n: [f"{d}/{rule}@{loc}" for d, rule, loc in r.get("findings", [])] for n, r in sorted(results.items())}
     if args.write_expected:
         if errors:
             sys.exit("not writing expected-findings.json: some artifacts could not be analyzed")

@@ -1,8 +1,0 @@
-{
-  "base": "langgraph-987",
-  "framework": "langgraph",
-  "families": [
-    "routing_resolution"
-  ],
-  "location_ids": []
-}

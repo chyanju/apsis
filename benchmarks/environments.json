@@ -25,7 +25,7 @@
  "rules": [
   {"framework": "autogen", "requirements_contain": "pyautogen", "environment": "autogen-0.2"}
  ],
- "case_overrides": {
+ "benchmark_overrides": {
   "haystack-6433": "haystack-2.0.0b5",
   "haystack-6433-fixed0": "haystack-2.0.0b5",
   "haystack-6359": "haystack-2.0.0b5",
@@ -48,7 +48,7 @@
   "langgraph-6409-fixed0": "langgraph-1.0.2"
  },
  "notes": [
-  "The benchmarks of a framework share one environment. AutoGen has two, since pyautogen 0.2 (Python 3.12 or older) and autogen-agentchat 0.4+ cannot be installed together, and the benchmarks in case_overrides run under a release of their own.",
+  "The benchmarks of a framework share one environment. AutoGen has two, since pyautogen 0.2 (Python 3.12 or older) and autogen-agentchat 0.4+ cannot be installed together, and the benchmarks in benchmark_overrides run under a release of their own.",
   "autogen-5059: AutoGen 0.4.1, whose MagenticOne orchestrator accepts only TextMessage and MultiModalMessage from a participant (0.4.7 also accepts ToolCallSummaryMessage).",
   "autogen-4199: AutoGen 0.4.0.dev6, the release of the issue; its workflow imports autogen_agentchat.task, which 0.4.7 and later lack. It needs Python 3.12 or older.",
   "autogen-6084: AutoGen 0.4.7, the release of the issue, with the web-surfer extra that MultimodalWebSurfer needs.",

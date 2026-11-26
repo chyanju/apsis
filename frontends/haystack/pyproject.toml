@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "apsis-haystack"
-version = "0.1.0"
+version = "0.1.1"
 description = "apsis Haystack front-end: extract a built Pipeline into the apsis IR"
 requires-python = ">=3.10"
 dependencies = ["haystack-ai>=2.0"]

@@ -1,8 +1,0 @@
-{
-  "base": "haystack-7391",
-  "framework": "haystack",
-  "families": [
-    "liveness_termination"
-  ],
-  "location_ids": []
-}

@@ -1,8 +1,0 @@
-{
-  "base": "langflow-5018",
-  "framework": "langflow",
-  "families": [
-    "composition"
-  ],
-  "location_ids": []
-}

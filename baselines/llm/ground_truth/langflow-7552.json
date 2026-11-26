@@ -1,8 +1,0 @@
-{
-  "base": "langflow-7552",
-  "framework": "langflow",
-  "families": [
-    "type_contracts"
-  ],
-  "location_ids": []
-}

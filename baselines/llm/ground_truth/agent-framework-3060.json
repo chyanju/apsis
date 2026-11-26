@@ -1,8 +1,0 @@
-{
-  "base": "agent-framework-3060",
-  "framework": "agent-framework",
-  "families": [
-    "state_concurrency"
-  ],
-  "location_ids": []
-}

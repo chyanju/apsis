@@ -1,8 +1,0 @@
-{
-  "base": "autogen-6088",
-  "framework": "autogen",
-  "families": [
-    "state_concurrency"
-  ],
-  "location_ids": []
-}

@@ -1,6 +1,6 @@
 [project]
-name = "apsis_common"
-version = "0.1.0"
+name = "apsis-common"
+version = "0.1.1"
 description = "Shared plumbing for the apsis front-ends (entry loading, CLI, Python-type canonicalization)"
 requires-python = ">=3.9"
 

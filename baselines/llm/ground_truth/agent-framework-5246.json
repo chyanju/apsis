@@ -1,8 +1,0 @@
-{
-  "base": "agent-framework-5246",
-  "framework": "agent-framework",
-  "families": [
-    "type_contracts"
-  ],
-  "location_ids": []
-}

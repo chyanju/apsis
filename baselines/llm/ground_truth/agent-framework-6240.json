@@ -1,8 +1,0 @@
-{
-  "base": "agent-framework-6240",
-  "framework": "agent-framework",
-  "families": [
-    "composition"
-  ],
-  "location_ids": []
-}

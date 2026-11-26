@@ -1,8 +1,0 @@
-{
-  "base": "langgraph-1909",
-  "framework": "langgraph",
-  "families": [
-    "type_contracts"
-  ],
-  "location_ids": []
-}

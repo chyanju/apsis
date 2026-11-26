@@ -1,8 +1,0 @@
-{
-  "base": "langflow-3636",
-  "framework": "langflow",
-  "families": [
-    "capability_protocol"
-  ],
-  "location_ids": []
-}

@@ -1,8 +1,0 @@
-{
-  "base": "flowise-4930",
-  "framework": "flowise",
-  "families": [
-    "state_concurrency"
-  ],
-  "location_ids": []
-}

@@ -1,0 +1,9 @@
+{
+  "id": "agent-framework-5563-fixed",
+  "of": "agent-framework-5563",
+  "fix_kind": "workflow",
+  "framework_version": "1.3.0",
+  "entry": "Workflow.csproj:AgentFramework5563.Case.Build",
+  "expected_detectors": [],
+  "fix_note": "The edges `Subworkflow -> ExternalGuessNumber -> Subworkflow` route the request to the parent's request port, which raises it as a `RequestInfoEvent`, and the guess back to `Judge`."
+}

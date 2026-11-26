@@ -1,0 +1,11 @@
+{
+  "id": "langflow-4490",
+  "issue_url": "https://github.com/langflow-ai/langflow/issues/4490",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.19.post2",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "router-branch-gating"
+  ],
+  "note": "`ConditionalRouter-auA65` (match text `hello`) and `ConditionalRouter-prgEU` (match text `bye`) wire only `true_result`, to `Prompt-WiQlt.hello` and `ChatOutput-muq1P.input_value`. On a false condition the component on the stopped `true_result` still runs, so the chat shows the input twice and \"Error parsing message\"."
+}

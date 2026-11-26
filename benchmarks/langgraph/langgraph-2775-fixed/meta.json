@@ -1,0 +1,9 @@
+{
+  "id": "langgraph-2775-fixed",
+  "of": "langgraph-2775",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [],
+  "fix_note": "Replaces the list-source edge with three separate edges from `b`, `c` and `d` to `e`, so `e` runs after whichever branch the router selects."
+}

@@ -1,0 +1,9 @@
+{
+  "id": "agent-framework-4202-fixed",
+  "of": "agent-framework-4202",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.0-rc1",
+  "entry": "Workflow.csproj:WorkflowCustomAgentExecutorsSample.Case.Build",
+  "expected_detectors": [],
+  "fix_note": "`FeedbackExecutor` declares `[YieldsOutput(typeof(string))]` and `[SendsMessage(typeof(FeedbackResult))]`, so feedback returns to `SloganWriter` for a revision and the accepted slogan is yielded."
+}

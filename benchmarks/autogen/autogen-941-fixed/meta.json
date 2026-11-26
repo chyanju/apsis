@@ -1,0 +1,9 @@
+{
+  "id": "autogen-941-fixed",
+  "of": "autogen-941",
+  "fix_kind": "workflow",
+  "framework_version": "0.2.2",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [],
+  "fix_note": "`StubAgentBuilder.build` passes each name through `_sanitize` (spaces to underscores, outer underscores stripped), so `\" Content_Generator\"` becomes `Content_Generator`."
+}

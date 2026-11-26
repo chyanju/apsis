@@ -1,0 +1,50 @@
+# This is a LangGraph agent workflow (Python definition).
+# Analyze the workflow below for bugs, working only from this source.
+
+from typing import Annotated, TypedDict
+from langgraph.graph import StateGraph, START, END
+from langgraph.graph.message import add_messages
+
+class State(TypedDict):
+    messages: Annotated[list, add_messages]
+
+def agent(state: State) -> dict:
+    return {}
+
+def agent_2(state: State) -> dict:
+    return {}
+
+def agent_2_1(state: State) -> dict:
+    return {}
+
+def agent_2_2(state: State) -> dict:
+    return {}
+
+def agent_2_3(state: State) -> dict:
+    return {}
+
+def agent_3(state: State) -> dict:
+    return {}
+
+def agent_4(state: State) -> dict:
+    return {}
+
+def build():
+    g = StateGraph(State)
+    g.add_node('agent', agent)
+    g.add_node('agent_2', agent_2)
+    g.add_node('agent_2_1', agent_2_1)
+    g.add_node('agent_2_2', agent_2_2)
+    g.add_node('agent_2_3', agent_2_3)
+    g.add_node('agent_3', agent_3)
+    g.add_node('agent_4', agent_4)
+    g.add_edge(START, 'agent')
+    g.add_conditional_edges('agent', lambda x: ['agent_2', 'agent_3'], {'agent_2': 'agent_2', 'agent_3': 'agent_3'})
+    g.add_conditional_edges('agent_2_1', lambda x: 'True', {'True': 'agent_2_2', 'False': 'agent_2_3'})
+    g.add_edge('agent_2', 'agent_2_1')
+    g.add_edge('agent_3', 'agent_4')
+    g.add_edge('agent_2_2', 'agent_4')
+    g.add_edge('agent_2_3', 'agent_4')
+    g.add_edge('agent_4', END)
+    return g.compile()
+graph = build()

@@ -1,0 +1,234 @@
+{
+  "nodes": [
+    {
+      "id": "chatOpenAI_0",
+      "data": {
+        "id": "chatOpenAI_0",
+        "name": "chatOpenAI",
+        "label": "ChatOpenAI",
+        "version": 6.0,
+        "type": "ChatOpenAI",
+        "category": "Chat Models",
+        "baseClasses": ["ChatOpenAI", "BaseChatModel", "BaseLanguageModel", "Runnable"],
+        "inputAnchors": [],
+        "inputParams": [
+          { "id": "chatOpenAI_0-input-modelName-string", "name": "modelName", "type": "string" }
+        ],
+        "inputs": { "modelName": "gpt-3.5-turbo" },
+        "outputAnchors": [
+          { "id": "chatOpenAI_0-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable", "name": "chatOpenAI", "label": "ChatOpenAI", "type": "ChatOpenAI | BaseChatModel | BaseLanguageModel | Runnable" }
+        ]
+      }
+    },
+    {
+      "id": "promptTemplate_0",
+      "data": {
+        "id": "promptTemplate_0",
+        "name": "promptTemplate",
+        "label": "Prompt Template",
+        "type": "PromptTemplate",
+        "category": "Prompts",
+        "baseClasses": ["PromptTemplate", "BaseStringPromptTemplate", "BasePromptTemplate", "Runnable"],
+        "inputAnchors": [],
+        "inputParams": [
+          { "id": "promptTemplate_0-input-template-string", "name": "template", "type": "string" }
+        ],
+        "inputs": { "template": "Classify whether the following clause is about share transfer. Clause: {question}" },
+        "outputAnchors": [
+          { "id": "promptTemplate_0-output-promptTemplate-PromptTemplate|BaseStringPromptTemplate|BasePromptTemplate|Runnable", "name": "promptTemplate", "label": "PromptTemplate", "type": "PromptTemplate | BaseStringPromptTemplate | BasePromptTemplate | Runnable" }
+        ]
+      }
+    },
+    {
+      "id": "llmChain_0",
+      "data": {
+        "id": "llmChain_0",
+        "name": "llmChain",
+        "label": "LLM Chain",
+        "version": 3.0,
+        "type": "LLMChain",
+        "category": "Chains",
+        "baseClasses": ["LLMChain", "BaseChain", "Runnable"],
+        "inputAnchors": [
+          { "id": "llmChain_0-input-model-BaseLanguageModel", "name": "model", "label": "Language Model", "type": "BaseLanguageModel" },
+          { "id": "llmChain_0-input-prompt-BasePromptTemplate", "name": "prompt", "label": "Prompt", "type": "BasePromptTemplate" }
+        ],
+        "inputParams": [
+          { "id": "llmChain_0-input-chainName-string", "name": "chainName", "type": "string", "optional": true }
+        ],
+        "inputs": {
+          "model": "{{chatOpenAI_0.data.instance}}",
+          "prompt": "{{promptTemplate_0.data.instance}}",
+          "chainName": "ClassifierChain"
+        },
+        "outputAnchors": [
+          { "id": "llmChain_0-output-outputPrediction-string|json", "name": "outputPrediction", "label": "Output Prediction", "type": "string | json" }
+        ]
+      }
+    },
+    {
+      "id": "ifElseFunction_0",
+      "data": {
+        "id": "ifElseFunction_0",
+        "name": "ifElseFunction",
+        "label": "IfElse Function",
+        "version": 1.0,
+        "type": "IfElseFunction",
+        "category": "Utilities",
+        "baseClasses": ["IfElseFunction", "Utilities"],
+        "inputAnchors": [
+          { "id": "ifElseFunction_0-input-functionInputVariables-json", "name": "functionInputVariables", "label": "Input Variables", "type": "json", "optional": true, "list": true }
+        ],
+        "inputParams": [
+          { "id": "ifElseFunction_0-input-ifFunction-code", "name": "ifFunction", "type": "code" },
+          { "id": "ifElseFunction_0-input-elseFunction-code", "name": "elseFunction", "type": "code" }
+        ],
+        "inputs": {
+          "functionInputVariables": ["{{llmChain_0.data.instance}}"],
+          "ifFunction": "if ($input.includes('share transfer')) { return true; }",
+          "elseFunction": "return false;"
+        },
+        "outputAnchors": [
+          { "id": "ifElseFunction_0-output-returnTrue-string|number|boolean|json|array", "name": "returnTrue", "label": "True", "type": "string | number | boolean | json | array" },
+          { "id": "ifElseFunction_0-output-returnFalse-string|number|boolean|json|array", "name": "returnFalse", "label": "False", "type": "string | number | boolean | json | array" }
+        ]
+      }
+    },
+    {
+      "id": "promptTemplate_1",
+      "data": {
+        "id": "promptTemplate_1",
+        "name": "promptTemplate",
+        "label": "Prompt Template",
+        "type": "PromptTemplate",
+        "category": "Prompts",
+        "baseClasses": ["PromptTemplate", "BaseStringPromptTemplate", "BasePromptTemplate", "Runnable"],
+        "inputAnchors": [],
+        "inputParams": [
+          { "id": "promptTemplate_1-input-template-string", "name": "template", "type": "string" }
+        ],
+        "inputs": { "template": "Summarize the share-transfer clause for the shareholders: {question}" },
+        "outputAnchors": [
+          { "id": "promptTemplate_1-output-promptTemplate-PromptTemplate|BaseStringPromptTemplate|BasePromptTemplate|Runnable", "name": "promptTemplate", "label": "PromptTemplate", "type": "PromptTemplate | BaseStringPromptTemplate | BasePromptTemplate | Runnable" }
+        ]
+      }
+    },
+    {
+      "id": "llmChain_1",
+      "data": {
+        "id": "llmChain_1",
+        "name": "llmChain",
+        "label": "LLM Chain",
+        "version": 3.0,
+        "type": "LLMChain",
+        "category": "Chains",
+        "baseClasses": ["LLMChain", "BaseChain", "Runnable"],
+        "inputAnchors": [
+          { "id": "llmChain_1-input-model-BaseLanguageModel", "name": "model", "label": "Language Model", "type": "BaseLanguageModel" },
+          { "id": "llmChain_1-input-prompt-BasePromptTemplate", "name": "prompt", "label": "Prompt", "type": "BasePromptTemplate" }
+        ],
+        "inputParams": [
+          { "id": "llmChain_1-input-chainName-string", "name": "chainName", "type": "string", "optional": true }
+        ],
+        "inputs": {
+          "model": "",
+          "prompt": "{{promptTemplate_1.data.instance}}",
+          "chainName": "ShareTransferChain"
+        },
+        "outputAnchors": [
+          { "id": "llmChain_1-output-outputPrediction-string|json", "name": "outputPrediction", "label": "Output Prediction", "type": "string | json" }
+        ]
+      }
+    },
+    {
+      "id": "promptTemplate_2",
+      "data": {
+        "id": "promptTemplate_2",
+        "name": "promptTemplate",
+        "label": "Prompt Template",
+        "type": "PromptTemplate",
+        "category": "Prompts",
+        "baseClasses": ["PromptTemplate", "BaseStringPromptTemplate", "BasePromptTemplate", "Runnable"],
+        "inputAnchors": [],
+        "inputParams": [
+          { "id": "promptTemplate_2-input-template-string", "name": "template", "type": "string" }
+        ],
+        "inputs": { "template": "Answer the general shareholder-agreement question: {question}" },
+        "outputAnchors": [
+          { "id": "promptTemplate_2-output-promptTemplate-PromptTemplate|BaseStringPromptTemplate|BasePromptTemplate|Runnable", "name": "promptTemplate", "label": "PromptTemplate", "type": "PromptTemplate | BaseStringPromptTemplate | BasePromptTemplate | Runnable" }
+        ]
+      }
+    },
+    {
+      "id": "llmChain_2",
+      "data": {
+        "id": "llmChain_2",
+        "name": "llmChain",
+        "label": "LLM Chain",
+        "version": 3.0,
+        "type": "LLMChain",
+        "category": "Chains",
+        "baseClasses": ["LLMChain", "BaseChain", "Runnable"],
+        "inputAnchors": [
+          { "id": "llmChain_2-input-model-BaseLanguageModel", "name": "model", "label": "Language Model", "type": "BaseLanguageModel" },
+          { "id": "llmChain_2-input-prompt-BasePromptTemplate", "name": "prompt", "label": "Prompt", "type": "BasePromptTemplate" }
+        ],
+        "inputParams": [
+          { "id": "llmChain_2-input-chainName-string", "name": "chainName", "type": "string", "optional": true }
+        ],
+        "inputs": {
+          "model": "",
+          "prompt": "{{promptTemplate_2.data.instance}}",
+          "chainName": "GeneralChain"
+        },
+        "outputAnchors": [
+          { "id": "llmChain_2-output-outputPrediction-string|json", "name": "outputPrediction", "label": "Output Prediction", "type": "string | json" }
+        ]
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "chatOpenAI_0",
+      "target": "llmChain_0",
+      "sourceHandle": "chatOpenAI_0-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable",
+      "targetHandle": "llmChain_0-input-model-BaseLanguageModel"
+    },
+    {
+      "source": "promptTemplate_0",
+      "target": "llmChain_0",
+      "sourceHandle": "promptTemplate_0-output-promptTemplate-PromptTemplate|BaseStringPromptTemplate|BasePromptTemplate|Runnable",
+      "targetHandle": "llmChain_0-input-prompt-BasePromptTemplate"
+    },
+    {
+      "source": "llmChain_0",
+      "target": "ifElseFunction_0",
+      "sourceHandle": "llmChain_0-output-outputPrediction-string|json",
+      "targetHandle": "ifElseFunction_0-input-functionInputVariables-json"
+    },
+    {
+      "source": "ifElseFunction_0",
+      "target": "llmChain_1",
+      "sourceHandle": "ifElseFunction_0-output-returnTrue-string|number|boolean|json|array",
+      "targetHandle": "llmChain_1-input-prompt-BasePromptTemplate"
+    },
+    {
+      "source": "promptTemplate_1",
+      "target": "llmChain_1",
+      "sourceHandle": "promptTemplate_1-output-promptTemplate-PromptTemplate|BaseStringPromptTemplate|BasePromptTemplate|Runnable",
+      "targetHandle": "llmChain_1-input-prompt-BasePromptTemplate"
+    },
+    {
+      "source": "ifElseFunction_0",
+      "target": "llmChain_2",
+      "sourceHandle": "ifElseFunction_0-output-returnFalse-string|number|boolean|json|array",
+      "targetHandle": "llmChain_2-input-prompt-BasePromptTemplate"
+    },
+    {
+      "source": "promptTemplate_2",
+      "target": "llmChain_2",
+      "sourceHandle": "promptTemplate_2-output-promptTemplate-PromptTemplate|BaseStringPromptTemplate|BasePromptTemplate|Runnable",
+      "targetHandle": "llmChain_2-input-prompt-BasePromptTemplate"
+    }
+  ]
+}

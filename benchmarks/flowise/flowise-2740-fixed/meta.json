@@ -1,0 +1,9 @@
+{
+  "id": "flowise-2740-fixed",
+  "of": "flowise-2740",
+  "fix_kind": "workflow",
+  "framework_version": "2.0.0",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "Adds an Agent Memory node `agentMemory_0` on the `memory` input of `worker_0`; it supplies `{chat_history}` to the worker's prompt. The twin is pinned to Flowise 2.0.0, the release the fix targets."
+}

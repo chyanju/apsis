@@ -1,0 +1,9 @@
+{
+  "id": "autogen-3287-fixed",
+  "of": "autogen-3287",
+  "fix_kind": "workflow",
+  "framework_version": "0.2.32",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [],
+  "fix_note": "One queue, `poem_chat_queue`, runs `agent1` and then `agent2` and is registered on `trigger=\"user\"`, the sender of the outer message to `controller`, so both recipients run."
+}

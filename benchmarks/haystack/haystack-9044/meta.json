@@ -1,0 +1,11 @@
+{
+  "id": "haystack-9044",
+  "issue_url": "https://github.com/deepset-ai/haystack/issues/9044",
+  "fix_kind": "workflow",
+  "framework_version": "2.9.0",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [
+    "readiness-liveness"
+  ],
+  "note": "The mandatory input `prompt_builder.documents` comes from `retriever`, outside the retry loop `prompt_builder -> generator -> validator`, and is consumed on the first round. When `validator.invalid_replies` comes back, `documents` is missing, so the loop stops without an error."
+}

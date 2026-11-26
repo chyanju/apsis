@@ -1,0 +1,11 @@
+{
+  "id": "flowise-5142",
+  "issue_url": "https://github.com/FlowiseAI/Flowise/issues/5142",
+  "fix_kind": "workflow",
+  "framework_version": "3.0.6",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "channel-write-merge"
+  ],
+  "note": "`customFunctionAgentflow_0` returns `dialogue_finished` inside a `state` object but has an empty `customFunctionUpdateState`, so the state keeps the Start value 'false'. `conditionAgentflow_0` always takes the else branch: `loopAgentflow_0` re-runs 'Dialogue Turn' until `maxLoopCount` and 'Wrap Up' never runs."
+}

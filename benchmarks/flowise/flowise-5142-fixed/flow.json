@@ -1,0 +1,181 @@
+{
+  "nodes": [
+    {
+      "id": "startAgentflow_0",
+      "data": {
+        "id": "startAgentflow_0",
+        "name": "startAgentflow",
+        "label": "Start",
+        "category": "Agent Flows",
+        "baseClasses": ["Start"],
+        "inputAnchors": [],
+        "inputParams": [
+          { "id": "startAgentflow_0-input-startState-array", "name": "startState", "label": "State", "type": "array" }
+        ],
+        "inputs": {
+          "startInputType": "chatInput",
+          "startState": [
+            { "key": "dialogue_finished", "value": "false" },
+            { "key": "counter", "value": "0" }
+          ]
+        },
+        "outputAnchors": [
+          { "id": "startAgentflow_0-output-startAgentflow", "name": "startAgentflow", "label": "Start", "type": "Start" }
+        ]
+      }
+    },
+    {
+      "id": "llmAgentflow_0",
+      "data": {
+        "id": "llmAgentflow_0",
+        "name": "llmAgentflow",
+        "label": "Dialogue Turn",
+        "category": "Agent Flows",
+        "baseClasses": ["LLM"],
+        "inputAnchors": [],
+        "inputParams": [
+          { "id": "llmAgentflow_0-input-llmModel-asyncOptions", "name": "llmModel", "label": "Model", "type": "asyncOptions" }
+        ],
+        "inputs": {
+          "llmModel": "chatOpenAI",
+          "llmMessages": [
+            { "role": "system", "content": "Continue the dialogue with the user. Reply 'END_SESSION' if the user is done." }
+          ],
+          "llmEnableMemory": true,
+          "llmMemoryType": "allMessages",
+          "llmReturnResponseAs": "assistantMessage"
+        },
+        "outputAnchors": [
+          { "id": "llmAgentflow_0-output-llmAgentflow", "name": "llmAgentflow", "label": "LLM", "type": "LLM" }
+        ]
+      }
+    },
+    {
+      "id": "customFunctionAgentflow_0",
+      "data": {
+        "id": "customFunctionAgentflow_0",
+        "name": "customFunctionAgentflow",
+        "label": "Update Dialogue State",
+        "category": "Agent Flows",
+        "baseClasses": ["CustomFunction"],
+        "inputAnchors": [],
+        "inputParams": [
+          { "id": "customFunctionAgentflow_0-input-customFunctionJavascriptFunction-code", "name": "customFunctionJavascriptFunction", "label": "Javascript Function", "type": "code" },
+          { "id": "customFunctionAgentflow_0-input-customFunctionUpdateState-array", "name": "customFunctionUpdateState", "label": "Update Flow State", "type": "array" }
+        ],
+        "inputs": {
+          "customFunctionInputVariables": "",
+          "customFunctionJavascriptFunction": "return {\n  dialogue_finished: \"true\",\n  counter: parseInt($flow.state.counter || 0) + 1\n};",
+          "customFunctionUpdateState": [
+            { "key": "dialogue_finished", "value": "{{ output.dialogue_finished }}" },
+            { "key": "counter", "value": "{{ output.counter }}" }
+          ]
+        },
+        "outputAnchors": [
+          { "id": "customFunctionAgentflow_0-output-customFunctionAgentflow", "name": "customFunctionAgentflow", "label": "Custom Function", "type": "CustomFunction" }
+        ]
+      }
+    },
+    {
+      "id": "conditionAgentflow_0",
+      "data": {
+        "id": "conditionAgentflow_0",
+        "name": "conditionAgentflow",
+        "label": "Dialogue Finished?",
+        "category": "Agent Flows",
+        "baseClasses": ["Condition"],
+        "inputAnchors": [],
+        "inputParams": [
+          { "id": "conditionAgentflow_0-input-conditions-array", "name": "conditions", "label": "Conditions", "type": "array" }
+        ],
+        "inputs": {
+          "conditions": [
+            {
+              "type": "string",
+              "value1": "{{ $flow.state.dialogue_finished }}",
+              "operation": "equal",
+              "value2": "true"
+            }
+          ]
+        },
+        "outputAnchors": [
+          { "id": "conditionAgentflow_0-output-0", "name": "conditionAgentflow", "label": "Condition", "type": "Condition" },
+          { "id": "conditionAgentflow_0-output-1", "name": "conditionAgentflow", "label": "Condition", "type": "Condition" }
+        ]
+      }
+    },
+    {
+      "id": "llmAgentflow_1",
+      "data": {
+        "id": "llmAgentflow_1",
+        "name": "llmAgentflow",
+        "label": "Wrap Up",
+        "category": "Agent Flows",
+        "baseClasses": ["LLM"],
+        "inputAnchors": [],
+        "inputParams": [
+          { "id": "llmAgentflow_1-input-llmModel-asyncOptions", "name": "llmModel", "label": "Model", "type": "asyncOptions" }
+        ],
+        "inputs": {
+          "llmModel": "chatOpenAI",
+          "llmMessages": [
+            { "role": "system", "content": "The conversation is over. Thank the user and end." }
+          ],
+          "llmEnableMemory": true,
+          "llmMemoryType": "allMessages",
+          "llmReturnResponseAs": "assistantMessage"
+        },
+        "outputAnchors": [
+          { "id": "llmAgentflow_1-output-llmAgentflow", "name": "llmAgentflow", "label": "LLM", "type": "LLM" }
+        ]
+      }
+    },
+    {
+      "id": "loopAgentflow_0",
+      "data": {
+        "id": "loopAgentflow_0",
+        "name": "loopAgentflow",
+        "label": "Loop Back",
+        "category": "Agent Flows",
+        "baseClasses": ["Loop"],
+        "inputAnchors": [],
+        "inputParams": [
+          { "id": "loopAgentflow_0-input-loopBackToNode-asyncOptions", "name": "loopBackToNode", "label": "Loop Back To", "type": "asyncOptions" },
+          { "id": "loopAgentflow_0-input-maxLoopCount-number", "name": "maxLoopCount", "label": "Max Loop Count", "type": "number" }
+        ],
+        "inputs": {
+          "loopBackToNode": "llmAgentflow_0-Dialogue Turn",
+          "maxLoopCount": 5
+        },
+        "outputAnchors": []
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "startAgentflow_0", "target": "llmAgentflow_0",
+      "sourceHandle": "startAgentflow_0-output-startAgentflow",
+      "targetHandle": "llmAgentflow_0"
+    },
+    {
+      "source": "llmAgentflow_0", "target": "customFunctionAgentflow_0",
+      "sourceHandle": "llmAgentflow_0-output-llmAgentflow",
+      "targetHandle": "customFunctionAgentflow_0"
+    },
+    {
+      "source": "customFunctionAgentflow_0", "target": "conditionAgentflow_0",
+      "sourceHandle": "customFunctionAgentflow_0-output-customFunctionAgentflow",
+      "targetHandle": "conditionAgentflow_0"
+    },
+    {
+      "source": "conditionAgentflow_0", "target": "llmAgentflow_1",
+      "sourceHandle": "conditionAgentflow_0-output-0",
+      "targetHandle": "llmAgentflow_1"
+    },
+    {
+      "source": "conditionAgentflow_0", "target": "loopAgentflow_0",
+      "sourceHandle": "conditionAgentflow_0-output-1",
+      "targetHandle": "loopAgentflow_0"
+    }
+  ]
+}

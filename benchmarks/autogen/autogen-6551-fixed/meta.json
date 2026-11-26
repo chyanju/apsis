@@ -1,0 +1,9 @@
+{
+  "id": "autogen-6551-fixed",
+  "of": "autogen-6551",
+  "fix_kind": "workflow",
+  "framework_version": "0.5.6",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [],
+  "fix_note": "`E` is added with `activation=\"any\"`, so it runs as soon as either `C` or `D` has finished."
+}

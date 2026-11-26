@@ -1,0 +1,9 @@
+{
+  "id": "flowise-2176-fixed",
+  "of": "flowise-2176",
+  "fix_kind": "workflow",
+  "framework_version": "1.6.5",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "Adds two ChatOpenAI nodes: `chatOpenAI_1` feeds the `model` input of `llmChain_1` and `chatOpenAI_2` that of `llmChain_2`. Every chain now has a model."
+}

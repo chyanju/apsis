@@ -1,0 +1,11 @@
+{
+  "id": "langgraph-6340",
+  "issue_url": "https://github.com/langchain-ai/langgraph/issues/6340",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [
+    "type-contract"
+  ],
+  "note": "The router `route_with_store` after `simple_node` declares `store: BaseStore`, which LangGraph does not inject into the path function of a conditional edge on the server / `update_state` path, so the run fails with `ValueError: Missing required config key 'store' for 'route_with_store'`."
+}

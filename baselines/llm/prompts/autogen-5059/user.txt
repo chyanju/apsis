@@ -1,0 +1,19 @@
+# This is a AutoGen agent workflow (Python definition).
+# Analyze the workflow below for bugs, working only from this source.
+
+from autogen_agentchat.agents import AssistantAgent
+from autogen_agentchat.teams import MagenticOneGroupChat
+from autogen_agentchat.conditions import TextMentionTermination
+from autogen_ext.models.openai import OpenAIChatCompletionClient
+
+def get_address_coordinates(address: str) -> tuple[float, float]:
+    return (25.769472, -80.132992)
+model_client = OpenAIChatCompletionClient(model='gpt-4o', api_key='PLACEHOLDER')
+agent_address_locator = AssistantAgent(name='agent_address_locator', description='This agent can find the coordinates of a given address (latitude and longitude).', model_client=model_client, tools=[get_address_coordinates], reflect_on_tool_use=False, system_message='Resolve the address to coordinates using your tool.')
+agent_reporter = AssistantAgent(name='agent_reporter', description='Summarizes the located coordinates for the user.', model_client=model_client, system_message='Report the coordinates to the user; reply TERMINATE when done.')
+
+def build():
+    termination = TextMentionTermination('TERMINATE')
+    team = MagenticOneGroupChat(participants=[agent_address_locator, agent_reporter], model_client=model_client, termination_condition=termination)
+    return team
+workflow = build()

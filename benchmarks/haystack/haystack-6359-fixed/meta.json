@@ -1,0 +1,9 @@
+{
+  "id": "haystack-6359-fixed",
+  "of": "haystack-6359",
+  "fix_kind": "workflow",
+  "framework_version": "2.0.0b5",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [],
+  "fix_note": "`indexing` and `query` each create their own `TextCleaner` and `Embedder`, so no component object belongs to two pipelines."
+}

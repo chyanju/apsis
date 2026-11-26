@@ -1,0 +1,9 @@
+{
+  "id": "agent-framework-2163-fixed",
+  "of": "agent-framework-2163",
+  "fix_kind": "workflow",
+  "framework_version": "1.9.0",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [],
+  "fix_note": "The edge `subworkflow_executor -> post_process` leads to a plain `PostProcessExecutor`, now the output source (`output_from=[post_process]`), which yields the sub-workflow's result as the parent's output."
+}

@@ -1,0 +1,301 @@
+# This is a Flowise agent workflow (exported flow.json).
+# Analyze the workflow below for bugs, working only from this source.
+
+{
+  "nodes": [
+    {
+      "id": "startAgentflow_0",
+      "data": {
+        "id": "startAgentflow_0",
+        "name": "startAgentflow",
+        "label": "Start",
+        "category": "Agent Flows",
+        "baseClasses": [
+          "Start"
+        ],
+        "inputAnchors": [],
+        "inputParams": [
+          {
+            "id": "startAgentflow_0-input-startState-array",
+            "name": "startState",
+            "label": "State",
+            "type": "array"
+          }
+        ],
+        "inputs": {
+          "startInputType": "chatInput",
+          "startState": [
+            {
+              "key": "chunks",
+              "value": "[]"
+            },
+            {
+              "key": "index",
+              "value": ""
+            },
+            {
+              "key": "summaries",
+              "value": "[]"
+            }
+          ]
+        },
+        "outputAnchors": [
+          {
+            "id": "startAgentflow_0-output-startAgentflow",
+            "name": "startAgentflow",
+            "label": "Start",
+            "type": "Start"
+          }
+        ]
+      }
+    },
+    {
+      "id": "customFunctionAgentflow_0",
+      "data": {
+        "id": "customFunctionAgentflow_0",
+        "name": "customFunctionAgentflow",
+        "label": "Split Into Chunks",
+        "category": "Agent Flows",
+        "baseClasses": [
+          "CustomFunction"
+        ],
+        "inputAnchors": [],
+        "inputParams": [
+          {
+            "id": "customFunctionAgentflow_0-input-customFunctionJavascriptFunction-code",
+            "name": "customFunctionJavascriptFunction",
+            "label": "Javascript Function",
+            "type": "code"
+          },
+          {
+            "id": "customFunctionAgentflow_0-input-customFunctionUpdateState-array",
+            "name": "customFunctionUpdateState",
+            "label": "Update State",
+            "type": "array"
+          }
+        ],
+        "inputs": {
+          "customFunctionInputVariables": [
+            {
+              "variableName": "file",
+              "variableValue": "{{ file_attachment }}"
+            }
+          ],
+          "customFunctionJavascriptFunction": "const chunks = String($file).match(/.{1,1000}/g) || [];\nreturn chunks;",
+          "customFunctionUpdateState": [
+            {
+              "key": "chunks",
+              "value": "{{ output }}"
+            }
+          ]
+        },
+        "outputAnchors": [
+          {
+            "id": "customFunctionAgentflow_0-output-customFunctionAgentflow",
+            "name": "customFunctionAgentflow",
+            "label": "Custom Function",
+            "type": "CustomFunction"
+          }
+        ]
+      }
+    },
+    {
+      "id": "iterationAgentflow_0",
+      "data": {
+        "id": "iterationAgentflow_0",
+        "name": "iterationAgentflow",
+        "label": "Iteration",
+        "category": "Agent Flows",
+        "baseClasses": [
+          "Iteration"
+        ],
+        "inputAnchors": [],
+        "inputParams": [
+          {
+            "id": "iterationAgentflow_0-input-iterationInput-string",
+            "name": "iterationInput",
+            "label": "Array Input",
+            "type": "string"
+          }
+        ],
+        "inputs": {
+          "iterationInput": "{{ $flow.state.chunks }}"
+        },
+        "outputAnchors": [
+          {
+            "id": "iterationAgentflow_0-output-iterationAgentflow",
+            "name": "iterationAgentflow",
+            "label": "Iteration",
+            "type": "Iteration"
+          }
+        ]
+      }
+    },
+    {
+      "id": "agentAgentflow_0",
+      "parentNode": "iterationAgentflow_0",
+      "extent": "parent",
+      "data": {
+        "id": "agentAgentflow_0",
+        "name": "agentAgentflow",
+        "label": "Summarize Chunk",
+        "category": "Agent Flows",
+        "baseClasses": [
+          "Agent"
+        ],
+        "parentNode": "iterationAgentflow_0",
+        "inputAnchors": [],
+        "inputParams": [
+          {
+            "id": "agentAgentflow_0-input-agentModel-asyncOptions",
+            "name": "agentModel",
+            "label": "Model",
+            "type": "asyncOptions"
+          },
+          {
+            "id": "agentAgentflow_0-input-agentUpdateState-array",
+            "name": "agentUpdateState",
+            "label": "Update Flow State",
+            "type": "array"
+          }
+        ],
+        "inputs": {
+          "agentModel": "chatOpenAI",
+          "agentMessages": [
+            {
+              "role": "user",
+              "content": "Summarize this: {{ $iteration }}"
+            }
+          ],
+          "agentEnableMemory": false,
+          "agentReturnResponseAs": "userMessage",
+          "agentTools": "",
+          "agentUpdateState": ""
+        },
+        "outputAnchors": [
+          {
+            "id": "agentAgentflow_0-output-agentAgentflow",
+            "name": "agentAgentflow",
+            "label": "Agent",
+            "type": "Agent"
+          }
+        ]
+      }
+    },
+    {
+      "id": "customFunctionAgentflow_1",
+      "parentNode": "iterationAgentflow_0",
+      "extent": "parent",
+      "data": {
+        "id": "customFunctionAgentflow_1",
+        "name": "customFunctionAgentflow",
+        "label": "Append Summary",
+        "category": "Agent Flows",
+        "baseClasses": [
+          "CustomFunction"
+        ],
+        "parentNode": "iterationAgentflow_0",
+        "inputAnchors": [],
+        "inputParams": [
+          {
+            "id": "customFunctionAgentflow_1-input-customFunctionJavascriptFunction-code",
+            "name": "customFunctionJavascriptFunction",
+            "label": "Javascript Function",
+            "type": "code"
+          },
+          {
+            "id": "customFunctionAgentflow_1-input-customFunctionUpdateState-array",
+            "name": "customFunctionUpdateState",
+            "label": "Update State",
+            "type": "array"
+          }
+        ],
+        "inputs": {
+          "customFunctionInputVariables": [
+            {
+              "variableName": "summary",
+              "variableValue": "{{ agentAgentflow_0 }}"
+            }
+          ],
+          "customFunctionJavascriptFunction": "$flow.state.summaries ??= [];\n$flow.state.summaries.push($summary);\nreturn $flow.state.summaries;",
+          "customFunctionUpdateState": ""
+        },
+        "outputAnchors": [
+          {
+            "id": "customFunctionAgentflow_1-output-customFunctionAgentflow",
+            "name": "customFunctionAgentflow",
+            "label": "Custom Function",
+            "type": "CustomFunction"
+          }
+        ]
+      }
+    },
+    {
+      "id": "agentAgentflow_1",
+      "data": {
+        "id": "agentAgentflow_1",
+        "name": "agentAgentflow",
+        "label": "Reduce Summaries",
+        "category": "Agent Flows",
+        "baseClasses": [
+          "Agent"
+        ],
+        "inputAnchors": [],
+        "inputParams": [
+          {
+            "id": "agentAgentflow_1-input-agentModel-asyncOptions",
+            "name": "agentModel",
+            "label": "Model",
+            "type": "asyncOptions"
+          }
+        ],
+        "inputs": {
+          "agentModel": "chatOpenAI",
+          "agentMessages": [
+            {
+              "role": "user",
+              "content": "Give me a final summary using all of these: {{ $flow.state.summaries }}"
+            }
+          ],
+          "agentEnableMemory": false,
+          "agentReturnResponseAs": "userMessage",
+          "agentTools": ""
+        },
+        "outputAnchors": [
+          {
+            "id": "agentAgentflow_1-output-agentAgentflow",
+            "name": "agentAgentflow",
+            "label": "Agent",
+            "type": "Agent"
+          }
+        ]
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "startAgentflow_0",
+      "target": "customFunctionAgentflow_0",
+      "sourceHandle": "startAgentflow_0-output-startAgentflow",
+      "targetHandle": "customFunctionAgentflow_0"
+    },
+    {
+      "source": "customFunctionAgentflow_0",
+      "target": "iterationAgentflow_0",
+      "sourceHandle": "customFunctionAgentflow_0-output-customFunctionAgentflow",
+      "targetHandle": "iterationAgentflow_0"
+    },
+    {
+      "source": "agentAgentflow_0",
+      "target": "customFunctionAgentflow_1",
+      "sourceHandle": "agentAgentflow_0-output-agentAgentflow",
+      "targetHandle": "customFunctionAgentflow_1"
+    },
+    {
+      "source": "iterationAgentflow_0",
+      "target": "agentAgentflow_1",
+      "sourceHandle": "iterationAgentflow_0-output-iterationAgentflow",
+      "targetHandle": "agentAgentflow_1"
+    }
+  ]
+}

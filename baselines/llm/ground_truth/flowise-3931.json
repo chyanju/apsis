@@ -1,0 +1,11 @@
+{
+  "base": "flowise-3931",
+  "framework": "flowise",
+  "families": [
+    "capability_protocol"
+  ],
+  "location_ids": [
+    "chatMoonshotAI_0",
+    "chatMoonshotAI_0->seqConditionAgent_0"
+  ]
+}

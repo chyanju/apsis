@@ -1,0 +1,9 @@
+{
+  "id": "agent-framework-2918-fixed",
+  "of": "agent-framework-2918",
+  "fix_kind": "workflow",
+  "framework_version": "1.9.0",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [],
+  "fix_note": "`ResearchTask` carries the parameter in a `report_currency` field, so it crosses the `WorkflowExecutor` boundary with the message and `fundamentals` reads `task.report_currency`."
+}

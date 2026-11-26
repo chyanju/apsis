@@ -1,0 +1,331 @@
+# This is a Langflow agent workflow (exported flow.json).
+# Analyze the workflow below for bugs, working only from this source.
+
+{
+  "id": "langflow-11234",
+  "name": "Run Flow over a TextInput sub-flow (no input handle)",
+  "last_tested_version": "1.7.1",
+  "is_component": false,
+  "data": {
+    "nodes": [
+      {
+        "id": "ChatInput-main1",
+        "data": {
+          "type": "ChatInput",
+          "node": {
+            "template": {
+              "input_value": {
+                "type": "str",
+                "required": false,
+                "list": false,
+                "input_types": []
+              }
+            },
+            "outputs": [
+              {
+                "name": "message",
+                "display_name": "Message",
+                "types": [
+                  "Message"
+                ],
+                "method": "message_response"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "Prompt-main2",
+        "data": {
+          "type": "Prompt",
+          "node": {
+            "template": {
+              "template": {
+                "type": "prompt",
+                "required": true,
+                "list": false,
+                "input_types": [],
+                "value": "Summarize this: {topic}"
+              },
+              "topic": {
+                "type": "str",
+                "required": false,
+                "list": false,
+                "input_types": [
+                  "Message"
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "name": "prompt",
+                "display_name": "Prompt Message",
+                "types": [
+                  "Message"
+                ],
+                "method": "build_prompt"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "RunFlow-rf001",
+        "data": {
+          "type": "RunFlow",
+          "node": {
+            "beta": true,
+            "template": {
+              "flow_name_selected": {
+                "type": "str",
+                "required": true,
+                "list": false,
+                "input_types": [],
+                "options": [
+                  "Summarizer Subflow"
+                ],
+                "value": "Summarizer Subflow"
+              },
+              "session_id": {
+                "type": "str",
+                "required": false,
+                "list": false,
+                "input_types": [
+                  "Message"
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "name": "flow_outputs_message",
+                "display_name": "Flow Message Output",
+                "types": [
+                  "Message"
+                ],
+                "method": "message_output"
+              }
+            ]
+          },
+          "referenced_flow": "Summarizer Subflow"
+        }
+      },
+      {
+        "id": "ChatOutput-main3",
+        "data": {
+          "type": "ChatOutput",
+          "node": {
+            "template": {
+              "input_value": {
+                "type": "str",
+                "required": false,
+                "list": false,
+                "input_types": [
+                  "Message"
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "name": "message",
+                "display_name": "Message",
+                "types": [
+                  "Message"
+                ],
+                "method": "message_response"
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "edges": [
+      {
+        "source": "ChatInput-main1",
+        "target": "Prompt-main2",
+        "sourceHandle": "message",
+        "targetHandle": "topic",
+        "data": {
+          "sourceHandle": {
+            "dataType": "ChatInput",
+            "name": "message",
+            "output_types": [
+              "Message"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "topic",
+            "inputTypes": [
+              "Message"
+            ],
+            "type": "str"
+          }
+        }
+      },
+      {
+        "source": "RunFlow-rf001",
+        "target": "ChatOutput-main3",
+        "sourceHandle": "flow_outputs_message",
+        "targetHandle": "input_value",
+        "data": {
+          "sourceHandle": {
+            "dataType": "RunFlow",
+            "name": "flow_outputs_message",
+            "output_types": [
+              "Message"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "input_value",
+            "inputTypes": [
+              "Message"
+            ],
+            "type": "str"
+          }
+        }
+      }
+    ]
+  },
+  "referenced_flows": {
+    "Summarizer Subflow": {
+      "data": {
+        "nodes": [
+          {
+            "id": "TextInput-sub1",
+            "data": {
+              "type": "TextInput",
+              "node": {
+                "template": {
+                  "input_value": {
+                    "type": "str",
+                    "required": true,
+                    "list": false,
+                    "input_types": []
+                  }
+                },
+                "outputs": [
+                  {
+                    "name": "text",
+                    "display_name": "Message",
+                    "types": [
+                      "Message"
+                    ],
+                    "method": "text_response"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "id": "Prompt-sub2",
+            "data": {
+              "type": "Prompt",
+              "node": {
+                "template": {
+                  "template": {
+                    "type": "prompt",
+                    "required": true,
+                    "list": false,
+                    "input_types": [],
+                    "value": "{input}"
+                  },
+                  "input": {
+                    "type": "str",
+                    "required": false,
+                    "list": false,
+                    "input_types": [
+                      "Message"
+                    ]
+                  }
+                },
+                "outputs": [
+                  {
+                    "name": "prompt",
+                    "display_name": "Prompt Message",
+                    "types": [
+                      "Message"
+                    ],
+                    "method": "build_prompt"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "id": "TextOutput-sub3",
+            "data": {
+              "type": "TextOutput",
+              "node": {
+                "template": {
+                  "input_value": {
+                    "type": "str",
+                    "required": true,
+                    "list": false,
+                    "input_types": [
+                      "Message"
+                    ]
+                  }
+                },
+                "outputs": [
+                  {
+                    "name": "text",
+                    "display_name": "Message",
+                    "types": [
+                      "Message"
+                    ],
+                    "method": "text_response"
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "edges": [
+          {
+            "source": "TextInput-sub1",
+            "target": "Prompt-sub2",
+            "sourceHandle": "text",
+            "targetHandle": "input",
+            "data": {
+              "sourceHandle": {
+                "dataType": "TextInput",
+                "name": "text",
+                "output_types": [
+                  "Message"
+                ]
+              },
+              "targetHandle": {
+                "fieldName": "input",
+                "inputTypes": [
+                  "Message"
+                ],
+                "type": "str"
+              }
+            }
+          },
+          {
+            "source": "Prompt-sub2",
+            "target": "TextOutput-sub3",
+            "sourceHandle": "prompt",
+            "targetHandle": "input_value",
+            "data": {
+              "sourceHandle": {
+                "dataType": "Prompt",
+                "name": "prompt",
+                "output_types": [
+                  "Message"
+                ]
+              },
+              "targetHandle": {
+                "fieldName": "input_value",
+                "inputTypes": [
+                  "Message"
+                ],
+                "type": "str"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

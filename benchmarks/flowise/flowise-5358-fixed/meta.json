@@ -1,0 +1,9 @@
+{
+  "id": "flowise-5358-fixed",
+  "of": "flowise-5358",
+  "fix_kind": "workflow",
+  "framework_version": "3.0.6",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "Routes `conditionAgentflow_0-output-0` to a new Iteration node `iterationAgentflow_1` ('Process Extra Documents') that leads to `directReplyAgentflow_0`. `iterationAgentflow_0` is then fed by `agentAgentflow_0` alone."
+}

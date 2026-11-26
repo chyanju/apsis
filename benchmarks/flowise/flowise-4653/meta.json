@@ -1,0 +1,11 @@
+{
+  "id": "flowise-4653",
+  "issue_url": "https://github.com/FlowiseAI/Flowise/issues/4653",
+  "fix_kind": "workflow",
+  "framework_version": "3.0.1",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "type-contract"
+  ],
+  "note": "`loopAgentflow_0` loops back to `toolAgentflow_0` ('Brave Search'), a Tool node: both its `loopBackToNode` value and its loop-back edge point there. The loop restart only re-runs LLM and Agent nodes, so the loop silently does nothing."
+}

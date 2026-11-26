@@ -1,0 +1,11 @@
+{
+  "id": "haystack-9507",
+  "issue_url": "https://github.com/deepset-ai/haystack/issues/9507",
+  "fix_kind": "workflow",
+  "framework_version": "2.30.2",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [
+    "readiness-liveness"
+  ],
+  "note": "`consumer` has two mandatory inputs, `assistant_reply` and `tool_call`, connected from the two mutually exclusive outputs of a `ConditionalRouter`. Only one of them arrives in any run, so `consumer` waits for the other one and is silently skipped."
+}

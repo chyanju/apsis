@@ -1,0 +1,9 @@
+{
+  "id": "autogen-6084-fixed0",
+  "of": "autogen-6084",
+  "fix_kind": "workflow",
+  "framework_version": "0.4.7",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [],
+  "fix_note": "Drops `tools` from `test_agent`, so it sends only `TextMessage`, which `MultimodalWebSurfer` accepts."
+}

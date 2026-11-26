@@ -1,0 +1,39 @@
+{
+ "execution_model": "bsp-superstep",
+ "framework": "example",
+ "nodes": [
+  {
+   "id": "v",
+   "type_name": "Step",
+   "kind": "component",
+   "attrs": {
+    "full_state_update": "true"
+   }
+  }
+ ],
+ "edges": [
+  {
+   "from": {
+    "node": "__start__",
+    "socket": ""
+   },
+   "to": {
+    "node": "v",
+    "socket": ""
+   },
+   "kind": "control"
+  }
+ ],
+ "channels": [
+  {
+   "name": "c1",
+   "writers": [],
+   "readers": []
+  },
+  {
+   "name": "c2",
+   "writers": [],
+   "readers": []
+  }
+ ]
+}

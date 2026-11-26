@@ -1,0 +1,9 @@
+{
+  "id": "haystack-9044-fixed",
+  "of": "haystack-9044",
+  "fix_kind": "workflow",
+  "framework_version": "2.9.0",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [],
+  "fix_note": "Adds a `BranchJoiner`, `doc_joiner`, that feeds `prompt_builder.documents` from `retriever` and, on each retry, from `validator.documents`, so every round has its documents."
+}

@@ -1,0 +1,9 @@
+{
+  "id": "langgraph-6735-fixed",
+  "of": "langgraph-6735",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [],
+  "fix_note": "Links `orphan` into the flow (`process -> orphan -> END`) and adds the edges `dead_end -> END` and `START -> island_a`. Every node is now reachable from `START` and leads to `END`."
+}

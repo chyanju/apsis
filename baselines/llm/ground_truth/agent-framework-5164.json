@@ -1,0 +1,8 @@
+{
+  "base": "agent-framework-5164",
+  "framework": "agent-framework",
+  "families": [
+    "state_concurrency"
+  ],
+  "location_ids": []
+}

@@ -1,0 +1,9 @@
+{
+  "id": "autogen-960-fixed",
+  "of": "autogen-960",
+  "fix_kind": "workflow",
+  "framework_version": "0.2.32",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [],
+  "fix_note": "The manager is built with `manager_llm_config`, the tool config without `functions`; `assistant` keeps its tool-bearing config."
+}

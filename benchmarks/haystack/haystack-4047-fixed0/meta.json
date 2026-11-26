@@ -1,0 +1,9 @@
+{
+  "id": "haystack-4047-fixed0",
+  "of": "haystack-4047",
+  "fix_kind": "workflow",
+  "framework_version": "2.0.0",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [],
+  "fix_note": "Declares the `documents` input of `qa_prompt_node` as `List[str]`, the type of `retriever.documents`, so all retrieved documents reach the prompt."
+}

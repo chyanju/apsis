@@ -1,0 +1,25 @@
+{
+ "execution_model": "group-chat-speaker",
+ "framework": "example",
+ "nodes": [
+  {
+   "id": "m",
+   "type_name": "Step",
+   "kind": "router",
+   "role": "manager",
+   "attrs": {
+    "declares_tools": "true"
+   },
+   "declared_targets": [
+    "a"
+   ]
+  },
+  {
+   "id": "a",
+   "type_name": "Step",
+   "kind": "agent",
+   "name": "a"
+  }
+ ],
+ "edges": []
+}

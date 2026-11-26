@@ -1,0 +1,11 @@
+{
+  "base": "haystack-10981",
+  "framework": "haystack",
+  "families": [
+    "state_concurrency"
+  ],
+  "location_ids": [
+    "router.no_docs",
+    "router.query"
+  ]
+}

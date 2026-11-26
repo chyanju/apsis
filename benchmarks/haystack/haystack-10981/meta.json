@@ -1,0 +1,11 @@
+{
+  "id": "haystack-10981",
+  "issue_url": "https://github.com/deepset-ai/haystack/issues/10981",
+  "fix_kind": "workflow",
+  "framework_version": "2.30.2",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [
+    "channel-write-merge"
+  ],
+  "note": "The `ComponentTool` fills the Agent state key `documents` from `documents_output` (`filter.documents`), which the sub-pipeline produces only on the router's `has_docs` route. For an empty web search the output is missing, and `merge_lists` adds `None` to `documents` without an error."
+}

@@ -1,0 +1,9 @@
+{
+  "id": "langgraph-5829-fixed",
+  "of": "langgraph-5829",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [],
+  "fix_note": "Removes the static edge `start_node -> static_target`, so `start_node` routes only through its `Command(goto=\"goto_target\")`; `static_target` now follows `goto_target` on a single path."
+}

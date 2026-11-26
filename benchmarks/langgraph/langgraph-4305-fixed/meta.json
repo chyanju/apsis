@@ -1,0 +1,9 @@
+{
+  "id": "langgraph-4305-fixed",
+  "of": "langgraph-4305",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [],
+  "fix_note": "Declares `tags` as `Annotated[List[str], append]`. `List[str]` can be instantiated, so the base value is `[]` and every write, including the first, goes through the reducer."
+}

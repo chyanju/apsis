@@ -1,0 +1,11 @@
+{
+  "id": "haystack-7985",
+  "issue_url": "https://github.com/deepset-ai/haystack/issues/7985",
+  "fix_kind": "mixed",
+  "framework_version": "2.2.0",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [
+    "readiness-liveness"
+  ],
+  "note": "In the chain `prompt_builder1 -> spellchecker -> prompt_builder3 -> prompt_builder2 -> llm`, every connected input has a default. Haystack counts them as already satisfied, so the components run too early with empty values and again in the wrong order."
+}

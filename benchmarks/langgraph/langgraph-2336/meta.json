@@ -1,0 +1,11 @@
+{
+  "id": "langgraph-2336",
+  "issue_url": "https://github.com/langchain-ai/langgraph/issues/2336",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [
+    "channel-write-merge"
+  ],
+  "note": "`a` fans out to `b` and `c`; `b` moves on to `d` while `c` retries through its self-loop, so `c` and `d` run in the same superstep and both write `count_b`, a key without a reducer, and LangGraph raises InvalidUpdateError."
+}

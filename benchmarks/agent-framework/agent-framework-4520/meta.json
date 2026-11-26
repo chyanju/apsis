@@ -1,0 +1,11 @@
+{
+  "id": "agent-framework-4520",
+  "issue_url": "https://github.com/microsoft/agent-framework/issues/4520",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.0-rc3",
+  "entry": "Workflow.csproj:AgentFramework4520.Case.Build",
+  "expected_detectors": [
+    "type-contract"
+  ],
+  "note": "`EndExecutor` (`6`), the target of the fan-in barrier edge from `3`, `4` and `5`, passes a `string` to `YieldOutputAsync` but declares no output type. The call throws \"InvalidOperationException: Cannot output object of type String. Expecting one of [].\" and the run produces no output."
+}

@@ -1,0 +1,9 @@
+{
+  "id": "agent-framework-3279-fixed",
+  "of": "agent-framework-3279",
+  "fix_kind": "workflow",
+  "framework_version": "1.9.0",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [],
+  "fix_note": "The handler of `reviewer` is typed `WorkflowContext[Never, str]` and yields its feedback with `ctx.yield_output`, and `output_from=[reviewer]` names it as the output source."
+}

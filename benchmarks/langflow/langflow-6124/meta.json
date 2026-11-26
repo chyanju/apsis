@@ -1,0 +1,11 @@
+{
+  "id": "langflow-6124",
+  "issue_url": "https://github.com/langflow-ai/langflow/issues/6124",
+  "fix_kind": "workflow",
+  "framework_version": "1.1.1",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "cycle-termination"
+  ],
+  "note": "`ConditionalRouter-zRRVB.true_result` is wired back to `ChatInput-vAd7W.input_value`, and `ChatInput-vAd7W.message` feeds the router's `input_text`, so the true branch closes a cycle through the router. `ChatInput-vAd7W` and `ConditionalRouter-zRRVB` run twice."
+}

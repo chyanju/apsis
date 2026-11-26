@@ -1,0 +1,8 @@
+{
+  "base": "langgraph-6735",
+  "framework": "langgraph",
+  "families": [
+    "liveness_termination"
+  ],
+  "location_ids": []
+}

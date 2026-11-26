@@ -1,0 +1,9 @@
+{
+  "id": "agent-framework-4884-fixed",
+  "of": "agent-framework-4884",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.0-rc4",
+  "entry": "Workflow.csproj:AgentFramework4884.Case.Build",
+  "expected_detectors": [],
+  "fix_note": "`AggExec` is an `Executor<string>` with `[YieldsOutput(typeof(string))]` that collects the strings of `a` and `b` and yields their join after the second."
+}

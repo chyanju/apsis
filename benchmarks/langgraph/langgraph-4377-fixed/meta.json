@@ -1,0 +1,9 @@
+{
+  "id": "langgraph-4377-fixed",
+  "of": "langgraph-4377",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [],
+  "fix_note": "The hand-off `Command` also writes `active_agent`, and the entry router `route_entry` sends later turns straight to that expert. Each expert's graph is now compiled once and added as its node."
+}

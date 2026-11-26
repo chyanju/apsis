@@ -1,0 +1,11 @@
+{
+  "id": "flowise-3592",
+  "issue_url": "https://github.com/FlowiseAI/Flowise/issues/3592",
+  "fix_kind": "workflow",
+  "framework_version": "2.1.5",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "readiness-liveness"
+  ],
+  "note": "`seqConditionAgent_0` has no predecessor: the edge from `seqLLMNode_0` is missing, so nothing enters its required `sequentialNode` input and that input is an empty list. Building the agent graph fails with 'Agent must have a predecessor!'."
+}

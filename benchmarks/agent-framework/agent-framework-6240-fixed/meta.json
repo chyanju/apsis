@@ -1,0 +1,9 @@
+{
+  "id": "agent-framework-6240-fixed",
+  "of": "agent-framework-6240",
+  "fix_kind": "workflow",
+  "framework_version": "1.9.0",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [],
+  "fix_note": "The handoff is built with `output_from=[coder]`, so only `coder`'s reply reaches the Magentic step, which runs one task and completes."
+}

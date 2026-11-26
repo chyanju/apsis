@@ -1,0 +1,11 @@
+{
+  "id": "haystack-7371",
+  "issue_url": "https://github.com/deepset-ai/haystack/issues/7371",
+  "fix_kind": "mixed",
+  "framework_version": "2.0.0",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [
+    "readiness-liveness"
+  ],
+  "note": "`payload_builder` has two mandatory inputs, `query` and `streams`, connected from the two outputs of a `ConditionalRouter` that emits only one of them per run. One input never arrives, so `payload_builder` never runs and the pipeline returns `{}` without an error."
+}

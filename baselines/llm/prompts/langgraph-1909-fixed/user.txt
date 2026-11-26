@@ -1,0 +1,25 @@
+# This is a LangGraph agent workflow (Python definition).
+# Analyze the workflow below for bugs, working only from this source.
+
+from typing import Annotated, List, TypedDict
+import operator
+from langgraph.graph import StateGraph, START, END
+from langgraph.types import Send
+
+class State(TypedDict):
+    list_of_vars: List[str]
+    private_var: Annotated[List[str], operator.add]
+
+def router(state: State) -> List[Send]:
+    return [Send('node_activate_by_Send', {'var': var}) for var in state['list_of_vars']]
+
+def node_activate_by_Send(state) -> dict:
+    return {'private_var': [state['var']]}
+
+def build():
+    g = StateGraph(State)
+    g.add_conditional_edges(START, router, ['node_activate_by_Send'])
+    g.add_node('node_activate_by_Send', node_activate_by_Send)
+    g.add_edge('node_activate_by_Send', END)
+    return g.compile()
+graph = build()

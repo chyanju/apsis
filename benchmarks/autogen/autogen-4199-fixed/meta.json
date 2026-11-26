@@ -1,0 +1,9 @@
+{
+  "id": "autogen-4199-fixed",
+  "of": "autogen-4199",
+  "fix_kind": "workflow",
+  "framework_version": "0.4.0.dev6",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [],
+  "fix_note": "Adds a participant `user`, a `UserProxyAgent` (a `BaseChatAgent`) that reads the human reply and hands back to the agent that handed off to it, so every handoff target is a participant."
+}

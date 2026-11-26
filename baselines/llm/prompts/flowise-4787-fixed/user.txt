@@ -1,0 +1,266 @@
+# This is a Flowise agent workflow (exported flow.json).
+# Analyze the workflow below for bugs, working only from this source.
+
+{
+  "nodes": [
+    {
+      "id": "startAgentflow_0",
+      "data": {
+        "id": "startAgentflow_0",
+        "name": "startAgentflow",
+        "label": "Start",
+        "type": "Start",
+        "category": "Agent Flows",
+        "baseClasses": [
+          "Start"
+        ],
+        "inputAnchors": [],
+        "inputParams": [
+          {
+            "id": "startAgentflow_0-input-startInputType-options",
+            "name": "startInputType",
+            "label": "Input Type",
+            "type": "options"
+          }
+        ],
+        "inputs": {
+          "startInputType": "chatInput"
+        },
+        "outputAnchors": [
+          {
+            "id": "startAgentflow_0-output-startAgentflow",
+            "name": "startAgentflow",
+            "label": "Start"
+          }
+        ]
+      }
+    },
+    {
+      "id": "agentAgentflow_0",
+      "data": {
+        "id": "agentAgentflow_0",
+        "name": "agentAgentflow",
+        "label": "Draft Agent",
+        "type": "Agent",
+        "category": "Agent Flows",
+        "baseClasses": [
+          "Agent"
+        ],
+        "inputAnchors": [],
+        "inputParams": [
+          {
+            "id": "agentAgentflow_0-input-agentModel-asyncOptions",
+            "name": "agentModel",
+            "label": "Model",
+            "type": "asyncOptions"
+          },
+          {
+            "id": "agentAgentflow_0-input-agentMessages-array",
+            "name": "agentMessages",
+            "label": "Messages",
+            "type": "array",
+            "optional": true
+          }
+        ],
+        "inputs": {
+          "agentModel": "chatOpenAI",
+          "agentMessages": [
+            {
+              "role": "system",
+              "content": "Draft a proposal for the user."
+            }
+          ]
+        },
+        "outputAnchors": [
+          {
+            "id": "agentAgentflow_0-output-agentAgentflow",
+            "name": "agentAgentflow",
+            "label": "Agent"
+          }
+        ]
+      }
+    },
+    {
+      "id": "humanInputAgentflow_0",
+      "data": {
+        "id": "humanInputAgentflow_0",
+        "name": "humanInputAgentflow",
+        "label": "Approve Draft",
+        "type": "HumanInput",
+        "category": "Agent Flows",
+        "baseClasses": [
+          "HumanInput"
+        ],
+        "inputAnchors": [],
+        "inputParams": [
+          {
+            "id": "humanInputAgentflow_0-input-humanInputDescriptionType-options",
+            "name": "humanInputDescriptionType",
+            "label": "Description Type",
+            "type": "options"
+          },
+          {
+            "id": "humanInputAgentflow_0-input-humanInputDescription-string",
+            "name": "humanInputDescription",
+            "label": "Description",
+            "type": "string",
+            "optional": true
+          },
+          {
+            "id": "humanInputAgentflow_0-input-humanInputEnableFeedback-boolean",
+            "name": "humanInputEnableFeedback",
+            "label": "Enable Feedback",
+            "type": "boolean",
+            "optional": true
+          }
+        ],
+        "inputs": {
+          "humanInputDescriptionType": "fixed",
+          "humanInputDescription": "Approve the draft proposal?",
+          "humanInputEnableFeedback": true
+        },
+        "outputAnchors": [
+          {
+            "id": "humanInputAgentflow_0-output-0",
+            "name": "humanInputAgentflow",
+            "label": "Human Input"
+          },
+          {
+            "id": "humanInputAgentflow_0-output-1",
+            "name": "humanInputAgentflow",
+            "label": "Human Input"
+          }
+        ]
+      }
+    },
+    {
+      "id": "agentAgentflow_1",
+      "data": {
+        "id": "agentAgentflow_1",
+        "name": "agentAgentflow",
+        "label": "Finalize Agent",
+        "type": "Agent",
+        "category": "Agent Flows",
+        "baseClasses": [
+          "Agent"
+        ],
+        "inputAnchors": [],
+        "inputParams": [
+          {
+            "id": "agentAgentflow_1-input-agentModel-asyncOptions",
+            "name": "agentModel",
+            "label": "Model",
+            "type": "asyncOptions"
+          },
+          {
+            "id": "agentAgentflow_1-input-agentMessages-array",
+            "name": "agentMessages",
+            "label": "Messages",
+            "type": "array",
+            "optional": true
+          }
+        ],
+        "inputs": {
+          "agentModel": "chatOpenAI",
+          "agentMessages": [
+            {
+              "role": "system",
+              "content": "Produce the final version from the approved draft."
+            }
+          ]
+        },
+        "outputAnchors": [
+          {
+            "id": "agentAgentflow_1-output-agentAgentflow",
+            "name": "agentAgentflow",
+            "label": "Agent"
+          }
+        ]
+      }
+    },
+    {
+      "id": "directReplyAgentflow_0",
+      "data": {
+        "id": "directReplyAgentflow_0",
+        "name": "directReplyAgentflow",
+        "label": "Approved Reply",
+        "type": "DirectReply",
+        "category": "Agent Flows",
+        "baseClasses": [
+          "DirectReply"
+        ],
+        "inputAnchors": [],
+        "inputParams": [
+          {
+            "id": "directReplyAgentflow_0-input-directReplyMessage-string",
+            "name": "directReplyMessage",
+            "label": "Message",
+            "type": "string"
+          }
+        ],
+        "inputs": {
+          "directReplyMessage": "Proposal approved and finalized."
+        },
+        "outputAnchors": []
+      }
+    },
+    {
+      "id": "directReplyAgentflow_1",
+      "data": {
+        "id": "directReplyAgentflow_1",
+        "name": "directReplyAgentflow",
+        "label": "Rejected Reply",
+        "type": "DirectReply",
+        "category": "Agent Flows",
+        "baseClasses": [
+          "DirectReply"
+        ],
+        "inputAnchors": [],
+        "inputParams": [
+          {
+            "id": "directReplyAgentflow_1-input-directReplyMessage-string",
+            "name": "directReplyMessage",
+            "label": "Message",
+            "type": "string"
+          }
+        ],
+        "inputs": {
+          "directReplyMessage": "Draft rejected by the reviewer."
+        },
+        "outputAnchors": []
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "startAgentflow_0",
+      "target": "agentAgentflow_0",
+      "sourceHandle": "startAgentflow_0-output-startAgentflow",
+      "targetHandle": "agentAgentflow_0"
+    },
+    {
+      "source": "agentAgentflow_0",
+      "target": "humanInputAgentflow_0",
+      "sourceHandle": "agentAgentflow_0-output-agentAgentflow",
+      "targetHandle": "humanInputAgentflow_0"
+    },
+    {
+      "source": "humanInputAgentflow_0",
+      "target": "agentAgentflow_1",
+      "sourceHandle": "humanInputAgentflow_0-output-0",
+      "targetHandle": "agentAgentflow_1"
+    },
+    {
+      "source": "humanInputAgentflow_0",
+      "target": "directReplyAgentflow_1",
+      "sourceHandle": "humanInputAgentflow_0-output-1",
+      "targetHandle": "directReplyAgentflow_1"
+    },
+    {
+      "source": "agentAgentflow_1",
+      "target": "directReplyAgentflow_0",
+      "sourceHandle": "agentAgentflow_1-output-agentAgentflow",
+      "targetHandle": "directReplyAgentflow_0"
+    }
+  ]
+}

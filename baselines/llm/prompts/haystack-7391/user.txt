@@ -1,0 +1,35 @@
+# This is a Haystack agent workflow (Python definition).
+# Analyze the workflow below for bugs, working only from this source.
+
+from haystack import Pipeline, component
+
+@component
+class Splitter:
+
+    @component.output_types(left=str, right=str)
+    def run(self, prompt: str):
+        return {'left': prompt, 'right': prompt}
+
+@component
+class Summarizer:
+
+    @component.output_types(summary=str)
+    def run(self, text: str=''):
+        return {'summary': text}
+
+@component
+class Ranker:
+
+    @component.output_types(ranked=str)
+    def run(self, text: str=''):
+        return {'ranked': text}
+
+def build() -> Pipeline:
+    p = Pipeline()
+    p.add_component('splitter', Splitter())
+    p.add_component('summarizer', Summarizer())
+    p.add_component('ranker', Ranker())
+    p.connect('splitter.left', 'summarizer.text')
+    p.connect('splitter.right', 'ranker.text')
+    return p
+pipeline = build()

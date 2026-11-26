@@ -1,0 +1,9 @@
+{
+  "id": "haystack-7371-fixed0",
+  "of": "haystack-7371",
+  "fix_kind": "workflow",
+  "framework_version": "2.0.0",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [],
+  "fix_note": "Gives the two inputs of `payload_builder` defaults (`streams=[]`, `query=\"\"`), so it runs as soon as the output of the selected route arrives and the other input takes its default."
+}

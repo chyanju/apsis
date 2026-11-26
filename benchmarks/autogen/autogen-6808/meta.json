@@ -1,0 +1,11 @@
+{
+  "id": "autogen-6808",
+  "issue_url": "https://github.com/microsoft/autogen/issues/6808",
+  "fix_kind": "workflow",
+  "framework_version": "0.7.4",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [
+    "target-resolution"
+  ],
+  "note": "`E` is a node of the cyclic graph, reached from `B` on \"STOP\", but not a participant, and the flow has no termination condition. The run fails at once with a `ValueError` that requires one; once one is added, it fails at \"STOP\" with `RuntimeError: Speaker E not found in participant names.`"
+}

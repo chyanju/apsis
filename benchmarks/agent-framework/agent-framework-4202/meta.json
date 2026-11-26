@@ -1,0 +1,11 @@
+{
+  "id": "agent-framework-4202",
+  "issue_url": "https://github.com/microsoft/agent-framework/issues/4202",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.0-rc1",
+  "entry": "Workflow.csproj:WorkflowCustomAgentExecutorsSample.Case.Build",
+  "expected_detectors": [
+    "cycle-termination"
+  ],
+  "note": "`FeedbackExecutor`, an `Executor<SloganResult>` looping with `SloganWriter`, sends `FeedbackResult` and yields a `string` but declares neither type, and release candidate 1 allows only declared types. Sending feedback fails with \"Executor 'FeedbackProvider' cannot send messages of type '...FeedbackResult'\"."
+}

@@ -1,0 +1,11 @@
+{
+  "id": "langgraph-5556",
+  "issue_url": "https://github.com/langchain-ai/langgraph/issues/5556",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [
+    "target-resolution"
+  ],
+  "note": "`researcher_llm_call` returns `Command(goto=\"researcher_tool_node\")`, a typo for its tool node `researcher_tools`; the bare `Command` return annotation lets the graph compile, and at run time LangGraph ignores the goto, so the tool never runs and the run ends after the first turn."
+}

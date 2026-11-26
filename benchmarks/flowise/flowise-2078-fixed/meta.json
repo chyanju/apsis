@@ -1,0 +1,9 @@
+{
+  "id": "flowise-2078-fixed",
+  "of": "flowise-2078",
+  "fix_kind": "workflow",
+  "framework_version": "1.6.2",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "Adds an edge from `chatOpenAI_0` into the `model` input of `llmChain_1` and of `llmChain_2` and sets each chain's `model` to `{{chatOpenAI_0.data.instance}}`. Both chains get a model and can be built."
+}

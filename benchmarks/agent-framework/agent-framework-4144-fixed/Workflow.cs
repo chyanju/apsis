@@ -1,0 +1,62 @@
+using Microsoft.Agents.AI.Workflows;
+
+namespace WorkflowHumanInTheLoopBasicSample;
+
+public static class Case
+{
+    public static Workflow Build() => WorkflowFactory.BuildWorkflow();
+}
+
+internal static class WorkflowFactory
+{
+
+    internal static Workflow BuildWorkflow()
+    {
+
+        RequestPort numberRequestPort = RequestPort.Create<NumberSignal, int>("GuessNumber");
+        JudgeExecutor judgeExecutor = new(42);
+
+        return new WorkflowBuilder(numberRequestPort)
+            .AddEdge(numberRequestPort, judgeExecutor)
+            .AddEdge(judgeExecutor, numberRequestPort)
+            .WithOutputFrom(judgeExecutor)
+            .Build();
+    }
+}
+
+internal enum NumberSignal
+{
+    Init,
+    Above,
+    Below,
+}
+
+[YieldsOutput(typeof(string))]
+[SendsMessage(typeof(NumberSignal))]
+internal sealed class JudgeExecutor() : Executor<int>("Judge")
+{
+    private readonly int _targetNumber;
+    private int _tries;
+
+    public JudgeExecutor(int targetNumber) : this()
+    {
+        this._targetNumber = targetNumber;
+    }
+
+    public override async ValueTask HandleAsync(int message, IWorkflowContext context, CancellationToken cancellationToken = default)
+    {
+        this._tries++;
+        if (message == this._targetNumber)
+        {
+            await context.YieldOutputAsync($"{this._targetNumber} found in {this._tries} tries!", cancellationToken);
+        }
+        else if (message < this._targetNumber)
+        {
+            await context.SendMessageAsync(NumberSignal.Below, cancellationToken: cancellationToken);
+        }
+        else
+        {
+            await context.SendMessageAsync(NumberSignal.Above, cancellationToken: cancellationToken);
+        }
+    }
+}

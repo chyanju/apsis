@@ -1,0 +1,11 @@
+{
+  "id": "langgraph-142",
+  "issue_url": "https://github.com/langchain-ai/langgraph/issues/142",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [
+    "channel-write-merge"
+  ],
+  "note": "`a` and `b` run in the same superstep and both write `value`, a key without a reducer, so LangGraph raises InvalidUpdateError."
+}

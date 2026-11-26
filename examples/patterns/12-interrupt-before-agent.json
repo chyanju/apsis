@@ -1,0 +1,48 @@
+{
+ "execution_model": "visual-dataflow",
+ "framework": "example",
+ "nodes": [
+  {
+   "id": "s",
+   "type_name": "Step",
+   "kind": "start"
+  },
+  {
+   "id": "h",
+   "type_name": "Step",
+   "kind": "human-input"
+  },
+  {
+   "id": "ag",
+   "type_name": "Step",
+   "kind": "agent"
+  }
+ ],
+ "edges": [
+  {
+   "from": {
+    "node": "s",
+    "socket": ""
+   },
+   "to": {
+    "node": "h",
+    "socket": ""
+   },
+   "kind": "control"
+  },
+  {
+   "from": {
+    "node": "h",
+    "socket": ""
+   },
+   "to": {
+    "node": "ag",
+    "socket": ""
+   },
+   "kind": "control"
+  }
+ ],
+ "start_nodes": [
+  "s"
+ ]
+}

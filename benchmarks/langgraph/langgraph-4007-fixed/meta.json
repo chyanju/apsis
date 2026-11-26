@@ -1,0 +1,9 @@
+{
+  "id": "langgraph-4007-fixed",
+  "of": "langgraph-4007",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [],
+  "fix_note": "Replaces `operator.add` on the shared `list_a` with the deduplicating reducer `unique_list_merge` (`list(dict.fromkeys(a + b))`), so the entries the subgraph returns again are dropped."
+}

@@ -1,0 +1,40 @@
+# This is a LangGraph agent workflow (Python definition).
+# Analyze the workflow below for bugs, working only from this source.
+
+from dataclasses import dataclass
+from typing import TypedDict
+from langgraph.graph import StateGraph, START, END
+
+@dataclass
+class InputState:
+    some_field: int
+
+class OverallState(TypedDict):
+    some_field: int
+    route_flag: bool
+
+def entry_node(state) -> dict:
+    return {'some_field': 1, 'route_flag': True}
+
+def other_node(state) -> dict:
+    return {'some_field': 2}
+
+def done_node(state) -> dict:
+    return {}
+
+def validate_transition(state: OverallState) -> str:
+    if state.get('route_flag'):
+        return 'done_node'
+    return 'other_node'
+
+def build():
+    g = StateGraph(OverallState, input_schema=InputState)
+    g.add_node('entry_node', entry_node)
+    g.add_node('other_node', other_node)
+    g.add_node('done_node', done_node)
+    g.set_entry_point('entry_node')
+    g.add_conditional_edges('entry_node', validate_transition, {'other_node': 'other_node', 'done_node': 'done_node'})
+    g.add_edge('other_node', END)
+    g.add_edge('done_node', END)
+    return g.compile()
+graph = build()

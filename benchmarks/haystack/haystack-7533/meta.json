@@ -1,0 +1,11 @@
+{
+  "id": "haystack-7533",
+  "issue_url": "https://github.com/deepset-ai/haystack/issues/7533",
+  "fix_kind": "mixed",
+  "framework_version": "2.0.0b8",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [
+    "cycle-termination"
+  ],
+  "note": "In the loop `router -> prompt_builder -> generator -> router`, the exit `router.go_custom` is connected to nothing. Both inputs of `prompt_builder` have defaults, so it can always run, and the pipeline loops until it reaches Haystack's run limit."
+}

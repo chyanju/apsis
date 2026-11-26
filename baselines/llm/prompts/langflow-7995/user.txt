@@ -1,0 +1,281 @@
+# This is a Langflow agent workflow (exported flow.json).
+# Analyze the workflow below for bugs, working only from this source.
+
+{
+  "data": {
+    "nodes": [
+      {
+        "id": "URL-src01",
+        "data": {
+          "type": "URL",
+          "node": {
+            "template": {
+              "urls": {
+                "type": "str",
+                "required": true,
+                "list": true,
+                "input_types": []
+              }
+            },
+            "outputs": [
+              {
+                "name": "data",
+                "types": [
+                  "Data"
+                ],
+                "method": "fetch_content"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "Loop-aZ9kP",
+        "data": {
+          "type": "Loop",
+          "node": {
+            "template": {
+              "data": {
+                "type": "Data",
+                "required": true,
+                "list": true,
+                "input_types": [
+                  "Data"
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "name": "item",
+                "types": [
+                  "Data"
+                ],
+                "method": "item_output",
+                "allows_loop": true
+              },
+              {
+                "name": "done",
+                "types": [
+                  "Data"
+                ],
+                "method": "done_output",
+                "allows_loop": false
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "Prompt-bodyTk",
+        "data": {
+          "type": "Prompt",
+          "node": {
+            "template": {
+              "template": {
+                "type": "prompt",
+                "required": true,
+                "list": false,
+                "input_types": []
+              },
+              "context": {
+                "type": "str",
+                "required": false,
+                "list": false,
+                "input_types": [
+                  "Data",
+                  "Message"
+                ]
+              },
+              "instruction": {
+                "type": "str",
+                "required": false,
+                "list": false,
+                "input_types": [
+                  "Data",
+                  "Message"
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "name": "prompt",
+                "types": [
+                  "Message"
+                ],
+                "method": "build_prompt"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "Prompt-outerNz",
+        "data": {
+          "type": "Prompt",
+          "node": {
+            "template": {
+              "template": {
+                "type": "prompt",
+                "required": true,
+                "list": false,
+                "input_types": []
+              }
+            },
+            "outputs": [
+              {
+                "name": "prompt",
+                "types": [
+                  "Message"
+                ],
+                "method": "build_prompt"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "ChatOutput-Qm3vR",
+        "data": {
+          "type": "ChatOutput",
+          "node": {
+            "template": {
+              "input_value": {
+                "type": "str",
+                "required": false,
+                "list": false,
+                "input_types": [
+                  "Data",
+                  "Message"
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "name": "message",
+                "types": [
+                  "Message"
+                ],
+                "method": "message_response"
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "edges": [
+      {
+        "source": "URL-src01",
+        "target": "Loop-aZ9kP",
+        "sourceHandle": "data",
+        "targetHandle": "data",
+        "data": {
+          "sourceHandle": {
+            "dataType": "URL",
+            "name": "data",
+            "output_types": [
+              "Data"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "data",
+            "inputTypes": [
+              "Data"
+            ],
+            "type": "Data"
+          }
+        }
+      },
+      {
+        "source": "Loop-aZ9kP",
+        "target": "Prompt-bodyTk",
+        "sourceHandle": "item",
+        "targetHandle": "context",
+        "data": {
+          "sourceHandle": {
+            "dataType": "Loop",
+            "name": "item",
+            "output_types": [
+              "Data"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "context",
+            "inputTypes": [
+              "Data",
+              "Message"
+            ],
+            "type": "str"
+          }
+        }
+      },
+      {
+        "source": "Prompt-bodyTk",
+        "target": "Loop-aZ9kP",
+        "sourceHandle": "prompt",
+        "targetHandle": "item",
+        "data": {
+          "sourceHandle": {
+            "dataType": "Prompt",
+            "name": "prompt",
+            "output_types": [
+              "Message"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "item",
+            "inputTypes": [
+              "Data"
+            ],
+            "type": "Data"
+          }
+        }
+      },
+      {
+        "source": "Prompt-outerNz",
+        "target": "Prompt-bodyTk",
+        "sourceHandle": "prompt",
+        "targetHandle": "instruction",
+        "data": {
+          "sourceHandle": {
+            "dataType": "Prompt",
+            "name": "prompt",
+            "output_types": [
+              "Message"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "instruction",
+            "inputTypes": [
+              "Data",
+              "Message"
+            ],
+            "type": "str"
+          }
+        }
+      },
+      {
+        "source": "Loop-aZ9kP",
+        "target": "ChatOutput-Qm3vR",
+        "sourceHandle": "done",
+        "targetHandle": "input_value",
+        "data": {
+          "sourceHandle": {
+            "dataType": "Loop",
+            "name": "done",
+            "output_types": [
+              "Data"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "input_value",
+            "inputTypes": [
+              "Data",
+              "Message"
+            ],
+            "type": "str"
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "id": "haystack-7392",
+  "issue_url": "https://github.com/deepset-ai/haystack/issues/7392",
+  "fix_kind": "workflow",
+  "framework_version": "2.0.0b8",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [
+    "readiness-liveness"
+  ],
+  "note": "Every input of `prompt_builder` has a default, including `documents`, which is connected from `retriever.documents`. Haystack counts the input as already satisfied, so `prompt_builder` can run with its defaults before the documents arrive and again afterwards."
+}

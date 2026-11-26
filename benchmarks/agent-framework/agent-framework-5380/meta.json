@@ -1,0 +1,11 @@
+{
+  "id": "agent-framework-5380",
+  "issue_url": "https://github.com/microsoft/agent-framework/issues/5380",
+  "fix_kind": "workflow",
+  "framework_version": "1.1.0",
+  "entry": "Workflow.csproj:AgentFramework5380.Case.Build",
+  "expected_detectors": [
+    "type-contract"
+  ],
+  "note": "`IntentRoutingExecutor`, an `Executor<ChatInput>`, sends a `List<IntentResult>` to `IntentDispatchExecutor` but declares no type it sends. The send throws \"Executor 'IntentRoutingExecutor' cannot send messages of type 'System.Collections.Generic.List`1[...]'\" and `IntentDispatchExecutor` never runs."
+}

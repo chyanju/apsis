@@ -1,0 +1,9 @@
+{
+  "id": "flowise-3082-fixed",
+  "of": "flowise-3082",
+  "fix_kind": "workflow",
+  "framework_version": "2.0.5",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "Restores the edges from `supervisor_0` to the `supervisor` inputs of `worker_0` and `worker_1`, so the supervisor routes to one worker per step and `start:supervisor` gets one value."
+}

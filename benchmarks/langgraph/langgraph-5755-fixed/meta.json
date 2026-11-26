@@ -1,0 +1,9 @@
+{
+  "id": "langgraph-5755-fixed",
+  "of": "langgraph-5755",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [],
+  "fix_note": "The node `subgraph` is now the function `execute_subgraph`, which invokes the subgraph and returns a `RemoveMessage` for every parent message, so the parent's `add_messages` removes them."
+}

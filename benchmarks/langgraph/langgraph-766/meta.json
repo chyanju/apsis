@@ -1,0 +1,11 @@
+{
+  "id": "langgraph-766",
+  "issue_url": "https://github.com/langchain-ai/langgraph/issues/766",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [
+    "channel-write-merge"
+  ],
+  "note": "`medical_mentor` has an unconditional edge to `medical_mentor_pass` and a conditional edge whose path map also contains it, so `medical_mentor_pass` runs on every pass; when the router picks `generate_new_extraction`, both write `medical`, a key without a reducer, and LangGraph raises `InvalidUpdateError`."
+}

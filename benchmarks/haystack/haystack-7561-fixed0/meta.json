@@ -1,0 +1,9 @@
+{
+  "id": "haystack-7561-fixed0",
+  "of": "haystack-7561",
+  "fix_kind": "workflow",
+  "framework_version": "2.0.1",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [],
+  "fix_note": "`output_validator` also declares `valid_replies`, connected to a new component `answer`, and emits it for a valid reply instead of the two retry outputs, so the loop ends."
+}

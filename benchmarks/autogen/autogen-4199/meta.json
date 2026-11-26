@@ -1,0 +1,11 @@
+{
+  "id": "autogen-4199",
+  "issue_url": "https://github.com/microsoft/autogen/issues/4199",
+  "fix_kind": "workflow",
+  "framework_version": "0.4.0.dev6",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [
+    "target-resolution"
+  ],
+  "note": "`triage` and `refunds` declare a handoff to `user` and the `Swarm` stops on `HandoffTermination(target=\"user\")`, but no participant is named `user`. Resuming the stopped run with `team.run()` raises `ValueError: The selected speaker in the handoff message is not a participant.`"
+}

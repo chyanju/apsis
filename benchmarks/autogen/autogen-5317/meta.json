@@ -1,0 +1,11 @@
+{
+  "id": "autogen-5317",
+  "issue_url": "https://github.com/microsoft/autogen/issues/5317",
+  "fix_kind": "workflow",
+  "framework_version": "0.4.2",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [
+    "cycle-termination"
+  ],
+  "note": "`modifier`, `modifier2` and `checker` all subscribe and publish to the default topic, and each modifier publishes a decremented value for every message it handles. The two modifiers react to each other's messages whatever `checker` decides, so the program loops forever."
+}

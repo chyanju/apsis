@@ -1,0 +1,28 @@
+# This is a Microsoft Agent Framework agent workflow (Python definition).
+# Analyze the workflow below for bugs, working only from this source.
+
+from agent_framework import Agent, AgentExecutorResponse, AgentResponse, BaseChatClient, ChatResponse, Executor, Message, WorkflowBuilder, WorkflowContext, WorkflowExecutor, handler
+from agent_framework.orchestrations import ConcurrentBuilder
+
+class _OfflineChatClient(BaseChatClient):
+
+    async def _inner_get_response(self, *, messages, stream, options, **kwargs) -> ChatResponse:
+        return ChatResponse(messages=[Message('assistant', ['(stub)'])])
+
+class EssayToTranslatorAdapter(Executor):
+
+    @handler
+    async def adapt(self, response: AgentExecutorResponse, ctx: WorkflowContext[str]) -> None:
+        await ctx.send_message(response.agent_response.text)
+
+def _build() -> 'object':
+    client = _OfflineChatClient()
+    essay_agent = Agent(client, instructions='Write an essay on the given topic.', name='EssayAgent')
+    translator_fr = Agent(client, instructions='Translate the essay to French.', name='Translator_FR')
+    translator_es = Agent(client, instructions='Translate the essay to Spanish.', name='Translator_ES')
+    translator_de = Agent(client, instructions='Translate the essay to German.', name='Translator_DE')
+    translator_workflow = ConcurrentBuilder(participants=[translator_fr, translator_es, translator_de]).build()
+    subworkflow_executor = WorkflowExecutor(translator_workflow, id='TranslatorWorkflow')
+    adapter = EssayToTranslatorAdapter(id='EssayToTranslator')
+    return WorkflowBuilder(start_executor=essay_agent, output_from=[subworkflow_executor]).add_edge(essay_agent, adapter).add_edge(adapter, subworkflow_executor).build()
+workflow = _build()

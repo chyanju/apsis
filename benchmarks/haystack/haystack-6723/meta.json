@@ -1,0 +1,11 @@
+{
+  "id": "haystack-6723",
+  "issue_url": "https://github.com/deepset-ai/haystack/issues/6723",
+  "fix_kind": "mixed",
+  "framework_version": "2.0.0b4",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [
+    "readiness-liveness"
+  ],
+  "note": "`bob_predict.model`, the only input of `bob_predict`, is connected from `bob_train.model` and has the default `None`. Haystack treats the input as already satisfied, so `bob_predict` runs before `bob_train`, with `model=None`."
+}

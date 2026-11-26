@@ -1,0 +1,173 @@
+{
+  "nodes": [
+    {
+      "id": "seqStart_0",
+      "data": {
+        "id": "seqStart_0",
+        "name": "seqStart",
+        "label": "Start",
+        "category": "Sequential Agents",
+        "inputAnchors": [
+          { "id": "seqStart_0-input-model-BaseChatModel", "name": "model", "label": "Chat Model", "type": "BaseChatModel" }
+        ],
+        "inputParams": [],
+        "inputs": { "model": "{{chatOpenAI_0.data.instance}}" },
+        "outputAnchors": [
+          { "id": "seqStart_0-output-seqStart-Start", "name": "seqStart", "label": "Start", "type": "Start" }
+        ]
+      }
+    },
+    {
+      "id": "chatOpenAI_0",
+      "data": {
+        "id": "chatOpenAI_0",
+        "name": "chatOpenAI",
+        "label": "ChatOpenAI",
+        "category": "Chat Models",
+        "inputParams": [
+          { "id": "chatOpenAI_0-input-modelName-string", "name": "modelName", "type": "string" }
+        ],
+        "inputs": { "modelName": "gpt-4o" },
+        "outputAnchors": [
+          { "id": "chatOpenAI_0-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable", "name": "chatOpenAI", "label": "ChatOpenAI", "type": "ChatOpenAI | BaseChatModel | BaseLanguageModel | Runnable" }
+        ]
+      }
+    },
+    {
+      "id": "seqLLMNode_anchor",
+      "data": {
+        "id": "seqLLMNode_anchor",
+        "name": "seqLLMNode",
+        "label": "LLM Node",
+        "category": "Sequential Agents",
+        "inputAnchors": [
+          { "id": "seqLLMNode_anchor-input-sequentialNode-Start|Agent|LLMNode|ToolNode", "name": "sequentialNode", "label": "Start | Agent | LLMNode | ToolNode", "type": "Start | Agent | LLMNode | ToolNode", "list": true },
+          { "id": "seqLLMNode_anchor-input-model-BaseChatModel", "name": "model", "label": "Chat Model", "type": "BaseChatModel" }
+        ],
+        "inputParams": [
+          { "id": "seqLLMNode_anchor-input-llmNodeName-string", "name": "llmNodeName", "type": "string" },
+          { "id": "seqLLMNode_anchor-input-humanMessagePrompt-string", "name": "humanMessagePrompt", "type": "string", "optional": true }
+        ],
+        "inputs": {
+          "llmNodeName": "Loop anchor",
+          "sequentialNode": ["{{seqStart_0.data.instance}}"],
+          "model": "{{chatOpenAI_0.data.instance}}",
+          "humanMessagePrompt": "Return blank."
+        },
+        "outputAnchors": [
+          { "id": "seqLLMNode_anchor-output-seqLLMNode-LLMNode", "name": "seqLLMNode", "label": "LLMNode", "type": "LLMNode" }
+        ]
+      }
+    },
+    {
+      "id": "seqConditionAgent_0",
+      "data": {
+        "id": "seqConditionAgent_0",
+        "name": "seqConditionAgent",
+        "label": "Condition Agent",
+        "category": "Sequential Agents",
+        "inputAnchors": [
+          { "id": "seqConditionAgent_0-input-sequentialNode-Start|Agent|LLMNode|ToolNode", "name": "sequentialNode", "label": "Start | Agent | LLMNode | ToolNode", "type": "Start | Agent | LLMNode | ToolNode", "list": true },
+          { "id": "seqConditionAgent_0-input-model-BaseChatModel", "name": "model", "label": "Chat Model", "type": "BaseChatModel" }
+        ],
+        "inputParams": [
+          { "id": "seqConditionAgent_0-input-conditionAgentName-string", "name": "conditionAgentName", "type": "string" },
+          { "id": "seqConditionAgent_0-input-systemMessagePrompt-string", "name": "systemMessagePrompt", "type": "string", "optional": true },
+          { "id": "seqConditionAgent_0-input-humanMessagePrompt-string", "name": "humanMessagePrompt", "type": "string", "optional": true }
+        ],
+        "inputs": {
+          "conditionAgentName": "Condition agent",
+          "sequentialNode": ["{{seqLLMNode_anchor.data.instance}}"],
+          "model": "{{chatOpenAI_0.data.instance}}",
+          "systemMessagePrompt": "You are an expert routing system.",
+          "humanMessagePrompt": "If user's message is positive, respond only with \"NEXT\". Otherwise respond only with \"END\"."
+        },
+        "outputAnchors": [
+          {
+            "id": "seqConditionAgent_0-output-seqConditionAgent-options",
+            "name": "output",
+            "label": "Output",
+            "type": "options",
+            "options": [
+              { "id": "seqConditionAgent_0-output-end-Agent|LLMNode|ToolNode", "name": "end", "label": "END", "type": "Agent | LLMNode | ToolNode", "isAnchor": true },
+              { "id": "seqConditionAgent_0-output-next-Agent|LLMNode|ToolNode", "name": "next", "label": "NEXT", "type": "Agent | LLMNode | ToolNode", "isAnchor": true }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "seqLLMNode_0",
+      "data": {
+        "id": "seqLLMNode_0",
+        "name": "seqLLMNode",
+        "label": "LLM Node",
+        "category": "Sequential Agents",
+        "inputAnchors": [
+          { "id": "seqLLMNode_0-input-sequentialNode-Start|Agent|LLMNode|ToolNode", "name": "sequentialNode", "label": "Start | Agent | LLMNode | ToolNode", "type": "Start | Agent | LLMNode | ToolNode", "list": true },
+          { "id": "seqLLMNode_0-input-model-BaseChatModel", "name": "model", "label": "Chat Model", "type": "BaseChatModel" }
+        ],
+        "inputParams": [
+          { "id": "seqLLMNode_0-input-llmNodeName-string", "name": "llmNodeName", "type": "string" },
+          { "id": "seqLLMNode_0-input-humanMessagePrompt-string", "name": "humanMessagePrompt", "type": "string", "optional": true }
+        ],
+        "inputs": {
+          "llmNodeName": "node1",
+          "sequentialNode": ["{{seqConditionAgent_0.data.instance}}"],
+          "model": "{{chatOpenAI_0.data.instance}}",
+          "humanMessagePrompt": "Respond with \"NODE 1 is triggered\""
+        },
+        "outputAnchors": [
+          { "id": "seqLLMNode_0-output-seqLLMNode-LLMNode", "name": "seqLLMNode", "label": "LLMNode", "type": "LLMNode" }
+        ]
+      }
+    },
+    {
+      "id": "seqLoop_0",
+      "data": {
+        "id": "seqLoop_0",
+        "name": "seqLoop",
+        "label": "Loop",
+        "category": "Sequential Agents",
+        "inputAnchors": [
+          { "id": "seqLoop_0-input-sequentialNode-Start|Agent|LLMNode|ToolNode", "name": "sequentialNode", "label": "Start | Agent | LLMNode | ToolNode", "type": "Start | Agent | LLMNode | ToolNode", "list": true }
+        ],
+        "inputParams": [
+          { "id": "seqLoop_0-input-loopToName-string", "name": "loopToName", "label": "Loop To", "type": "string" }
+        ],
+        "inputs": {
+          "sequentialNode": ["{{seqLLMNode_0.data.instance}}"],
+          "loopToName": "Loop anchor"
+        },
+        "outputAnchors": []
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "chatOpenAI_0", "target": "seqStart_0",
+      "sourceHandle": "chatOpenAI_0-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable",
+      "targetHandle": "seqStart_0-input-model-BaseChatModel"
+    },
+    {
+      "source": "seqStart_0", "target": "seqLLMNode_anchor",
+      "sourceHandle": "seqStart_0-output-seqStart-Start",
+      "targetHandle": "seqLLMNode_anchor-input-sequentialNode-Start|Agent|LLMNode|ToolNode"
+    },
+    {
+      "source": "seqLLMNode_anchor", "target": "seqConditionAgent_0",
+      "sourceHandle": "seqLLMNode_anchor-output-seqLLMNode-LLMNode",
+      "targetHandle": "seqConditionAgent_0-input-sequentialNode-Start|Agent|LLMNode|ToolNode"
+    },
+    {
+      "source": "seqConditionAgent_0", "target": "seqLLMNode_0",
+      "sourceHandle": "seqConditionAgent_0-output-next-Agent|LLMNode|ToolNode",
+      "targetHandle": "seqLLMNode_0-input-sequentialNode-Start|Agent|LLMNode|ToolNode"
+    },
+    {
+      "source": "seqLLMNode_0", "target": "seqLoop_0",
+      "sourceHandle": "seqLLMNode_0-output-seqLLMNode-LLMNode",
+      "targetHandle": "seqLoop_0-input-sequentialNode-Start|Agent|LLMNode|ToolNode"
+    }
+  ]
+}

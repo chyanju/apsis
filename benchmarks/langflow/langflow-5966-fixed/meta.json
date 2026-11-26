@@ -1,0 +1,9 @@
+{
+  "id": "langflow-5966-fixed",
+  "of": "langflow-5966",
+  "fix_kind": "workflow",
+  "framework_version": "1.1.2.dev2",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "`Greeting Subflow` ends in the Chat Output `ChatOutput-sout1` in place of the Text Output, so the result key `message` that `RunFlow-run01` reads exists."
+}

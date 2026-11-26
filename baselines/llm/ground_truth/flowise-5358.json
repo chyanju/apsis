@@ -1,0 +1,13 @@
+{
+  "base": "flowise-5358",
+  "framework": "flowise",
+  "families": [
+    "routing_resolution"
+  ],
+  "location_ids": [
+    "conditionAgentflow_0->iterationAgentflow_0",
+    "conditionAgentflow_0->iterationAgentflow_1",
+    "iterationAgentflow_1",
+    "iterationAgentflow_1->directReplyAgentflow_0"
+  ]
+}

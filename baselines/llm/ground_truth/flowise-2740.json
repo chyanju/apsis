@@ -1,0 +1,11 @@
+{
+  "base": "flowise-2740",
+  "framework": "flowise",
+  "families": [
+    "liveness_termination"
+  ],
+  "location_ids": [
+    "agentMemory_0",
+    "agentMemory_0->worker_0"
+  ]
+}

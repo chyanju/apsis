@@ -1,0 +1,166 @@
+{
+  "nodes": [
+    {
+      "id": "chatOpenAI_0",
+      "data": {
+        "id": "chatOpenAI_0",
+        "name": "chatOpenAI",
+        "label": "ChatOpenAI",
+        "category": "Chat Models",
+        "baseClasses": ["ChatOpenAI", "BaseChatModel", "BaseLanguageModel", "Runnable"],
+        "inputAnchors": [],
+        "inputParams": [
+          { "id": "chatOpenAI_0-input-modelName-string", "name": "modelName", "type": "string" }
+        ],
+        "inputs": { "modelName": "gpt-4o" },
+        "outputAnchors": [
+          { "id": "chatOpenAI_0-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable", "name": "chatOpenAI", "label": "ChatOpenAI", "type": "ChatOpenAI | BaseChatModel | BaseLanguageModel | Runnable" }
+        ]
+      }
+    },
+    {
+      "id": "seqStart_0",
+      "data": {
+        "id": "seqStart_0",
+        "name": "seqStart",
+        "label": "Start",
+        "category": "Sequential Agents",
+        "baseClasses": ["Start"],
+        "inputAnchors": [
+          { "id": "seqStart_0-input-model-BaseChatModel", "name": "model", "label": "Chat Model", "type": "BaseChatModel" }
+        ],
+        "inputParams": [],
+        "inputs": { "model": "{{chatOpenAI_0.data.instance}}" },
+        "outputAnchors": [
+          { "id": "seqStart_0-output-seqStart-Start", "name": "seqStart", "label": "Start", "type": "Start" }
+        ]
+      }
+    },
+    {
+      "id": "seqLLMNode_0",
+      "data": {
+        "id": "seqLLMNode_0",
+        "name": "seqLLMNode",
+        "label": "LLM Node",
+        "category": "Sequential Agents",
+        "baseClasses": ["LLMNode"],
+        "inputAnchors": [
+          { "id": "seqLLMNode_0-input-model-BaseChatModel", "name": "model", "label": "Chat Model", "type": "BaseChatModel", "optional": true },
+          { "id": "seqLLMNode_0-input-sequentialNode-Start|Agent|Condition|LLMNode|ToolNode", "name": "sequentialNode", "label": "Sequential Node", "type": "Start | Agent | Condition | LLMNode | ToolNode", "list": true }
+        ],
+        "inputParams": [
+          { "id": "seqLLMNode_0-input-llmNodeName-string", "name": "llmNodeName", "type": "string" }
+        ],
+        "inputs": {
+          "llmNodeName": "Analyzer",
+          "sequentialNode": ["{{seqStart_0.data.instance}}"]
+        },
+        "outputAnchors": [
+          { "id": "seqLLMNode_0-output-seqLLMNode-LLMNode", "name": "seqLLMNode", "label": "LLMNode", "type": "LLMNode" }
+        ]
+      }
+    },
+    {
+      "id": "seqConditionAgent_0",
+      "data": {
+        "id": "seqConditionAgent_0",
+        "name": "seqConditionAgent",
+        "label": "Condition Agent",
+        "category": "Sequential Agents",
+        "baseClasses": ["Condition"],
+        "outputKey": "route",
+        "inputAnchors": [
+          { "id": "seqConditionAgent_0-input-model-BaseChatModel", "name": "model", "label": "Chat Model", "type": "BaseChatModel", "optional": true },
+          { "id": "seqConditionAgent_0-input-sequentialNode-Start|Agent|LLMNode", "name": "sequentialNode", "label": "Sequential Node", "type": "Start | Agent | LLMNode", "list": true }
+        ],
+        "inputParams": [
+          { "id": "seqConditionAgent_0-input-conditionAgentName-string", "name": "conditionAgentName", "type": "string" },
+          { "id": "seqConditionAgent_0-input-conditionAgentInstructions-string", "name": "conditionAgentInstructions", "type": "string" },
+          { "id": "seqConditionAgent_0-input-conditionAgentInput-string", "name": "conditionAgentInput", "type": "string" }
+        ],
+        "inputs": {
+          "conditionAgentName": "Route Decision",
+          "conditionAgentInstructions": "Decide whether the analysis is complete. Reply with the route name.",
+          "conditionAgentInput": "{{ question }}",
+          "sequentialNode": []
+        },
+        "outputAnchors": [
+          {
+            "name": "seqConditionAgent",
+            "label": "Condition Agent",
+            "type": "Condition",
+            "options": [
+              { "id": "seqConditionAgent_0-output-0", "name": "0", "label": "0", "type": "Condition" },
+              { "id": "seqConditionAgent_0-output-1", "name": "1", "label": "1", "type": "Condition" }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "seqAgent_0",
+      "data": {
+        "id": "seqAgent_0",
+        "name": "seqAgent",
+        "label": "Reviewer",
+        "category": "Sequential Agents",
+        "baseClasses": ["Agent"],
+        "inputAnchors": [
+          { "id": "seqAgent_0-input-tools-Tool", "name": "tools", "label": "Tools", "type": "Tool", "list": true, "optional": true },
+          { "id": "seqAgent_0-input-sequentialNode-Start|Agent|Condition|LLMNode|ToolNode", "name": "sequentialNode", "label": "Sequential Node", "type": "Start | Agent | Condition | LLMNode | ToolNode", "list": true }
+        ],
+        "inputParams": [
+          { "id": "seqAgent_0-input-agentName-string", "name": "agentName", "type": "string" },
+          { "id": "seqAgent_0-input-systemMessagePrompt-string", "name": "systemMessagePrompt", "type": "string", "optional": true }
+        ],
+        "inputs": {
+          "agentName": "Reviewer",
+          "systemMessagePrompt": "You are a reviewer. Refine the analysis and send it back for another decision.",
+          "sequentialNode": ["{{seqConditionAgent_0.data.instance}}"],
+          "tools": []
+        },
+        "outputAnchors": [
+          { "id": "seqAgent_0-output-seqAgent-Agent", "name": "seqAgent", "label": "Agent", "type": "Agent" }
+        ]
+      }
+    },
+    {
+      "id": "seqEnd_0",
+      "data": {
+        "id": "seqEnd_0",
+        "name": "seqEnd",
+        "label": "End",
+        "category": "Sequential Agents",
+        "baseClasses": ["End"],
+        "inputAnchors": [
+          { "id": "seqEnd_0-input-sequentialNode-Agent|Condition|LLMNode|ToolNode", "name": "sequentialNode", "label": "Sequential Node", "type": "Agent | Condition | LLMNode | ToolNode" }
+        ],
+        "inputParams": [],
+        "inputs": { "sequentialNode": "{{seqConditionAgent_0.data.instance}}" },
+        "outputAnchors": []
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "chatOpenAI_0", "target": "seqStart_0",
+      "sourceHandle": "chatOpenAI_0-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable",
+      "targetHandle": "seqStart_0-input-model-BaseChatModel"
+    },
+    {
+      "source": "seqStart_0", "target": "seqLLMNode_0",
+      "sourceHandle": "seqStart_0-output-seqStart-Start",
+      "targetHandle": "seqLLMNode_0-input-sequentialNode-Start|Agent|Condition|LLMNode|ToolNode"
+    },
+    {
+      "source": "seqConditionAgent_0", "target": "seqEnd_0",
+      "sourceHandle": "seqConditionAgent_0-output-0",
+      "targetHandle": "seqEnd_0-input-sequentialNode-Agent|Condition|LLMNode|ToolNode"
+    },
+    {
+      "source": "seqConditionAgent_0", "target": "seqAgent_0",
+      "sourceHandle": "seqConditionAgent_0-output-1",
+      "targetHandle": "seqAgent_0-input-sequentialNode-Start|Agent|Condition|LLMNode|ToolNode"
+    }
+  ]
+}

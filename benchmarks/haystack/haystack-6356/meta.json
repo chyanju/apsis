@@ -1,0 +1,11 @@
+{
+  "id": "haystack-6356",
+  "issue_url": "https://github.com/deepset-ai/haystack/issues/6356",
+  "fix_kind": "mixed",
+  "framework_version": "2.0.0b5",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [
+    "cycle-termination"
+  ],
+  "note": "`validator.replies` is connected straight back to `prompt_builder.replies`, and no connection leaves the loop `prompt_builder -> generator -> validator`. `prompt_builder` runs again even after a valid reply, and the pipeline stops only at Haystack's run limit."
+}

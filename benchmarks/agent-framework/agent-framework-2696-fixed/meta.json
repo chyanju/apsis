@@ -1,0 +1,9 @@
+{
+  "id": "agent-framework-2696-fixed",
+  "of": "agent-framework-2696",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.0-preview.251204.1",
+  "entry": "Workflow.csproj:MixedWorkflowWithAgentsAndExecutors.Case.Build",
+  "expected_detectors": [],
+  "fix_note": "`JailbreakSync` and `FinalOutput` take a `List<ChatMessage>` and read its last assistant message, so the chain runs to `FinalOutput`, which yields the workflow output."
+}

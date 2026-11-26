@@ -1,0 +1,11 @@
+{
+  "id": "langgraph-953",
+  "issue_url": "https://github.com/langchain-ai/langgraph/issues/953",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [
+    "channel-write-merge"
+  ],
+  "note": "`agent_4` should wait for the short branch (`agent_3`) and the long one (`agent_2`, `agent_2_1`, `agent_2_2`), but three separate `add_edge(..., \"agent_4\")` calls each trigger it on its own, so it runs twice, first on partial state."
+}

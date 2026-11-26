@@ -1,0 +1,300 @@
+# This is a Flowise agent workflow (exported flow.json).
+# Analyze the workflow below for bugs, working only from this source.
+
+{
+  "nodes": [
+    {
+      "id": "chatOpenAI_0",
+      "data": {
+        "id": "chatOpenAI_0",
+        "name": "chatOpenAI",
+        "label": "ChatOpenAI",
+        "category": "Chat Models",
+        "baseClasses": [
+          "ChatOpenAI",
+          "BaseChatModel",
+          "BaseLanguageModel",
+          "Runnable"
+        ],
+        "inputAnchors": [],
+        "inputParams": [
+          {
+            "id": "chatOpenAI_0-input-modelName-string",
+            "name": "modelName",
+            "type": "string"
+          }
+        ],
+        "inputs": {
+          "modelName": "gpt-4o"
+        },
+        "outputAnchors": [
+          {
+            "id": "chatOpenAI_0-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable",
+            "name": "chatOpenAI",
+            "label": "ChatOpenAI",
+            "type": "ChatOpenAI | BaseChatModel | BaseLanguageModel | Runnable"
+          }
+        ]
+      }
+    },
+    {
+      "id": "serpAPI_0",
+      "data": {
+        "id": "serpAPI_0",
+        "name": "serpAPI",
+        "label": "SerpAPI",
+        "category": "Tools",
+        "baseClasses": [
+          "SerpAPI",
+          "Tool",
+          "StructuredTool",
+          "Runnable"
+        ],
+        "inputAnchors": [],
+        "inputParams": [
+          {
+            "id": "serpAPI_0-input-serpApiKey-credential",
+            "name": "serpApiKey",
+            "type": "credential"
+          }
+        ],
+        "inputs": {},
+        "outputAnchors": [
+          {
+            "id": "serpAPI_0-output-serpAPI-SerpAPI|Tool|StructuredTool|Runnable",
+            "name": "serpAPI",
+            "label": "SerpAPI",
+            "type": "SerpAPI | Tool | StructuredTool | Runnable"
+          }
+        ]
+      }
+    },
+    {
+      "id": "seqStart_0",
+      "data": {
+        "id": "seqStart_0",
+        "name": "seqStart",
+        "label": "Start",
+        "category": "Sequential Agents",
+        "baseClasses": [
+          "Start"
+        ],
+        "inputAnchors": [
+          {
+            "id": "seqStart_0-input-model-BaseChatModel",
+            "name": "model",
+            "label": "Chat Model",
+            "type": "BaseChatModel"
+          }
+        ],
+        "inputParams": [],
+        "inputs": {
+          "model": "{{chatOpenAI_0.data.instance}}"
+        },
+        "outputAnchors": [
+          {
+            "id": "seqStart_0-output-seqStart-Start",
+            "name": "seqStart",
+            "label": "Start",
+            "type": "Start"
+          }
+        ]
+      }
+    },
+    {
+      "id": "seqAgent_0",
+      "data": {
+        "id": "seqAgent_0",
+        "name": "seqAgent",
+        "label": "Researcher",
+        "category": "Sequential Agents",
+        "baseClasses": [
+          "Agent"
+        ],
+        "inputAnchors": [
+          {
+            "id": "seqAgent_0-input-tools-Tool",
+            "name": "tools",
+            "label": "Tools",
+            "type": "Tool",
+            "list": true,
+            "optional": true
+          },
+          {
+            "id": "seqAgent_0-input-model-BaseChatModel",
+            "name": "model",
+            "label": "Chat Model",
+            "type": "BaseChatModel",
+            "optional": true
+          },
+          {
+            "id": "seqAgent_0-input-sequentialNode-Start|Agent|Condition|LLMNode|ToolNode|CustomFunction|ExecuteFlow",
+            "name": "sequentialNode",
+            "label": "Start | Agent | LLMNode",
+            "type": "Start | Agent | Condition | LLMNode | ToolNode | CustomFunction | ExecuteFlow",
+            "list": true
+          }
+        ],
+        "inputParams": [
+          {
+            "id": "seqAgent_0-input-agentName-string",
+            "name": "agentName",
+            "label": "Name",
+            "type": "string"
+          },
+          {
+            "id": "seqAgent_0-input-systemMessagePrompt-string",
+            "name": "systemMessagePrompt",
+            "label": "System Prompt",
+            "type": "string",
+            "optional": true
+          }
+        ],
+        "inputs": {
+          "agentName": "Researcher",
+          "systemMessagePrompt": "Use the SerpAPI tool to fetch relevant info about the given topic.",
+          "tools": [
+            "{{serpAPI_0.data.instance}}"
+          ],
+          "model": "",
+          "sequentialNode": [
+            "{{seqStart_0.data.instance}}"
+          ]
+        },
+        "outputAnchors": [
+          {
+            "id": "seqAgent_0-output-seqAgent-Agent",
+            "name": "seqAgent",
+            "label": "Agent",
+            "type": "Agent"
+          }
+        ]
+      }
+    },
+    {
+      "id": "seqAgent_1",
+      "data": {
+        "id": "seqAgent_1",
+        "name": "seqAgent",
+        "label": "Writer",
+        "category": "Sequential Agents",
+        "baseClasses": [
+          "Agent"
+        ],
+        "inputAnchors": [
+          {
+            "id": "seqAgent_1-input-tools-Tool",
+            "name": "tools",
+            "label": "Tools",
+            "type": "Tool",
+            "list": true,
+            "optional": true
+          },
+          {
+            "id": "seqAgent_1-input-model-BaseChatModel",
+            "name": "model",
+            "label": "Chat Model",
+            "type": "BaseChatModel",
+            "optional": true
+          },
+          {
+            "id": "seqAgent_1-input-sequentialNode-Start|Agent|Condition|LLMNode|ToolNode|CustomFunction|ExecuteFlow",
+            "name": "sequentialNode",
+            "label": "Start | Agent | LLMNode",
+            "type": "Start | Agent | Condition | LLMNode | ToolNode | CustomFunction | ExecuteFlow",
+            "list": true
+          }
+        ],
+        "inputParams": [
+          {
+            "id": "seqAgent_1-input-agentName-string",
+            "name": "agentName",
+            "label": "Name",
+            "type": "string"
+          },
+          {
+            "id": "seqAgent_1-input-systemMessagePrompt-string",
+            "name": "systemMessagePrompt",
+            "label": "System Prompt",
+            "type": "string",
+            "optional": true
+          }
+        ],
+        "inputs": {
+          "agentName": "Writer",
+          "systemMessagePrompt": "Produce a concise post about the topic from the research above.",
+          "tools": [],
+          "model": "",
+          "sequentialNode": [
+            "{{seqAgent_0.data.instance}}"
+          ]
+        },
+        "outputAnchors": [
+          {
+            "id": "seqAgent_1-output-seqAgent-Agent",
+            "name": "seqAgent",
+            "label": "Agent",
+            "type": "Agent"
+          }
+        ]
+      }
+    },
+    {
+      "id": "seqEnd_0",
+      "data": {
+        "id": "seqEnd_0",
+        "name": "seqEnd",
+        "label": "End",
+        "category": "Sequential Agents",
+        "baseClasses": [
+          "End"
+        ],
+        "inputAnchors": [
+          {
+            "id": "seqEnd_0-input-sequentialNode-Agent|Condition|LLMNode|ToolNode",
+            "name": "sequentialNode",
+            "label": "Sequential Node",
+            "type": "Agent | Condition | LLMNode | ToolNode"
+          }
+        ],
+        "inputParams": [],
+        "inputs": {
+          "sequentialNode": "{{seqAgent_1.data.instance}}"
+        },
+        "outputAnchors": []
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "chatOpenAI_0",
+      "target": "seqStart_0",
+      "sourceHandle": "chatOpenAI_0-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable",
+      "targetHandle": "seqStart_0-input-model-BaseChatModel"
+    },
+    {
+      "source": "serpAPI_0",
+      "target": "seqAgent_0",
+      "sourceHandle": "serpAPI_0-output-serpAPI-SerpAPI|Tool|StructuredTool|Runnable",
+      "targetHandle": "seqAgent_0-input-tools-Tool"
+    },
+    {
+      "source": "seqStart_0",
+      "target": "seqAgent_0",
+      "sourceHandle": "seqStart_0-output-seqStart-Start",
+      "targetHandle": "seqAgent_0-input-sequentialNode-Start|Agent|Condition|LLMNode|ToolNode|CustomFunction|ExecuteFlow"
+    },
+    {
+      "source": "seqAgent_0",
+      "target": "seqAgent_1",
+      "sourceHandle": "seqAgent_0-output-seqAgent-Agent",
+      "targetHandle": "seqAgent_1-input-sequentialNode-Start|Agent|Condition|LLMNode|ToolNode|CustomFunction|ExecuteFlow"
+    },
+    {
+      "source": "seqAgent_1",
+      "target": "seqEnd_0",
+      "sourceHandle": "seqAgent_1-output-seqAgent-Agent",
+      "targetHandle": "seqEnd_0-input-sequentialNode-Agent|Condition|LLMNode|ToolNode"
+    }
+  ]
+}

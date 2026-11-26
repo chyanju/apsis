@@ -1,0 +1,8 @@
+{
+  "base": "haystack-4047",
+  "framework": "haystack",
+  "families": [
+    "type_contracts"
+  ],
+  "location_ids": []
+}

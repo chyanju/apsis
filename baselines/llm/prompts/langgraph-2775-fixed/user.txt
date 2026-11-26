@@ -1,0 +1,36 @@
+# This is a LangGraph agent workflow (Python definition).
+# Analyze the workflow below for bugs, working only from this source.
+
+import operator
+from typing import Annotated, TypedDict
+from langgraph.graph import StateGraph, START, END
+
+class MyState(TypedDict):
+    path: Annotated[list, operator.add]
+
+class PathLoggingNode:
+
+    def __init__(self, name: str):
+        self._name = name
+
+    def __call__(self, state: MyState) -> dict:
+        return {'path': [self._name]}
+
+def router_fn(state: MyState) -> str:
+    return 'd'
+
+def build():
+    builder = StateGraph(MyState)
+    builder.add_node('a', PathLoggingNode('node a'))
+    builder.add_node('b', PathLoggingNode('node b'))
+    builder.add_node('c', PathLoggingNode('node c'))
+    builder.add_node('d', PathLoggingNode('node d'))
+    builder.add_node('e', PathLoggingNode('node e'))
+    builder.add_edge(START, 'a')
+    builder.add_conditional_edges('a', router_fn, ['b', 'c', 'd'])
+    builder.add_edge('b', 'e')
+    builder.add_edge('c', 'e')
+    builder.add_edge('d', 'e')
+    builder.add_edge('e', END)
+    return builder.compile()
+graph = build()

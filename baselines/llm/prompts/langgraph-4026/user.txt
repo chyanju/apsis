@@ -1,0 +1,42 @@
+# This is a LangGraph agent workflow (Python definition).
+# Analyze the workflow below for bugs, working only from this source.
+
+import operator
+from typing import Annotated, TypedDict
+from langgraph.graph import StateGraph, START, END
+
+class State(TypedDict):
+    aggregate: Annotated[list, operator.add]
+    t: Annotated[int, operator.add]
+
+def a(state: State) -> dict:
+    return {'aggregate': ['A'], 't': 1}
+
+def b(state: State) -> dict:
+    return {'aggregate': ['B'], 't': 1}
+
+def c(state: State) -> dict:
+    return {'aggregate': ['C'], 't': 1}
+
+def b_2(state: State) -> dict:
+    return {'aggregate': ['B_2']}
+
+def d(state: State) -> dict:
+    return {'aggregate': ['D'], 't': 1}
+
+def build():
+    g = StateGraph(State)
+    g.add_node('a', a)
+    g.add_node('b', b)
+    g.add_node('c', c)
+    g.add_node('b_2', b_2)
+    g.add_node('d', d)
+    g.add_edge(START, 'a')
+    g.add_edge('a', 'b')
+    g.add_edge('a', 'c')
+    g.add_edge('b', 'b_2')
+    g.add_edge('b_2', 'd')
+    g.add_edge('c', 'd')
+    g.add_edge('d', END)
+    return g.compile()
+graph = build()

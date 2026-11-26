@@ -1,0 +1,9 @@
+{
+  "id": "langgraph-3020-fixed",
+  "of": "langgraph-3020",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [],
+  "fix_note": "Declares `sub_counter` in `ParentGraphState` too, so the parent's checkpointer keeps it between runs and the subgraph's counter goes 0, 1, 2."
+}

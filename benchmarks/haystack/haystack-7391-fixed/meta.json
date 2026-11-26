@@ -1,0 +1,9 @@
+{
+  "id": "haystack-7391-fixed",
+  "of": "haystack-7391",
+  "fix_kind": "workflow",
+  "framework_version": "2.0.0b8",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [],
+  "fix_note": "Removes the defaults of `summarizer.text` and `ranker.text`, so both components wait for `splitter` and run once, whatever the order of the nodes."
+}

@@ -1,0 +1,21 @@
+{
+ "execution_model": "dataflow-readiness",
+ "framework": "example",
+ "nodes": [
+  {
+   "id": "w",
+   "type_name": "Step",
+   "kind": "component",
+   "store_ref": "0x2",
+   "store_role": "write"
+  },
+  {
+   "id": "r",
+   "type_name": "Step",
+   "kind": "component",
+   "store_ref": "0x2",
+   "store_role": "read"
+  }
+ ],
+ "edges": []
+}

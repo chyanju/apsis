@@ -1,0 +1,12 @@
+.git
+**/.env
+**/results/
+target/
+.envs/
+**/bin/
+**/obj/
+**/__pycache__/
+**/*.pyc
+baselines/codeql/codeql/
+baselines/codeql/dbs/
+**/*.sarif

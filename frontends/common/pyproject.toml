@@ -1,0 +1,12 @@
+[project]
+name = "apsis_common"
+version = "0.1.0"
+description = "Shared plumbing for the apsis front-ends (entry loading, CLI, Python-type canonicalization)"
+requires-python = ">=3.9"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["apsis_common"]

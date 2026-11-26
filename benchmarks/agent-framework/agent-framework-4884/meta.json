@@ -1,0 +1,11 @@
+{
+  "id": "agent-framework-4884",
+  "issue_url": "https://github.com/microsoft/agent-framework/issues/4884",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.0-rc4",
+  "entry": "Workflow.csproj:AgentFramework4884.Case.Build",
+  "expected_detectors": [
+    "channel-write-merge"
+  ],
+  "note": "The fan-in barrier edge from `a` and `b` delivers each `string` to `agg` on its own, but the only handler of `agg` takes `List<string>`. The edge drops both messages, so `agg` never runs and the workflow yields no output."
+}

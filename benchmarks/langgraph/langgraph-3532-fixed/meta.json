@@ -1,0 +1,9 @@
+{
+  "id": "langgraph-3532-fixed",
+  "of": "langgraph-3532",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [],
+  "fix_note": "Annotates the router `validate_transition` with `OverallState` instead of `InputState`, so it receives `route_flag` and returns `done_node`."
+}

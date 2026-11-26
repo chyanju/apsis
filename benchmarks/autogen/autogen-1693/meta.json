@@ -1,0 +1,11 @@
+{
+  "id": "autogen-1693",
+  "issue_url": "https://github.com/microsoft/autogen/issues/1693",
+  "fix_kind": "workflow",
+  "framework_version": "0.2.13",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [
+    "target-resolution"
+  ],
+  "note": "`user_proxy` is a member of the `GroupChat` but has no key in `allowed_or_disallowed_speaker_transitions` (type \"allowed\"), which lists only `local_assistant` and `language_assistant`. Once `user_proxy` has spoken no next speaker is eligible, and the chat raises `NoEligibleSpeakerException`."
+}

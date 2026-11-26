@@ -1,0 +1,11 @@
+{
+  "id": "haystack-8389",
+  "issue_url": "https://github.com/deepset-ai/haystack/issues/8389",
+  "fix_kind": "workflow",
+  "framework_version": "2.30.2",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [
+    "readiness-liveness"
+  ],
+  "note": "The variadic input `joiner.documents` is fed only by `filtered_retriever`, behind `filter_parser`, which emits either `filters` or `error`; the retriever emits documents only for a usable filter. Nothing guarantees that this chain delivers, so `joiner` can run without the filtered documents."
+}

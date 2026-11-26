@@ -1,0 +1,15 @@
+{
+  "base": "flowise-4787",
+  "framework": "flowise",
+  "families": [
+    "capability_protocol"
+  ],
+  "location_ids": [
+    "agentAgentflow_1->directReplyAgentflow_0",
+    "agentAgentflow_1->humanInputAgentflow_1",
+    "humanInputAgentflow_0->directReplyAgentflow_1",
+    "humanInputAgentflow_1",
+    "humanInputAgentflow_1->directReplyAgentflow_0",
+    "humanInputAgentflow_1->directReplyAgentflow_1"
+  ]
+}

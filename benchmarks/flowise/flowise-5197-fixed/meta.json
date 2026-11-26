@@ -1,0 +1,9 @@
+{
+  "id": "flowise-5197-fixed",
+  "of": "flowise-5197",
+  "fix_kind": "workflow",
+  "framework_version": "3.0.5",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "Inserts an Agent node `agentAgentflow_1` between `customFunctionAgentflow_0` and `humanInputAgentflow_0`, so a message exists whose content the Human Input node can read."
+}

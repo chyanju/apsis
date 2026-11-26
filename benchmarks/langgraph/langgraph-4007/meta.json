@@ -1,0 +1,11 @@
+{
+  "id": "langgraph-4007",
+  "issue_url": "https://github.com/langchain-ai/langgraph/issues/4007",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [
+    "channel-write-merge"
+  ],
+  "note": "The `subgraph` node is compiled from the parent's `OverallState` and shares `list_a` (`operator.add`); it receives the parent's accumulated `list_a` and returns it whole, so the parent appends it again: `['node_1', 'node_2', 'node_1', 'node_2', 'sub_node_1']`."
+}

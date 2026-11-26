@@ -1,0 +1,9 @@
+{
+  "id": "langgraph-2504-fixed",
+  "of": "langgraph-2504",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [],
+  "fix_note": "Declares `node_2` with the input schema `OverallState`, which contains `money`, so the router `check_if_poor` sees the accumulated value 900 and routes to `END`."
+}

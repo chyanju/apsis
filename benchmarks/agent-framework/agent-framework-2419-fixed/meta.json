@@ -1,0 +1,9 @@
+{
+  "id": "agent-framework-2419-fixed",
+  "of": "agent-framework-2419",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.0-preview.251114.1",
+  "entry": "Workflow.csproj:AgentFramework2419.Case.Build",
+  "expected_detectors": [],
+  "fix_note": "`TextTrimExecutor` is a step of the parent (`TextReadExecutor -> TextTrimExecutor -> CharCountingExecutor`), so all three share one state and it finds the text in `WordStateScope`."
+}

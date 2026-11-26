@@ -1,0 +1,9 @@
+{
+  "id": "agent-framework-2938-fixed",
+  "of": "agent-framework-2938",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.0-preview.251204.1",
+  "entry": "Workflow.csproj:AgentsInWorkflows.Case.Build",
+  "expected_detectors": [],
+  "fix_note": "`AgentWorkflowBuilder.BuildSequential` chains the three agents and adds the end executor `OutputMessages`, which yields the conversation, so the run raises a `WorkflowOutputEvent` with the final translation."
+}

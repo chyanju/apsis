@@ -1,0 +1,11 @@
+{
+  "id": "agent-framework-3766",
+  "issue_url": "https://github.com/microsoft/agent-framework/issues/3766",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.0-preview.260205.1",
+  "entry": "Workflow.csproj:AgentFramework3766.Case.Build",
+  "expected_detectors": [
+    "subflow-port-binding"
+  ],
+  "note": "`MainAgent` hands off to `HitlWorkflow`, a human-in-the-loop workflow joined as an agent with `AsAgent()`. The request of its port `GuessNumber` ends the agent's turn as a `FunctionCallContent`, so the handoff workflow completes with no pending request and `Judge` never runs."
+}

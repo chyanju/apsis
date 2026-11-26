@@ -1,0 +1,31 @@
+{
+ "execution_model": "visual-dataflow",
+ "framework": "example",
+ "nodes": [
+  {
+   "id": "u",
+   "type_name": "Step",
+   "kind": "component",
+   "outputs": [
+    {
+     "name": "o",
+     "type_repr": "Model"
+    }
+   ]
+  },
+  {
+   "id": "v",
+   "type_name": "Step",
+   "kind": "component",
+   "inputs": [
+    {
+     "name": "s",
+     "type_repr": "Model",
+     "mandatory": true,
+     "connection_only": true
+    }
+   ]
+  }
+ ],
+ "edges": []
+}

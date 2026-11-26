@@ -1,0 +1,11 @@
+{
+  "id": "flowise-2078",
+  "issue_url": "https://github.com/FlowiseAI/Flowise/issues/2078",
+  "fix_kind": "workflow",
+  "framework_version": "1.6.2",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "binding-capability"
+  ],
+  "note": "`llmChain_1` and `llmChain_2`, fed by the `returnTrue` and `returnFalse` outputs of `ifElseFunction_0`, have an edge into `prompt` but none into their required `model` input. The chains cannot be built without a model, and the run fails with 'nodeInstance.run is not a function'."
+}

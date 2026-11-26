@@ -1,0 +1,9 @@
+{
+  "id": "agent-framework-3766-fixed",
+  "of": "agent-framework-3766",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.0-preview.260205.1",
+  "entry": "Workflow.csproj:AgentFramework3766.Case.Build",
+  "expected_detectors": [],
+  "fix_note": "A `WorkflowBuilder` parent binds `HitlWorkflow` with `BindAsExecutor`; its request port `ExternalGuessNumber` raises the request of `GuessNumber` as a `RequestInfoEvent` and carries each guess back to `Judge`."
+}

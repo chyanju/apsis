@@ -1,0 +1,9 @@
+{
+  "id": "langflow-4490-fixed",
+  "of": "langflow-4490",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.19.post2",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "Adds the edges `ConditionalRouter-auA65.false_result` -> `Prompt-WiQlt.hello` and `ConditionalRouter-prgEU.false_result` -> `ChatOutput-muq1P.input_value`, so both outputs of each router reach the same component."
+}

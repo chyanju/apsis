@@ -1,0 +1,11 @@
+{
+  "id": "agent-framework-3279",
+  "issue_url": "https://github.com/microsoft/agent-framework/issues/3279",
+  "fix_kind": "workflow",
+  "framework_version": "1.9.0",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [
+    "readiness-liveness"
+  ],
+  "note": "`writer` sends a draft to `reviewer`, the last executor, whose handler is typed `WorkflowContext[Never]` and never calls `ctx.yield_output`; the builder is given no `output_from`. No executor produces a workflow output, so the run ends in state `IDLE` and `get_outputs()` returns an empty list."
+}

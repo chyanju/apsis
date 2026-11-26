@@ -1,0 +1,11 @@
+{
+  "id": "agent-framework-3060",
+  "issue_url": "https://github.com/microsoft/agent-framework/issues/3060",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.0-preview.251219.1",
+  "entry": "Workflow.csproj:AgentFramework3060.Case.Build",
+  "expected_detectors": [
+    "channel-write-merge"
+  ],
+  "note": "The fan-in edge from `Bull_Round` and `Bear_Round` to `Merge_Round` lies on the debate loop, and both debaters send at about the same moment. The edge's unsynchronized state then loses a stance, so `Merge_Round` never completes that round and the run ends with no message pending."
+}

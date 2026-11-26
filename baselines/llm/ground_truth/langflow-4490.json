@@ -1,0 +1,8 @@
+{
+  "base": "langflow-4490",
+  "framework": "langflow",
+  "families": [
+    "routing_resolution"
+  ],
+  "location_ids": []
+}

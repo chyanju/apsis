@@ -1,0 +1,10 @@
+{
+  "base": "haystack-8341",
+  "framework": "haystack",
+  "families": [
+    "liveness_termination"
+  ],
+  "location_ids": [
+    "noop"
+  ]
+}

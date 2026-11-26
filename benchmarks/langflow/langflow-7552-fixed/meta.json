@@ -1,0 +1,9 @@
+{
+  "id": "langflow-7552-fixed",
+  "of": "langflow-7552",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.0",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "Sets `stream` on `OpenAIModel-Kp7uH` to false, so the edge into `MessageToData-vN3oP` is accepted and the flow runs to completion."
+}

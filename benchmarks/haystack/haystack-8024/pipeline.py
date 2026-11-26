@@ -1,0 +1,60 @@
+from typing import List, Optional
+
+from haystack import Pipeline, component
+from haystack.components.routers.conditional_router import ConditionalRouter
+from haystack.core.component.types import GreedyVariadic
+
+
+@component
+class Seed:
+    @component.output_types(scratchpad=List[str])
+    def run(self, query: str):
+        return {"scratchpad": [query]}
+
+
+@component
+class LoopJoiner:
+    @component.output_types(scratchpad=List[str])
+    def run(self, scratchpad: GreedyVariadic[List[str]]):
+        return {"scratchpad": list(scratchpad)[0]}
+
+
+@component
+class Refiner:
+    @component.output_types(thought=List[str])
+    def run(self, scratchpad: Optional[List[str]] = None):
+        return {"thought": (scratchpad or []) + ["step"]}
+
+
+def build() -> Pipeline:
+    router = ConditionalRouter(
+        [
+            {
+                "condition": "{{thought | length < 3}}",
+                "output": "{{thought}}",
+                "output_type": List[str],
+                "output_name": "continue",
+            },
+            {
+                "condition": "{{thought | length >= 3}}",
+                "output": "{{thought}}",
+                "output_type": List[str],
+                "output_name": "stop",
+            },
+        ]
+    )
+
+    p = Pipeline()
+    p.add_component("seed", Seed())
+    p.add_component("loop_joiner", LoopJoiner())
+    p.add_component("refiner", Refiner())
+    p.add_component("router", router)
+
+    p.connect("seed.scratchpad", "loop_joiner.scratchpad")
+    p.connect("loop_joiner.scratchpad", "refiner.scratchpad")
+    p.connect("refiner.thought", "router.thought")
+    p.connect("router.continue", "loop_joiner.scratchpad")
+    return p
+
+
+pipeline = build()

@@ -1,0 +1,9 @@
+{
+  "id": "haystack-8028-fixed0",
+  "of": "haystack-8028",
+  "fix_kind": "workflow",
+  "framework_version": "2.2.4",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [],
+  "fix_note": "Removes the default of `prompt_builder.documents`, so `prompt_builder` waits for `retriever.documents`; when the router selects `too_short_query`, neither `prompt_builder` nor `llm` runs."
+}

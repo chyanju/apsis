@@ -1,0 +1,230 @@
+# This is a Langflow agent workflow (exported flow.json).
+# Analyze the workflow below for bugs, working only from this source.
+
+{
+  "data": {
+    "nodes": [
+      {
+        "id": "ChatInput-vAd7W",
+        "data": {
+          "type": "ChatInput",
+          "node": {
+            "template": {
+              "input_value": {
+                "type": "str",
+                "required": false,
+                "list": false,
+                "input_types": [
+                  "Message"
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "name": "message",
+                "types": [
+                  "Message"
+                ],
+                "method": "message_response"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "ConditionalRouter-zRRVB",
+        "data": {
+          "type": "ConditionalRouter",
+          "node": {
+            "template": {
+              "input_text": {
+                "type": "str",
+                "required": true,
+                "list": false,
+                "input_types": [
+                  "Message"
+                ]
+              },
+              "match_text": {
+                "type": "str",
+                "required": true,
+                "list": false,
+                "input_types": [
+                  "Message"
+                ]
+              },
+              "operator": {
+                "type": "str",
+                "required": false,
+                "list": false,
+                "input_types": []
+              },
+              "message": {
+                "type": "str",
+                "required": false,
+                "list": false,
+                "input_types": [
+                  "Message"
+                ]
+              },
+              "max_iterations": {
+                "type": "int",
+                "required": false,
+                "list": false,
+                "input_types": []
+              },
+              "default_response": {
+                "type": "str",
+                "required": false,
+                "list": false,
+                "input_types": [
+                  "Message"
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "name": "true_result",
+                "types": [
+                  "Message"
+                ],
+                "method": "true_response",
+                "allows_loop": false
+              },
+              {
+                "name": "false_result",
+                "types": [
+                  "Message"
+                ],
+                "method": "false_response",
+                "allows_loop": false
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "ChatOutput-hFryt",
+        "data": {
+          "type": "ChatOutput",
+          "node": {
+            "template": {
+              "input_value": {
+                "type": "str",
+                "required": false,
+                "list": false,
+                "input_types": [
+                  "Message"
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "name": "message",
+                "types": [
+                  "Message"
+                ],
+                "method": "message_response"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "ChatOutput-5dYR6",
+        "data": {
+          "type": "ChatOutput",
+          "node": {
+            "template": {
+              "input_value": {
+                "type": "str",
+                "required": false,
+                "list": false,
+                "input_types": [
+                  "Message"
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "name": "message",
+                "types": [
+                  "Message"
+                ],
+                "method": "message_response"
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "edges": [
+      {
+        "source": "ChatInput-vAd7W",
+        "target": "ConditionalRouter-zRRVB",
+        "sourceHandle": "message",
+        "targetHandle": "input_text",
+        "data": {
+          "sourceHandle": {
+            "dataType": "ChatInput",
+            "name": "message",
+            "output_types": [
+              "Message"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "input_text",
+            "inputTypes": [
+              "Message"
+            ],
+            "type": "str"
+          }
+        }
+      },
+      {
+        "source": "ConditionalRouter-zRRVB",
+        "target": "ChatOutput-5dYR6",
+        "sourceHandle": "true_result",
+        "targetHandle": "input_value",
+        "data": {
+          "sourceHandle": {
+            "dataType": "ConditionalRouter",
+            "name": "true_result",
+            "output_types": [
+              "Message"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "input_value",
+            "inputTypes": [
+              "Message"
+            ],
+            "type": "str"
+          }
+        }
+      },
+      {
+        "source": "ConditionalRouter-zRRVB",
+        "target": "ChatOutput-hFryt",
+        "sourceHandle": "false_result",
+        "targetHandle": "input_value",
+        "data": {
+          "sourceHandle": {
+            "dataType": "ConditionalRouter",
+            "name": "false_result",
+            "output_types": [
+              "Message"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "input_value",
+            "inputTypes": [
+              "Message"
+            ],
+            "type": "str"
+          }
+        }
+      }
+    ]
+  }
+}

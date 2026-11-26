@@ -1,0 +1,11 @@
+{
+  "id": "agent-framework-5246",
+  "issue_url": "https://github.com/microsoft/agent-framework/issues/5246",
+  "fix_kind": "workflow",
+  "framework_version": "1.9.0",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [
+    "type-contract"
+  ],
+  "note": "In the chain `agent1 -> agent2 -> upper_case -> agent3 -> agent4`, the custom executor `upper_case` receives an `AgentExecutorResponse` but declares `output=str` and sends a bare `str`. A `str` carries no `full_conversation`, so `agent3` and `agent4` lose the messages of `agent1` and `agent2`."
+}

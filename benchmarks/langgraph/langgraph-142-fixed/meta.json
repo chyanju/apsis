@@ -1,0 +1,9 @@
+{
+  "id": "langgraph-142-fixed",
+  "of": "langgraph-142",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [],
+  "fix_note": "Declares a reducer on `value` (`Annotated[list[str], operator.add]`), so the writes of `a` and `b` in the same superstep are merged."
+}

@@ -1,0 +1,9 @@
+{
+  "id": "flowise-3250-fixed",
+  "of": "flowise-3250",
+  "fix_kind": "workflow",
+  "framework_version": "2.0.5",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "Sets the `model` input of `seqLLMNode_1` to `{{chatOpenAI_0.data.instance}}` and adds the edge `chatOpenAI_0` -> `seqLLMNode_1`, so the reference resolves to the existing chat model."
+}

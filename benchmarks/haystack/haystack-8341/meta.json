@@ -1,0 +1,11 @@
+{
+  "id": "haystack-8341",
+  "issue_url": "https://github.com/deepset-ai/haystack/issues/8341",
+  "fix_kind": "mixed",
+  "framework_version": "2.5.1",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [
+    "readiness-liveness"
+  ],
+  "note": "Three `ConditionalDocumentCreator` components feed the variadic input `joiner.documents`, and each emits either `documents` or `noop`. When only some emit `documents`, the Haystack release of the issue waits for every sender, so `joiner` never runs and no joined documents are returned."
+}

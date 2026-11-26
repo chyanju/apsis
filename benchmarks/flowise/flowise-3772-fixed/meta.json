@@ -1,0 +1,9 @@
+{
+  "id": "flowise-3772-fixed",
+  "of": "flowise-3772",
+  "fix_kind": "workflow",
+  "framework_version": "2.2.1",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "Sets `loopToName` of `seqLoop_0` to 'Shopify Agent', the name of `seqAgent_0`, so the loop target is an agent on the canvas."
+}

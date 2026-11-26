@@ -1,0 +1,11 @@
+{
+  "id": "autogen-3287",
+  "issue_url": "https://github.com/microsoft/autogen/issues/3287",
+  "fix_kind": "workflow",
+  "framework_version": "0.2.32",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [
+    "binding-capability"
+  ],
+  "note": "`controller` registers the nested chat for `agent2` on `trigger=\"agent1\"`, but a trigger matches the sender of an outer message to `controller`, and `agent1` is only a recipient inside the first nested chat. The second nested chat never starts, so `agent2` is never reached."
+}

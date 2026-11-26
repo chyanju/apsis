@@ -1,0 +1,12 @@
+{
+  "base": "langflow-6124",
+  "framework": "langflow",
+  "families": [
+    "liveness_termination"
+  ],
+  "location_ids": [
+    "ChatInput-vAd7W->ChatOutput-5dYR6",
+    "ConditionalRouter-zRRVB->ChatInput-vAd7W",
+    "ConditionalRouter-zRRVB->ChatOutput-5dYR6"
+  ]
+}

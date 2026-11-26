@@ -1,0 +1,9 @@
+{
+  "id": "langflow-3636-fixed",
+  "of": "langflow-3636",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.17",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "Each tool component declares its own `Tool` output (`bing_build_tool`, `wikipedia_build_tool`), and the edges into `ToolCallingAgent-agent1.tools` start from them, so the agent receives both tools."
+}

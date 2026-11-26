@@ -1,0 +1,11 @@
+{
+  "id": "langgraph-2893",
+  "issue_url": "https://github.com/langchain-ai/langgraph/issues/2893",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [
+    "type-contract"
+  ],
+  "note": "The input schema `Node2Input` of `node_2` requests `private_data`, but `node_1`, its only upstream node, returns only `a`; nothing writes `private_data`, so `node_2` runs on the empty input `{}`."
+}

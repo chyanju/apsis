@@ -1,0 +1,77 @@
+using Microsoft.Agents.AI.Workflows;
+
+namespace AgentFramework5164;
+
+public static class Case
+{
+    public static Workflow Build()
+    {
+        var startExecutor = new StartExecutor();
+        var uppercaseExecutor = new UppercaseExecutor();
+        var reverseExecutor = new ReverseExecutor();
+        var completeExecutor = new CompleteExecutor();
+
+        return new WorkflowBuilder(startExecutor)
+            .AddFanOutEdge(startExecutor, [reverseExecutor, uppercaseExecutor])
+            .AddFanInBarrierEdge([reverseExecutor, uppercaseExecutor], completeExecutor)
+            .WithOutputFrom(completeExecutor)
+            .Build();
+    }
+}
+
+[SendsMessage(typeof(string))]
+internal sealed partial class StartExecutor() : Executor<string>("StartExecutor")
+{
+    public override async ValueTask HandleAsync(string message, IWorkflowContext context, CancellationToken cancellationToken = default)
+    {
+        await context.SendMessageAsync(message, cancellationToken);
+    }
+}
+
+[SendsMessage(typeof(TransformComplete))]
+internal sealed partial class UppercaseExecutor() : Executor<string>("UppercaseExecutor")
+{
+    public override async ValueTask HandleAsync(string message, IWorkflowContext context, CancellationToken cancellationToken = default)
+    {
+        Console.WriteLine($"Executor: {this.Id} starting");
+        var str = message.ToUpperInvariant();
+        await Task.Delay(1000);
+        Console.WriteLine($"Executor: {this.Id} completed");
+        await context.SendMessageAsync(new TransformComplete(str), cancellationToken: cancellationToken);
+    }
+}
+
+[SendsMessage(typeof(TransformComplete))]
+internal sealed partial class ReverseExecutor() : Executor<string>("ReverseExecutor")
+{
+    public override async ValueTask HandleAsync(string message, IWorkflowContext context, CancellationToken cancellationToken = default)
+    {
+        Console.WriteLine($"Executor: {this.Id} starting");
+        var str = string.Concat(message.Reverse());
+        await Task.Delay(1000);
+        Console.WriteLine($"Executor: {this.Id} completed");
+        await context.SendMessageAsync(new TransformComplete(str), cancellationToken: cancellationToken);
+    }
+}
+
+[YieldsOutput(typeof(string))]
+internal sealed partial class CompleteExecutor() : Executor<TransformComplete>("CompleteExecutor")
+{
+    private readonly List<TransformComplete> _messages = [];
+
+    public override async ValueTask HandleAsync(TransformComplete message, IWorkflowContext context, CancellationToken cancellationToken = default)
+    {
+        this._messages.Add(message);
+
+        if (this._messages.Count == 2)
+        {
+            var str = string.Concat(this._messages.Select(m => m.Value));
+            await context.YieldOutputAsync(str, cancellationToken);
+        }
+    }
+}
+
+internal sealed class TransformComplete(string value) : WorkflowEvent
+{
+    public string Value { get; } = value;
+}

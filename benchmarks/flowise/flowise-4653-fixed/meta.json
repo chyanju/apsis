@@ -1,0 +1,9 @@
+{
+  "id": "flowise-4653-fixed",
+  "of": "flowise-4653",
+  "fix_kind": "workflow",
+  "framework_version": "3.0.1",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "Points `loopBackToNode` and the loop-back edge of `loopAgentflow_0` at the Agent node `agentAgentflow_0` ('Refine Search Terms'), which the loop restart re-runs; it writes the refined query to the state key `question`."
+}

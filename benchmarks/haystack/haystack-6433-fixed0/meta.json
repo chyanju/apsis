@@ -1,0 +1,9 @@
+{
+  "id": "haystack-6433-fixed0",
+  "of": "haystack-6433",
+  "fix_kind": "workflow",
+  "framework_version": "2.0.0b5",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [],
+  "fix_note": "Gives `source` a dummy mandatory input `go`; `source` is scheduled once `go` is passed in the run data, and its `documents` reach `writer`."
+}

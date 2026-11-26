@@ -1,0 +1,9 @@
+{
+  "id": "langflow-4155-fixed",
+  "of": "langflow-4155",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.18",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "Replaces the merge with one output per branch (`Prompt-trueBranch` -> `TextOutput-trueOut`, `Prompt-falseBranch` -> `TextOutput-falseOut`), so no component takes inputs from both router outputs."
+}

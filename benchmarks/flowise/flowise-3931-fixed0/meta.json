@@ -1,0 +1,9 @@
+{
+  "id": "flowise-3931-fixed0",
+  "of": "flowise-3931",
+  "fix_kind": "workflow",
+  "framework_version": "2.2.3",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "Removes `chatMoonshotAI_0` and its edge into the `model` input of `seqConditionAgent_0`, which then uses the flow's main model. Every edge into the Condition Agent now starts at a graph node."
+}

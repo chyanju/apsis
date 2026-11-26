@@ -1,0 +1,9 @@
+{
+  "id": "haystack-6843-fixed0",
+  "of": "haystack-6843",
+  "fix_kind": "workflow",
+  "framework_version": "2.0.0b6",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [],
+  "fix_note": "Gives `filter_retriever` a mandatory input `trigger`, connected from `router.lookup_query`, so it runs only when the router selects the lookup branch."
+}

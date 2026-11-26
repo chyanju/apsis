@@ -1,0 +1,42 @@
+import operator
+from typing import Annotated, TypedDict
+
+from langgraph.graph import StateGraph, START, END
+
+
+class State(TypedDict):
+    log: Annotated[list[str], operator.add]
+
+
+def node_a(state: State) -> dict:
+    return {"log": ["a"]}
+
+
+def node_b(state: State) -> dict:
+    return {"log": ["b"]}
+
+
+def node_b2(state: State) -> dict:
+    return {"log": ["b2"]}
+
+
+def node_c(state: State) -> dict:
+    return {"log": ["c"]}
+
+
+def build():
+    g = StateGraph(State)
+    g.add_node("A", node_a)
+    g.add_node("B", node_b)
+    g.add_node("B2", node_b2)
+    g.add_node("C", node_c)
+    g.add_edge(START, "A")
+    g.add_edge(START, "B")
+    g.add_edge("B", "B2")
+    g.add_edge("A", "C")
+    g.add_edge("B2", "C")
+    g.add_edge("C", END)
+    return g.compile()
+
+
+graph = build()

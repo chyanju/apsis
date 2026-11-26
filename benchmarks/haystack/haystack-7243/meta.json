@@ -1,0 +1,11 @@
+{
+  "id": "haystack-7243",
+  "issue_url": "https://github.com/deepset-ai/haystack/issues/7243",
+  "fix_kind": "mixed",
+  "framework_version": "2.0.0b8",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [
+    "readiness-liveness"
+  ],
+  "note": "`reader.query` is connected from `generator.replies` and has the default `\"\"`. Haystack counts the input as already satisfied, so `reader` can run with the default before the reply arrives and again when it does."
+}

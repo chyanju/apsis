@@ -1,0 +1,11 @@
+{
+  "id": "langgraph-4377",
+  "issue_url": "https://github.com/langchain-ai/langgraph/issues/4377",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [
+    "target-resolution"
+  ],
+  "note": "`supervisor_node` hands the request to an expert with `Command(goto=...)` but records nothing, and the only entry edge is `START -> supervisor_node`, so the next turn of the same thread starts at `supervisor_node` again instead of at the expert that holds the conversation."
+}

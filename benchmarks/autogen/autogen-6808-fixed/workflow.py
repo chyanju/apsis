@@ -1,0 +1,46 @@
+from autogen_agentchat.agents import AssistantAgent
+from autogen_agentchat.conditions import MaxMessageTermination
+from autogen_agentchat.teams import DiGraphBuilder, GraphFlow
+from autogen_ext.models.replay import ReplayChatCompletionClient
+
+
+def _client(*replies: str) -> ReplayChatCompletionClient:
+    return ReplayChatCompletionClient(list(replies))
+
+
+agent_a = AssistantAgent(
+    "A",
+    model_client=_client("Here is the document to review."),
+    system_message="Start the process and provide initial input.",
+)
+agent_b = AssistantAgent(
+    "B",
+    model_client=_client("CONTINUE", "STOP"),
+    system_message="Process input from A or feedback from C. Say 'CONTINUE' if it's from A or 'STOP' if it's from C.",
+)
+agent_c = AssistantAgent(
+    "C",
+    model_client=_client("Feedback: the draft reads well."),
+    system_message="Review B's output and provide feedback.",
+)
+agent_e = AssistantAgent(
+    "E",
+    model_client=_client("The review process is finalized."),
+    system_message="Finalize the process.",
+)
+
+builder = DiGraphBuilder()
+builder.add_node(agent_a).add_node(agent_b).add_node(agent_c).add_node(agent_e)
+builder.add_edge(agent_a, agent_b, activation_group="initial")
+builder.add_edge(agent_b, agent_c, condition="CONTINUE")
+builder.add_edge(agent_c, agent_b, activation_group="feedback")
+builder.add_edge(agent_b, agent_e, condition="STOP")
+graph = builder.build()
+
+termination_condition = MaxMessageTermination(10)
+
+workflow = GraphFlow(
+    participants=[agent_a, agent_b, agent_c, agent_e],
+    graph=graph,
+    termination_condition=termination_condition,
+)

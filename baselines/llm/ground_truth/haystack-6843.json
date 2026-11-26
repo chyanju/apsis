@@ -1,0 +1,10 @@
+{
+  "base": "haystack-6843",
+  "framework": "haystack",
+  "families": [
+    "liveness_termination"
+  ],
+  "location_ids": [
+    "filter_retriever.trigger"
+  ]
+}

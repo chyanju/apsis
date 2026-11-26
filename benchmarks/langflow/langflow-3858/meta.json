@@ -1,0 +1,11 @@
+{
+  "id": "langflow-3858",
+  "issue_url": "https://github.com/langflow-ai/langflow/issues/3858",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.18",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "router-branch-gating"
+  ],
+  "note": "`CustomComponent-QueryCombiner` requires `cassandra_rows`, `mysql_rows` and `oracle_rows`: the first two are fed only through branches of `CustomComponent-QueryRouter` that stop when no rows match, and `oracle_rows` has no edge. When a branch stops, the combiner waits forever and the flow stalls."
+}

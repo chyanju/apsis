@@ -1,0 +1,15 @@
+{
+  "base": "haystack-7533",
+  "framework": "haystack",
+  "families": [
+    "liveness_termination"
+  ],
+  "location_ids": [
+    "answer",
+    "answerer",
+    "answerer.query",
+    "prompt_builder.query",
+    "prompt_builder.replies",
+    "router.go_custom"
+  ]
+}

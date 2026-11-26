@@ -1,0 +1,11 @@
+{
+  "id": "flowise-4745",
+  "issue_url": "https://github.com/FlowiseAI/Flowise/issues/4745",
+  "fix_kind": "workflow",
+  "framework_version": "3.0.2",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "channel-write-merge"
+  ],
+  "note": "The custom tool of `toolAgentflow_0` assigns ten `$flow.state.luggage_*` keys in its JavaScript, but the node's `toolUpdateState` ('Update Flow State') is empty. Only keys listed there are written back, so the assignments are lost and the keys keep their old values."
+}

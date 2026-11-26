@@ -1,0 +1,11 @@
+{
+  "id": "haystack-6431",
+  "issue_url": "https://github.com/deepset-ai/haystack/issues/6431",
+  "fix_kind": "workflow",
+  "framework_version": "2.0.0b5",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [
+    "shared-instance-aliasing"
+  ],
+  "note": "The same `Cleaner` object, `shared_cleaner`, is added as `cleaner` to both `indexing_pipeline` and `evaluation_pipeline`. Sharing an instance between pipelines is not supported and, as the issue states, causes side effects and unexpected behaviour."
+}

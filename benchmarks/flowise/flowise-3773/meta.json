@@ -1,0 +1,11 @@
+{
+  "id": "flowise-3773",
+  "issue_url": "https://github.com/FlowiseAI/Flowise/issues/3773",
+  "fix_kind": "workflow",
+  "framework_version": "2.2.0",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "target-resolution"
+  ],
+  "note": "Of the two branch outputs of `seqCondition_0`, only `seqCondition_0-output-0` ('vector store') has an edge; `seqCondition_0-output-1` ('web search') has none, so `seqAgent_1` ('Web Search Agent') is unreachable. The run fails with 'Cannot read properties of undefined (reading includes)'."
+}

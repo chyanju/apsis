@@ -1,0 +1,11 @@
+{
+  "id": "agent-framework-2181",
+  "issue_url": "https://github.com/microsoft/agent-framework/issues/2181",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.0-preview.251112.1",
+  "entry": "Workflow.csproj:MixedWorkflowWithAgentsAndExecutors.Case.Build",
+  "expected_detectors": [
+    "type-contract"
+  ],
+  "note": "The agents `JailbreakDetector` and `ResponseAgent` send a `List<ChatMessage>`, but the executors after them, `JailbreakSync` and `FinalOutput`, handle only a single `ChatMessage`. The engine drops the message (\"dropped type mismatch\"), so the run stops after `JailbreakDetector`."
+}

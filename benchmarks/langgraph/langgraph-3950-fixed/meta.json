@@ -1,0 +1,9 @@
+{
+  "id": "langgraph-3950-fixed",
+  "of": "langgraph-3950",
+  "fix_kind": "workflow",
+  "framework_version": "0.3.18",
+  "entry": "graph.py:graph",
+  "expected_detectors": [],
+  "fix_note": "Passes a dict with only the key the node sets (`{\"foo\": \"foo\"}`, `{\"bar\": \"bar\"}`) as `Command(update=...)`, so no field is overwritten with its default."
+}

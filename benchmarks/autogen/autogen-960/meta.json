@@ -1,0 +1,11 @@
+{
+  "id": "autogen-960",
+  "issue_url": "https://github.com/microsoft/autogen/issues/960",
+  "fix_kind": "workflow",
+  "framework_version": "0.2.32",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [
+    "binding-capability"
+  ],
+  "note": "`manager.llm_config` is set to `assistant`'s `tool_llm_config` after construction (the constructor rejects it), so the `GroupChatManager` declares `functions`. Speaker selection offers them to the model, and a function-call reply fails with `AttributeError: 'NoneType' object has no attribute 'strip'`."
+}

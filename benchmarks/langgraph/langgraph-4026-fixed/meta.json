@@ -1,0 +1,9 @@
+{
+  "id": "langgraph-4026-fixed",
+  "of": "langgraph-4026",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [],
+  "fix_note": "Replaces the two edges into `d` with one list-source edge, `add_edge([\"b_2\", \"c\"], \"d\")`, which waits for both predecessors, so `d` runs once."
+}

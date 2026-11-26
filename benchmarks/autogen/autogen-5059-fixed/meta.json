@@ -1,0 +1,9 @@
+{
+  "id": "autogen-5059-fixed",
+  "of": "autogen-5059",
+  "fix_kind": "workflow",
+  "framework_version": "0.4.1",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [],
+  "fix_note": "Sets `reflect_on_tool_use=True` on `agent_address_locator`, so it reflects on its tool result and replies with a `TextMessage`, which the orchestrator accepts."
+}

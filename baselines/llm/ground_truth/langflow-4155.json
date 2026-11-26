@@ -1,0 +1,18 @@
+{
+  "base": "langflow-4155",
+  "framework": "langflow",
+  "families": [
+    "routing_resolution"
+  ],
+  "location_ids": [
+    "CombineText-mergeZ9",
+    "CombineText-mergeZ9->TextOutput-outZ9",
+    "Prompt-falseBranch->CombineText-mergeZ9",
+    "Prompt-falseBranch->TextOutput-falseOut",
+    "Prompt-trueBranch->CombineText-mergeZ9",
+    "Prompt-trueBranch->TextOutput-trueOut",
+    "TextOutput-falseOut",
+    "TextOutput-outZ9",
+    "TextOutput-trueOut"
+  ]
+}

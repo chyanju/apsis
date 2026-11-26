@@ -1,0 +1,9 @@
+{
+  "id": "haystack-8389-fixed",
+  "of": "haystack-8389",
+  "fix_kind": "workflow",
+  "framework_version": "2.30.2",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [],
+  "fix_note": "`filter_parser` always emits `filters` (an empty dict when it cannot parse the reply) and `filtered_retriever` always emits documents, so the chain delivers to `joiner.documents` on every run."
+}

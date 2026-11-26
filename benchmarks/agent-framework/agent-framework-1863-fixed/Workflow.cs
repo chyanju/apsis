@@ -1,0 +1,102 @@
+using System.Runtime.CompilerServices;
+using Microsoft.Agents.AI;
+using Microsoft.Agents.AI.Workflows;
+using Microsoft.Extensions.AI;
+
+namespace AgentFramworkLearning;
+
+public static class Case
+{
+    public static Workflow Build()
+    {
+        IChatClient chatClient = new CannedChatClient();
+
+        ChatClientAgent physicist = new(
+            chatClient,
+            name: "Physicist",
+            instructions: "You are an expert in physics. You answer questions from a physics perspective."
+        );
+        ChatClientAgent chemist = new(
+            chatClient,
+            name: "Chemist",
+            instructions: "You are an expert in chemistry. You answer questions from a chemistry perspective."
+        );
+        var startExecutor = new ConcurrentStartExecutor();
+        var aggregationExecutor = new ConcurrentAggregationExecutor();
+
+        return new WorkflowBuilder(startExecutor)
+            .AddFanOutEdge(startExecutor, targets: [physicist, chemist])
+            .AddFanInEdge(aggregationExecutor, sources: [physicist, chemist])
+            .WithOutputFrom(aggregationExecutor)
+            .Build();
+    }
+}
+
+internal sealed class ConcurrentStartExecutor() : Executor<string>("ConcurrentStartExecutor")
+{
+
+    public override async ValueTask HandleAsync(string message, IWorkflowContext context, CancellationToken cancellationToken = default)
+    {
+
+        await context.SendMessageAsync(new ChatMessage(ChatRole.User, message), cancellationToken: cancellationToken);
+
+        await context.SendMessageAsync(new TurnToken(emitEvents: true), cancellationToken: cancellationToken);
+    }
+}
+
+internal sealed class ConcurrentAggregationExecutor() : Executor<List<ChatMessage>>("ConcurrentAggregationExecutor")
+{
+    private readonly List<ChatMessage> _messages = [];
+
+    public override async ValueTask HandleAsync(List<ChatMessage> message, IWorkflowContext context, CancellationToken cancellationToken = default)
+    {
+        this._messages.AddRange(message);
+
+        if (this._messages.Count == 2)
+        {
+            var formattedMessages = string.Join(Environment.NewLine, this._messages.Select(m => $"{m.AuthorName}: {m.Text}"));
+            await context.YieldOutputAsync(formattedMessages, cancellationToken);
+        }
+    }
+}
+
+internal sealed class CannedChatClient : IChatClient
+{
+    public async Task<ChatResponse> GetResponseAsync(IEnumerable<ChatMessage> messages, ChatOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        await WaitAsync(options, cancellationToken);
+        return new ChatResponse(new ChatMessage(ChatRole.Assistant, Reply(options)));
+    }
+
+    public async IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseAsync(
+        IEnumerable<ChatMessage> messages,
+        ChatOptions? options = null,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        await WaitAsync(options, cancellationToken);
+        yield return new ChatResponseUpdate(ChatRole.Assistant, Reply(options));
+    }
+
+    public object? GetService(Type serviceType, object? serviceKey = null) => null;
+
+    public void Dispose()
+    {
+    }
+
+    private static bool IsPhysics(ChatOptions? options)
+        => options?.Instructions?.Contains("physics", StringComparison.OrdinalIgnoreCase) == true;
+
+    private static async Task WaitAsync(ChatOptions? options, CancellationToken cancellationToken)
+    {
+        await Task.Yield();
+        if (!IsPhysics(options))
+        {
+            await Task.Delay(200, cancellationToken);
+        }
+    }
+
+    private static string Reply(ChatOptions? options)
+        => IsPhysics(options)
+            ? "Temperature measures the average kinetic energy of the particles of a body."
+            : "Temperature sets how fast reactions run and where a chemical equilibrium lies.";
+}

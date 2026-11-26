@@ -1,0 +1,79 @@
+# This is a Microsoft Agent Framework agent workflow (C# definition).
+# Analyze the workflow below for bugs, working only from this source.
+
+using Microsoft.Agents.AI.Workflows;
+
+namespace AgentFramework4884;
+
+public static class Case
+{
+    public static Workflow Build()
+    {
+        var start = new StartExec();
+        var a = new AExec();
+        var b = new BExec();
+        var agg = new AggExec();
+
+        return new WorkflowBuilder(start)
+            .AddFanOutEdge(start, [a, b])
+            .AddFanInBarrierEdge([a, b], agg)
+            .WithOutputFrom(agg)
+            .Build();
+    }
+}
+
+internal sealed class StartExec() : Executor<string, string>("start")
+{
+    public override ValueTask<string> HandleAsync(
+        string input,
+        IWorkflowContext context,
+        CancellationToken cancellationToken = default)
+    {
+        Console.WriteLine("start");
+        return ValueTask.FromResult($"{input}-start");
+    }
+}
+
+internal sealed class AExec() : Executor<string, string>("a")
+{
+    public override ValueTask<string> HandleAsync(
+        string input,
+        IWorkflowContext context,
+        CancellationToken cancellationToken = default)
+    {
+        Console.WriteLine("a");
+        return ValueTask.FromResult($"{input}-a");
+    }
+}
+
+internal sealed class BExec() : Executor<string, string>("b")
+{
+    public override ValueTask<string> HandleAsync(
+        string input,
+        IWorkflowContext context,
+        CancellationToken cancellationToken = default)
+    {
+        Console.WriteLine("b");
+        return ValueTask.FromResult($"{input}-b");
+    }
+}
+
+[YieldsOutput(typeof(string))]
+internal sealed class AggExec() : Executor<string>("agg")
+{
+    readonly List<string> inputs = [];
+
+    public override async ValueTask HandleAsync(
+        string input,
+        IWorkflowContext context,
+        CancellationToken cancellationToken = default)
+    {
+        inputs.Add(input);
+
+        if (inputs is { Count: 2 })
+        {
+            Console.WriteLine($"agg:{inputs.Count}");
+            await context.YieldOutputAsync(string.Join(",", inputs), cancellationToken);
+        }
+    }
+}

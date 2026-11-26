@@ -1,0 +1,9 @@
+{
+  "id": "autogen-6088-fixed",
+  "of": "autogen-6088",
+  "fix_kind": "workflow",
+  "framework_version": "0.4.8",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [],
+  "fix_note": "`assistant_configs` holds no `model_context`; `get_team` copies the config and creates a new `BufferedChatCompletionContext` per call, so each session's agent has its own context."
+}

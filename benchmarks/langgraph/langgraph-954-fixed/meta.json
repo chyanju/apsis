@@ -1,0 +1,9 @@
+{
+  "id": "langgraph-954-fixed",
+  "of": "langgraph-954",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [],
+  "fix_note": "Replaces the two separate `add_edge(..., \"agent_4\")` calls with one list-source edge, `add_edge([\"agent_2_2\", \"agent_3\"], \"agent_4\")`. `agent_4` now waits for both branches and runs once."
+}

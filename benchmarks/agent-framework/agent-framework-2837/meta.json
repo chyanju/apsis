@@ -1,0 +1,11 @@
+{
+  "id": "agent-framework-2837",
+  "issue_url": "https://github.com/microsoft/agent-framework/issues/2837",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.0-preview.251204.1",
+  "entry": "Workflow.csproj:AgentFramework2837.Case.Build",
+  "expected_detectors": [
+    "type-contract"
+  ],
+  "note": "`DispatchExecutor` sends a `DerivedClass` to `IntrospectionExecutor`, whose only handler declares `BaseClass`. Handlers are matched by the exact runtime type, so the message is dropped and `IntrospectionExecutor` never runs."
+}

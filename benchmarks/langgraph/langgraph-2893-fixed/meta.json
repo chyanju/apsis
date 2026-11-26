@@ -1,0 +1,9 @@
+{
+  "id": "langgraph-2893-fixed",
+  "of": "langgraph-2893",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [],
+  "fix_note": "`node_1` now returns `{\"private_data\": ...}` (its return annotation becomes `Node1Output`), so the `private_data` channel that `node_2` requests has a writer."
+}

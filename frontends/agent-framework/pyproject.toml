@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "apsis-agent-framework"
+version = "0.1.0"
+description = "apsis Microsoft agent-framework front-end: extract a built Workflow into the apsis IR"
+requires-python = ">=3.10"
+dependencies = ["agent-framework-core"]
+
+[tool.setuptools]
+packages = ["apsis_agent_framework"]

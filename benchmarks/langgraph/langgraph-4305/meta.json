@@ -1,0 +1,11 @@
+{
+  "id": "langgraph-4305",
+  "issue_url": "https://github.com/langchain-ai/langgraph/issues/4305",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [
+    "channel-write-merge"
+  ],
+  "note": "`tags` is declared `Annotated[Optional[List[str]], append]`; LangGraph cannot instantiate `Optional` as the empty base value, so the first write bypasses the reducer and the single write of `emit` leaves `\"a\"` instead of `[\"a\"]`."
+}

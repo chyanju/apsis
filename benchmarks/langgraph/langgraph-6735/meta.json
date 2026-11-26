@@ -1,0 +1,11 @@
+{
+  "id": "langgraph-6735",
+  "issue_url": "https://github.com/langchain-ai/langgraph/issues/6735",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [
+    "readiness-liveness"
+  ],
+  "note": "`compile()` accepts unlinked nodes without a warning: `orphan` has no edge and the island `island_a -> island_b -> END` has no edge from `START`, so they never run; `dead_end` has no outgoing edge, so its branch silently ends there."
+}

@@ -1,0 +1,11 @@
+{
+  "id": "autogen-6551",
+  "issue_url": "https://github.com/microsoft/autogen/issues/6551",
+  "fix_kind": "workflow",
+  "framework_version": "0.5.6",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [
+    "router-branch-gating"
+  ],
+  "note": "In a `GraphFlow`, `B` routes to `C` on \"APPROVE\" or to `D` on \"NOT_FOUND\", and both lead to `E`, which keeps the default activation \"all\" and waits for both parents. Only one runs, so `E` never becomes ready and the team stops with `RuntimeError: No available speakers found.`"
+}

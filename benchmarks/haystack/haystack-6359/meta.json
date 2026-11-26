@@ -1,0 +1,11 @@
+{
+  "id": "haystack-6359",
+  "issue_url": "https://github.com/deepset-ai/haystack/issues/6359",
+  "fix_kind": "workflow",
+  "framework_version": "2.0.0b5",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [
+    "shared-instance-aliasing"
+  ],
+  "note": "The same `TextCleaner` and `Embedder` objects are added to both the `indexing` and the `query` pipeline. A component instance carries its own connection state, so in the issue connecting a reused instance again fails (\"generator.prompt is already connected to ['builder']\")."
+}

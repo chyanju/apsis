@@ -1,0 +1,40 @@
+# This is a Haystack agent workflow (Python definition).
+# Analyze the workflow below for bugs, working only from this source.
+
+from haystack import Pipeline, component
+from haystack.components.routers import ConditionalRouter
+
+@component
+class PromptBuilder:
+
+    @component.output_types(prompt=str)
+    def run(self, replies: str, query: str=''):
+        return {'prompt': query + replies}
+
+@component
+class Generator:
+
+    @component.output_types(replies=str)
+    def run(self, prompt: str):
+        return {'replies': prompt}
+
+@component
+class Answerer:
+
+    @component.output_types(answer=str)
+    def run(self, query: str):
+        return {'answer': query}
+_ROUTES = [{'condition': '{{answerable}}', 'output': '{{query}}', 'output_name': 'go_custom', 'output_type': str}, {'condition': '{{not answerable}}', 'output': '{{query}}', 'output_name': 'go_prompt', 'output_type': str}]
+
+def build() -> Pipeline:
+    p = Pipeline()
+    p.add_component('router', ConditionalRouter(routes=_ROUTES))
+    p.add_component('prompt_builder', PromptBuilder())
+    p.add_component('generator', Generator())
+    p.add_component('answerer', Answerer())
+    p.connect('router.go_prompt', 'prompt_builder.replies')
+    p.connect('prompt_builder.prompt', 'generator.prompt')
+    p.connect('generator.replies', 'router.query')
+    p.connect('router.go_custom', 'answerer.query')
+    return p
+pipeline = build()

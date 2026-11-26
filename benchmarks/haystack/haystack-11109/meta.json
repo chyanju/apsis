@@ -1,0 +1,11 @@
+{
+  "id": "haystack-11109",
+  "issue_url": "https://github.com/deepset-ai/haystack/issues/11109",
+  "fix_kind": "workflow",
+  "framework_version": "2.30.2",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [
+    "readiness-liveness"
+  ],
+  "note": "`executor.messages`, fed by `joiner.value`, is the only connected input of `executor` and defaults to `None`, so `executor` has no mandatory input. A value passed to its unconnected input `streaming_callback` schedules it, and it runs with `messages=None` before `joiner` has delivered."
+}

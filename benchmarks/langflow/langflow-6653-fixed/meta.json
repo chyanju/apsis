@@ -1,0 +1,9 @@
+{
+  "id": "langflow-6653-fixed",
+  "of": "langflow-6653",
+  "fix_kind": "workflow",
+  "framework_version": "1.1.5",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "Removes the edge `LoopComponent-loop1.item` -> `CalculatorComponent-tool1.expression`, so the calculator is built outside the loop and `Agent-agent1.tools` is available before the loop runs."
+}

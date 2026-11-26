@@ -1,0 +1,149 @@
+{
+  "nodes": [
+    {
+      "id": "startAgentflow_0",
+      "data": {
+        "id": "startAgentflow_0",
+        "name": "startAgentflow",
+        "label": "Start",
+        "category": "Agent Flows",
+        "baseClasses": ["Start"],
+        "inputAnchors": [],
+        "inputParams": [
+          { "id": "startAgentflow_0-input-startInputType-options", "name": "startInputType", "label": "Input Type", "type": "options" },
+          { "id": "startAgentflow_0-input-formTitle-string", "name": "formTitle", "label": "Form Title", "type": "string", "optional": true },
+          { "id": "startAgentflow_0-input-formInputTypes-array", "name": "formInputTypes", "label": "Form Input Types", "type": "array", "optional": true }
+        ],
+        "inputs": {
+          "startInputType": "formInput",
+          "formTitle": "Start Form",
+          "formInputTypes": [
+            { "type": "string", "label": "Request", "name": "request" }
+          ]
+        },
+        "outputAnchors": [
+          { "id": "startAgentflow_0-output-startAgentflow-Start", "name": "startAgentflow", "label": "Start", "type": "Start" }
+        ]
+      }
+    },
+    {
+      "id": "customFunctionAgentflow_0",
+      "data": {
+        "id": "customFunctionAgentflow_0",
+        "name": "customFunctionAgentflow",
+        "label": "Build Request",
+        "category": "Agent Flows",
+        "baseClasses": ["CustomFunction"],
+        "inputAnchors": [],
+        "inputParams": [
+          { "id": "customFunctionAgentflow_0-input-customFunctionJavascriptFunction-code", "name": "customFunctionJavascriptFunction", "label": "Javascript Function", "type": "code" }
+        ],
+        "inputs": {
+          "customFunctionInputVariables": "",
+          "customFunctionJavascriptFunction": "return `Request: ${$form.request}`;",
+          "customFunctionUpdateState": ""
+        },
+        "outputAnchors": [
+          { "id": "customFunctionAgentflow_0-output-customFunctionAgentflow", "name": "customFunctionAgentflow", "label": "Custom Function", "type": "CustomFunction" }
+        ]
+      }
+    },
+    {
+      "id": "humanInputAgentflow_0",
+      "data": {
+        "id": "humanInputAgentflow_0",
+        "name": "humanInputAgentflow",
+        "label": "Approve?",
+        "category": "Agent Flows",
+        "baseClasses": ["HumanInput"],
+        "inputAnchors": [],
+        "inputParams": [
+          { "id": "humanInputAgentflow_0-input-humanInputDescriptionType-options", "name": "humanInputDescriptionType", "label": "Description Type", "type": "options" },
+          { "id": "humanInputAgentflow_0-input-humanInputDescription-string", "name": "humanInputDescription", "label": "Description", "type": "string", "optional": true },
+          { "id": "humanInputAgentflow_0-input-humanInputEnableFeedback-boolean", "name": "humanInputEnableFeedback", "label": "Enable Feedback", "type": "boolean", "optional": true }
+        ],
+        "inputs": {
+          "humanInputDescriptionType": "fixed",
+          "humanInputDescription": "Do you approve this request?",
+          "humanInputEnableFeedback": true
+        },
+        "outputAnchors": [
+          {
+            "id": "humanInputAgentflow_0-output-humanInputAgentflow",
+            "name": "humanInputAgentflow",
+            "label": "Human Input",
+            "type": "HumanInput",
+            "options": [
+              { "id": "humanInputAgentflow_0-output-proceed", "name": "proceed", "label": "Proceed", "type": "HumanInput" },
+              { "id": "humanInputAgentflow_0-output-reject", "name": "reject", "label": "Reject", "type": "HumanInput" }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "agentAgentflow_0",
+      "data": {
+        "id": "agentAgentflow_0",
+        "name": "agentAgentflow",
+        "label": "Worker Agent",
+        "category": "Agent Flows",
+        "baseClasses": ["Agent"],
+        "inputAnchors": [],
+        "inputParams": [
+          { "id": "agentAgentflow_0-input-agentModel-asyncOptions", "name": "agentModel", "label": "Model", "type": "asyncOptions" },
+          { "id": "agentAgentflow_0-input-agentMessages-array", "name": "agentMessages", "label": "Messages", "type": "array", "optional": true }
+        ],
+        "inputs": {
+          "agentModel": "chatOpenAI",
+          "agentMessages": [
+            { "role": "system", "content": "Carry out the approved request." }
+          ]
+        },
+        "outputAnchors": [
+          { "id": "agentAgentflow_0-output-agentAgentflow-Agent", "name": "agentAgentflow", "label": "Agent", "type": "Agent" }
+        ]
+      }
+    },
+    {
+      "id": "directReplyAgentflow_0",
+      "data": {
+        "id": "directReplyAgentflow_0",
+        "name": "directReplyAgentflow",
+        "label": "Cancelled Reply",
+        "category": "Agent Flows",
+        "baseClasses": ["DirectReply"],
+        "inputAnchors": [],
+        "inputParams": [
+          { "id": "directReplyAgentflow_0-input-directReplyMessage-string", "name": "directReplyMessage", "label": "Message", "type": "string" }
+        ],
+        "inputs": {
+          "directReplyMessage": "Cancelled by user."
+        },
+        "outputAnchors": []
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "startAgentflow_0", "target": "customFunctionAgentflow_0",
+      "sourceHandle": "startAgentflow_0-output-startAgentflow-Start",
+      "targetHandle": "customFunctionAgentflow_0"
+    },
+    {
+      "source": "customFunctionAgentflow_0", "target": "humanInputAgentflow_0",
+      "sourceHandle": "customFunctionAgentflow_0-output-customFunctionAgentflow",
+      "targetHandle": "humanInputAgentflow_0"
+    },
+    {
+      "source": "humanInputAgentflow_0", "target": "agentAgentflow_0",
+      "sourceHandle": "humanInputAgentflow_0-output-proceed",
+      "targetHandle": "agentAgentflow_0"
+    },
+    {
+      "source": "humanInputAgentflow_0", "target": "directReplyAgentflow_0",
+      "sourceHandle": "humanInputAgentflow_0-output-reject",
+      "targetHandle": "directReplyAgentflow_0"
+    }
+  ]
+}

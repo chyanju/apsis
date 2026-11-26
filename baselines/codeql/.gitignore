@@ -1,0 +1,10 @@
+# Built CodeQL databases (large, regenerable from source)
+dbs/
+# Analyze outputs
+results/
+*.sarif
+# Vendored CodeQL CLI bundle + downloaded standard-library packs
+codeql-bundle*/
+codeql/
+.codeql/
+__pycache__/

@@ -1,0 +1,11 @@
+{
+  "id": "haystack-4047",
+  "issue_url": "https://github.com/deepset-ai/haystack/issues/4047",
+  "fix_kind": "mixed",
+  "framework_version": "2.0.0",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [
+    "type-contract"
+  ],
+  "note": "`retriever.documents` (`List[str]`) is connected to `qa_prompt_node.documents`, which takes a single `str`. Haystack accepts the connection, and at run time only the first retrieved document reaches the prompt."
+}

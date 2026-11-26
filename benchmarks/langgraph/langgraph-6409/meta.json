@@ -1,0 +1,11 @@
+{
+  "id": "langgraph-6409",
+  "issue_url": "https://github.com/langchain-ai/langgraph/issues/6409",
+  "fix_kind": "mixed",
+  "framework_version": "1.0.2",
+  "entry": "graph.py:graph",
+  "expected_detectors": [
+    "subflow-port-binding"
+  ],
+  "note": "In three nested graphs (`main_graph` > `sub_graph` > `sub_sub_graph`, compiled with checkpointers), `sub_sub_child` returns `Command(graph=Command.PARENT, goto=\"sub_child_3\")`; the handoff carries the wrong `checkpoint_ns`, so the run raises `ParentCommand` instead of routing."
+}

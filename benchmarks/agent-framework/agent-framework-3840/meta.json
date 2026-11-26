@@ -1,0 +1,11 @@
+{
+  "id": "agent-framework-3840",
+  "issue_url": "https://github.com/microsoft/agent-framework/issues/3840",
+  "fix_kind": "workflow",
+  "framework_version": "1.9.0",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [
+    "subflow-port-binding"
+  ],
+  "note": "`refine_loop` is a `WorkflowExecutor` around a sub-workflow whose only edges are `drafter` -> `critic` and `critic` -> `drafter`: no edge leaves the loop and no handler yields an output. The sub-workflow never completes, so `refine_loop` never finishes and blocks the superstep of the parent workflow."
+}

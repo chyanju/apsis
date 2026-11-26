@@ -1,0 +1,76 @@
+using Microsoft.Agents.AI.Workflows;
+using Microsoft.Extensions.AI;
+
+namespace AgentFramework5563;
+
+public static class Case
+{
+    public static Workflow Build()
+    {
+        RequestPort numberRequestPort = RequestPort.Create<NumberSignal, int>("GuessNumber");
+        JudgeExecutor judgeExecutor = new(42);
+
+        Workflow subWorkflow = new WorkflowBuilder(numberRequestPort)
+            .AddEdge(numberRequestPort, judgeExecutor)
+            .AddEdge(judgeExecutor, numberRequestPort)
+            .WithOutputFrom(judgeExecutor)
+            .Build();
+
+        ExecutorOptions options = ExecutorOptions.Default;
+
+        options.AutoSendMessageHandlerResultObject = true;
+        options.AutoYieldOutputHandlerResultObject = true;
+
+        ExecutorBinding subworkflowBinding = subWorkflow.BindAsExecutor("Subworkflow", options);
+
+        RequestPort externalRequestPort = RequestPort.Create<NumberSignal, int>("ExternalGuessNumber");
+
+        Workflow workflow = new WorkflowBuilder(subworkflowBinding)
+            .AddEdge(subworkflowBinding, externalRequestPort)
+            .AddEdge(externalRequestPort, subworkflowBinding)
+            .WithOutputFrom(subworkflowBinding)
+            .Build();
+
+        return workflow;
+    }
+}
+
+internal enum NumberSignal
+{
+    Init,
+    Above,
+    Below,
+}
+
+[SendsMessage(typeof(NumberSignal))]
+[YieldsOutput(typeof(string))]
+[YieldsOutput(typeof(ChatMessage))]
+internal sealed class JudgeExecutor() : Executor<int>("Judge")
+{
+    private readonly int _targetNumber;
+    private int _tries;
+
+    public JudgeExecutor(int targetNumber) : this()
+    {
+        this._targetNumber = targetNumber;
+    }
+
+    public override async ValueTask HandleAsync(int message, IWorkflowContext context, CancellationToken cancellationToken = default)
+    {
+        this._tries++;
+        if (message == this._targetNumber)
+        {
+            string gameResult = $"Congratulations! You found the number {this._targetNumber} in {this._tries} tries!";
+            Console.WriteLine(gameResult);
+            await context.YieldOutputAsync(new ChatMessage(ChatRole.Assistant, gameResult), cancellationToken);
+        }
+        else if (message < this._targetNumber)
+        {
+            await context.SendMessageAsync(NumberSignal.Below, cancellationToken: cancellationToken);
+        }
+        else
+        {
+            await context.SendMessageAsync(NumberSignal.Above, cancellationToken: cancellationToken);
+        }
+    }
+}

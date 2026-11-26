@@ -1,0 +1,11 @@
+{
+  "id": "autogen-6084",
+  "issue_url": "https://github.com/microsoft/autogen/issues/6084",
+  "fix_kind": "mixed",
+  "framework_version": "0.4.7",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [
+    "type-contract"
+  ],
+  "note": "`test_agent` has `tools=[test]` and replies with a `ToolCallSummaryMessage`, which the `RoundRobinGroupChat` broadcasts to `multi_modal_web_surfer`. That `MultimodalWebSurfer` accepts only `TextMessage` and `MultiModalMessage` and raises `ValueError: Unexpected message in MultiModalWebSurfer`."
+}

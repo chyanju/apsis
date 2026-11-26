@@ -1,0 +1,11 @@
+{
+  "id": "agent-framework-3620",
+  "issue_url": "https://github.com/microsoft/agent-framework/issues/3620",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.0-preview.260128.1",
+  "entry": "Workflow.csproj:AgentFramework3620.Case.Build",
+  "expected_detectors": [
+    "shared-instance-aliasing"
+  ],
+  "note": "`AddWorkflow` registers the workflow \"pricing\" (`pricing_start -> pricing_end`) as a keyed singleton, so every request runs the same `Workflow` object. A run owns it until disposed, so a second concurrent run fails with \"Cannot use a Workflow that is already owned by another runner or parent workflow.\""
+}

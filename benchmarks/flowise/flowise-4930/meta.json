@@ -1,0 +1,11 @@
+{
+  "id": "flowise-4930",
+  "issue_url": "https://github.com/FlowiseAI/Flowise/issues/4930",
+  "fix_kind": "workflow",
+  "framework_version": "3.0.3",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "channel-write-merge"
+  ],
+  "note": "Inside `iterationAgentflow_0`, `customFunctionAgentflow_1` ('Append Summary') pushes each chunk summary onto `$flow.state.summaries`, but its `customFunctionUpdateState` is empty, so the push is discarded. `summaries`, read after the loop by `agentAgentflow_1`, restarts from `[]` on every pass."
+}

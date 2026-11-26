@@ -1,0 +1,9 @@
+{
+  "id": "haystack-7243-fixed0",
+  "of": "haystack-7243",
+  "fix_kind": "workflow",
+  "framework_version": "2.0.0b8",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [],
+  "fix_note": "Removes the default of `reader.query`, so `reader` waits for `generator.replies` and runs once."
+}

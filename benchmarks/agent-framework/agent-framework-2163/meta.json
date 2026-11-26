@@ -1,0 +1,11 @@
+{
+  "id": "agent-framework-2163",
+  "issue_url": "https://github.com/microsoft/agent-framework/issues/2163",
+  "fix_kind": "workflow",
+  "framework_version": "1.9.0",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [
+    "subflow-port-binding"
+  ],
+  "note": "The parent's output source is the `WorkflowExecutor` `TranslatorWorkflow` (`output_from=[subworkflow_executor]`), which wraps a concurrent sub-workflow. With the default `allow_direct_output=False` it forwards the inner output as a message, so the parent's `WorkflowOutputEvent` never fires."
+}

@@ -1,0 +1,11 @@
+{
+  "id": "haystack-6515",
+  "issue_url": "https://github.com/deepset-ai/haystack/issues/6515",
+  "fix_kind": "workflow",
+  "framework_version": "2.30.2",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [
+    "target-resolution"
+  ],
+  "note": "`ranker.documents` is connected to `prompt_builder.question`, and `prompt_builder.documents` has no connection. The prompt then lists no documents and carries the document list where the question belongs."
+}

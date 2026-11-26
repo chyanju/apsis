@@ -1,0 +1,11 @@
+{
+  "id": "langgraph-2504",
+  "issue_url": "https://github.com/langchain-ai/langgraph/issues/2504",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [
+    "channel-write-merge"
+  ],
+  "note": "`node_2` has the input schema `PurchasesState`, which lacks `money`, yet returns `{\"money\": -100}` for the reducer key `money`; the router `check_if_poor` gets the input view of `node_2`, sees -100 instead of the accumulated 900, and routes to `node_3` instead of `END`."
+}

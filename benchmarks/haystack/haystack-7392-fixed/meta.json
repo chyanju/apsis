@@ -1,0 +1,9 @@
+{
+  "id": "haystack-7392-fixed",
+  "of": "haystack-7392",
+  "fix_kind": "workflow",
+  "framework_version": "2.0.0b8",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [],
+  "fix_note": "Removes the default of `prompt_builder.documents`, so `prompt_builder` waits for `retriever.documents` and runs once."
+}

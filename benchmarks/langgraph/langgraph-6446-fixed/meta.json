@@ -1,0 +1,9 @@
+{
+  "id": "langgraph-6446-fixed",
+  "of": "langgraph-6446",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [],
+  "fix_note": "Builds the subgraph with `output_schema=SubgraphOutput`, which has only `s1` and `s2`, so the subgraph no longer writes `b` and `nodeb` is its only writer in the superstep."
+}

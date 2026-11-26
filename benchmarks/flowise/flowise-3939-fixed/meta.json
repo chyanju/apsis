@@ -1,0 +1,9 @@
+{
+  "id": "flowise-3939-fixed",
+  "of": "flowise-3939",
+  "fix_kind": "workflow",
+  "framework_version": "2.2.2",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "Removes the unused End node `seqEnd_1`. The chain `seqStart_0` -> `seqAgent_0` -> `seqAgent_1` -> `seqEnd_0` is unchanged."
+}

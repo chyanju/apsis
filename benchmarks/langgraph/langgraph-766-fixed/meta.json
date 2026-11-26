@@ -1,0 +1,9 @@
+{
+  "id": "langgraph-766-fixed",
+  "of": "langgraph-766",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [],
+  "fix_note": "Removes the unconditional edge from `medical_mentor` to `medical_mentor_pass`. `medical_mentor` is left only through its conditional edge, so `medical` receives a single update per superstep."
+}

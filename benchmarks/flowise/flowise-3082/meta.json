@@ -1,0 +1,11 @@
+{
+  "id": "flowise-3082",
+  "issue_url": "https://github.com/FlowiseAI/Flowise/issues/3082",
+  "fix_kind": "workflow",
+  "framework_version": "2.0.5",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "channel-write-merge"
+  ],
+  "note": "`worker_0` and `worker_1` reference `supervisor_0` in their `supervisor` input, but the edges from it are missing, so both run in one step and each writes `start:supervisor`, which takes one value per step. The run fails with 'Invalid update for channel start:supervisor. Values: start,start'."
+}

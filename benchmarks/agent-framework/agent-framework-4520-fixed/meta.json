@@ -1,0 +1,9 @@
+{
+  "id": "agent-framework-4520-fixed",
+  "of": "agent-framework-4520",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.0-rc3",
+  "entry": "Workflow.csproj:AgentFramework4520.Case.Build",
+  "expected_detectors": [],
+  "fix_note": "`EndExecutor` declares `[YieldsOutput(typeof(string))]`, the type its handler passes to `YieldOutputAsync`."
+}

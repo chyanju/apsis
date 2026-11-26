@@ -1,0 +1,11 @@
+{
+  "id": "langflow-10406",
+  "issue_url": "https://github.com/langflow-ai/langflow/issues/10406",
+  "fix_kind": "workflow",
+  "framework_version": "1.5.0",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "cycle-termination"
+  ],
+  "note": "`ConditionalRouter-zRRVB.true_result` feeds `Notify-Wn3kp.input_value`, and `Notify-Wn3kp.result` is wired back to the router's `input_text`. The true branch re-enters the router on every pass and never reaches an output, so the flow loops without terminating."
+}

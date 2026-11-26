@@ -1,0 +1,13 @@
+{
+  "base": "langgraph-6340",
+  "framework": "langgraph",
+  "families": [
+    "type_contracts"
+  ],
+  "location_ids": [
+    "end",
+    "loop",
+    "read_store",
+    "route"
+  ]
+}

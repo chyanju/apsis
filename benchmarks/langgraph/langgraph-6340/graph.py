@@ -1,0 +1,33 @@
+from typing import Literal
+
+from langgraph.graph import StateGraph, START, END, MessagesState
+from langgraph.store.base import BaseStore
+from langchain_core.runnables import RunnableConfig
+
+
+def simple_node(state: MessagesState) -> dict:
+    return {"messages": [("ai", "handled by simple_node")]}
+
+
+def route_with_store(
+    state: MessagesState,
+    config: RunnableConfig,
+    store: BaseStore,
+) -> Literal["simple_node", "__end__"]:
+    user_id = config.get("configurable", {}).get("user_id", "default")
+    namespace = ("preferences", user_id)
+    preferences = list(store.search(namespace))
+    if len(state.get("messages", [])) > 1 or preferences:
+        return END
+    return "simple_node"
+
+
+def build():
+    g = StateGraph(MessagesState)
+    g.add_node("simple_node", simple_node)
+    g.add_edge(START, "simple_node")
+    g.add_conditional_edges("simple_node", route_with_store)
+    return g.compile()
+
+
+graph = build()

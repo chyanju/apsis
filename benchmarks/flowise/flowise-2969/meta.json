@@ -1,0 +1,11 @@
+{
+  "id": "flowise-2969",
+  "issue_url": "https://github.com/FlowiseAI/Flowise/issues/2969",
+  "fix_kind": "workflow",
+  "framework_version": "2.0.1",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "target-resolution"
+  ],
+  "note": "The `loopToName` of `seqLoop_0` is 'Condition agent', the name of `seqConditionAgent_0`. A Condition Agent is compiled into a conditional edge rather than a graph node, so the loop edge ends at an unknown name and compilation fails with 'Found edge ending at unknown node'."
+}

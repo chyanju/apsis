@@ -1,0 +1,11 @@
+{
+  "id": "agent-framework-2809",
+  "issue_url": "https://github.com/microsoft/agent-framework/issues/2809",
+  "fix_kind": "workflow",
+  "framework_version": "1.9.0",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [
+    "binding-capability"
+  ],
+  "note": "The handoff mesh wraps `triage_agent`, `order_agent` and `support_agent` in `HandoffAgentExecutor`s, which add the `handoff_to_<target>` tools, but `refund_agent` is a custom `RefundExecutor`. It gets no handoff tools or targets, so it cannot hand off to another participant."
+}

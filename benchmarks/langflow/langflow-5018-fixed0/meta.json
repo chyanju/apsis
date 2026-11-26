@@ -1,0 +1,9 @@
+{
+  "id": "langflow-5018-fixed0",
+  "of": "langflow-5018",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.19",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "The sub-flow `Greeter Subflow` ends in `CreateData-sub03`, whose `data` output is `Data`, instead of `ChatOutput-sub03`. What the sub-flow returns has the type that `RunFlow-rf001.run_outputs` declares."
+}

@@ -1,0 +1,11 @@
+{
+  "id": "autogen-5059",
+  "issue_url": "https://github.com/microsoft/autogen/issues/5059",
+  "fix_kind": "workflow",
+  "framework_version": "0.4.1",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [
+    "type-contract"
+  ],
+  "note": "`agent_address_locator` has a tool and `reflect_on_tool_use=False`, so it replies with a `ToolCallSummaryMessage`. The `MagenticOneGroupChat` orchestrator accepts only `TextMessage` and `MultiModalMessage` from participants, and the run stops with an `AssertionError`."
+}

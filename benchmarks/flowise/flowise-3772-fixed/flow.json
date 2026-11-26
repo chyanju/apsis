@@ -1,0 +1,168 @@
+{
+  "nodes": [
+    {
+      "id": "seqStart_0",
+      "data": {
+        "id": "seqStart_0",
+        "name": "seqStart",
+        "label": "Start",
+        "category": "Sequential Agents",
+        "inputAnchors": [],
+        "inputParams": [],
+        "inputs": {},
+        "outputAnchors": [
+          { "id": "seqStart_0-output-seqStart-Start", "name": "seqStart", "label": "Start", "type": "Start" }
+        ]
+      }
+    },
+    {
+      "id": "chatOpenAI_0",
+      "data": {
+        "id": "chatOpenAI_0",
+        "name": "chatOpenAI",
+        "label": "ChatOpenAI",
+        "category": "Chat Models",
+        "inputParams": [
+          { "id": "chatOpenAI_0-input-modelName-string", "name": "modelName", "type": "string" }
+        ],
+        "inputs": { "modelName": "gpt-4o-mini" },
+        "outputAnchors": [
+          { "id": "chatOpenAI_0-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable", "name": "chatOpenAI", "label": "ChatOpenAI", "type": "ChatOpenAI | BaseChatModel | BaseLanguageModel | Runnable" }
+        ]
+      }
+    },
+    {
+      "id": "seqConditionAgent_0",
+      "data": {
+        "id": "seqConditionAgent_0",
+        "name": "seqConditionAgent",
+        "label": "Condition Agent",
+        "category": "Sequential Agents",
+        "inputAnchors": [
+          { "id": "seqConditionAgent_0-input-model-BaseChatModel", "name": "model", "label": "Chat Model", "type": "BaseChatModel" },
+          { "id": "seqConditionAgent_0-input-sequentialNode-Start|Agent|Condition|LLMNode|ToolNode|CustomFunction|ExecuteFlow", "name": "sequentialNode", "label": "Start | Agent | Condition | LLMNode | Tool Node | Custom Function | Execute Flow", "type": "Start | Agent | Condition | LLMNode | ToolNode | CustomFunction | ExecuteFlow", "list": true }
+        ],
+        "inputParams": [
+          { "id": "seqConditionAgent_0-input-conditionAgentInstructions-string", "name": "conditionAgentInstructions", "type": "string" },
+          { "id": "seqConditionAgent_0-input-conditionAgentInput-string", "name": "conditionAgentInput", "type": "string" }
+        ],
+        "inputs": {
+          "model": "{{chatOpenAI_0.data.instance}}",
+          "sequentialNode": ["{{seqStart_0.data.instance}}"],
+          "conditionAgentInstructions": "Decide if the customer's Shopify order question is fully resolved. If resolved answer 'End', otherwise answer 'Shopify Agent'.",
+          "conditionAgentInput": "{{ $flow.state.messages }}"
+        },
+        "outputAnchors": [
+          {
+            "id": "seqConditionAgent_0-output-seqConditionAgent-Condition",
+            "name": "seqConditionAgent",
+            "label": "Condition Agent",
+            "type": "Condition",
+            "options": [
+              { "id": "seqConditionAgent_0-output-0-Condition", "name": "0", "label": "Agent" },
+              { "id": "seqConditionAgent_0-output-1-Condition", "name": "1", "label": "End" }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "seqAgent_0",
+      "data": {
+        "id": "seqAgent_0",
+        "name": "seqAgent",
+        "label": "Agent",
+        "category": "Sequential Agents",
+        "inputAnchors": [
+          { "id": "seqAgent_0-input-model-BaseChatModel", "name": "model", "label": "Chat Model", "type": "BaseChatModel" },
+          { "id": "seqAgent_0-input-tools-Tool", "name": "tools", "label": "Tools", "type": "Tool", "list": true },
+          { "id": "seqAgent_0-input-sequentialNode-Start|Agent|Condition|LLMNode|ToolNode|CustomFunction|ExecuteFlow", "name": "sequentialNode", "label": "Start | Agent | Condition | LLMNode | Tool Node | Custom Function | Execute Flow", "type": "Start | Agent | Condition | LLMNode | ToolNode | CustomFunction | ExecuteFlow", "list": true }
+        ],
+        "inputParams": [
+          { "id": "seqAgent_0-input-agentName-string", "name": "agentName", "type": "string" },
+          { "id": "seqAgent_0-input-systemMessagePrompt-string", "name": "systemMessagePrompt", "type": "string", "optional": true }
+        ],
+        "inputs": {
+          "model": "{{chatOpenAI_0.data.instance}}",
+          "tools": ["{{customTool_0.data.instance}}"],
+          "sequentialNode": ["{{seqConditionAgent_0.data.instance}}"],
+          "agentName": "Shopify Agent",
+          "systemMessagePrompt": "You are a Shopify support agent. Use the Shopify tool to look up the customer's order and respond."
+        },
+        "outputAnchors": [
+          { "id": "seqAgent_0-output-seqAgent-Agent", "name": "seqAgent", "label": "Agent", "type": "Agent" }
+        ]
+      }
+    },
+    {
+      "id": "customTool_0",
+      "data": {
+        "id": "customTool_0",
+        "name": "customTool",
+        "label": "Custom Tool",
+        "category": "Tools",
+        "inputParams": [
+          { "id": "customTool_0-input-selectedTool-asyncOptions", "name": "selectedTool", "type": "asyncOptions" }
+        ],
+        "inputs": { "selectedTool": "shopify_get_order" },
+        "outputAnchors": [
+          { "id": "customTool_0-output-customTool-CustomTool|Tool", "name": "customTool", "label": "CustomTool", "type": "CustomTool | Tool" }
+        ]
+      }
+    },
+    {
+      "id": "seqLoop_0",
+      "data": {
+        "id": "seqLoop_0",
+        "name": "seqLoop",
+        "label": "Loop",
+        "category": "Sequential Agents",
+        "inputAnchors": [
+          { "id": "seqLoop_0-input-sequentialNode-Agent|LLMNode|ToolNode|CustomFunction|ExecuteFlow", "name": "sequentialNode", "label": "Agent | LLMNode | Tool Node | Custom Function | Execute Flow", "type": "Agent | LLMNode | ToolNode | CustomFunction | ExecuteFlow", "list": true }
+        ],
+        "inputParams": [
+          { "id": "seqLoop_0-input-loopToName-string", "name": "loopToName", "label": "Loop To", "type": "string" }
+        ],
+        "inputs": {
+          "sequentialNode": ["{{seqAgent_0.data.instance}}"],
+          "loopToName": "Shopify Agent"
+        },
+        "outputAnchors": [
+          { "id": "seqLoop_0-output-seqLoop-Loop", "name": "seqLoop", "label": "Loop", "type": "Loop" }
+        ]
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "chatOpenAI_0", "target": "seqConditionAgent_0",
+      "sourceHandle": "chatOpenAI_0-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable",
+      "targetHandle": "seqConditionAgent_0-input-model-BaseChatModel"
+    },
+    {
+      "source": "chatOpenAI_0", "target": "seqAgent_0",
+      "sourceHandle": "chatOpenAI_0-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable",
+      "targetHandle": "seqAgent_0-input-model-BaseChatModel"
+    },
+    {
+      "source": "customTool_0", "target": "seqAgent_0",
+      "sourceHandle": "customTool_0-output-customTool-CustomTool|Tool",
+      "targetHandle": "seqAgent_0-input-tools-Tool"
+    },
+    {
+      "source": "seqStart_0", "target": "seqConditionAgent_0",
+      "sourceHandle": "seqStart_0-output-seqStart-Start",
+      "targetHandle": "seqConditionAgent_0-input-sequentialNode-Start|Agent|Condition|LLMNode|ToolNode|CustomFunction|ExecuteFlow"
+    },
+    {
+      "source": "seqConditionAgent_0", "target": "seqAgent_0",
+      "sourceHandle": "seqConditionAgent_0-output-0-Condition",
+      "targetHandle": "seqAgent_0-input-sequentialNode-Start|Agent|Condition|LLMNode|ToolNode|CustomFunction|ExecuteFlow"
+    },
+    {
+      "source": "seqAgent_0", "target": "seqLoop_0",
+      "sourceHandle": "seqAgent_0-output-seqAgent-Agent",
+      "targetHandle": "seqLoop_0-input-sequentialNode-Agent|LLMNode|ToolNode|CustomFunction|ExecuteFlow"
+    }
+  ]
+}

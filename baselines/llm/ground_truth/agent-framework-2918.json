@@ -1,0 +1,10 @@
+{
+  "base": "agent-framework-2918",
+  "framework": "agent-framework",
+  "families": [
+    "composition"
+  ],
+  "location_ids": [
+    "EUR"
+  ]
+}

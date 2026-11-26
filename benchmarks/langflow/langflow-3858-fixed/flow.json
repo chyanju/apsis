@@ -1,0 +1,129 @@
+{
+  "data": {
+    "nodes": [
+      {
+        "id": "ChatInput-init1",
+        "data": {
+          "type": "ChatInput",
+          "node": {
+            "template": {
+              "input_value": { "type": "str", "required": false, "list": false, "input_types": [] }
+            },
+            "outputs": [
+              { "name": "message", "types": ["Data"], "method": "build_data" }
+            ]
+          }
+        }
+      },
+      {
+        "id": "CustomComponent-QueryRouter",
+        "data": {
+          "type": "CustomComponent",
+          "node": {
+            "template": {
+              "instruction_data": { "type": "Data", "required": true, "list": false, "input_types": ["Data"] }
+            },
+            "outputs": [
+              { "name": "oracle_output", "types": ["Data"], "method": "oracle_output" },
+              { "name": "cassandra_output", "types": ["Data"], "method": "cassandra_output" },
+              { "name": "splunk_output", "types": ["Data"], "method": "splunk_output" },
+              { "name": "mysql_output", "types": ["Data"], "method": "mysql_output" }
+            ]
+          }
+        }
+      },
+      {
+        "id": "CustomComponent-ExecuteCassandra",
+        "data": {
+          "type": "CustomComponent",
+          "node": {
+            "template": {
+              "instruction_data": { "type": "Data", "required": true, "list": false, "input_types": ["Data"] },
+              "DB_ID": { "type": "str", "required": false, "list": false, "input_types": [] },
+              "DB_TOKEN": { "type": "str", "required": false, "list": false, "input_types": [] }
+            },
+            "outputs": [
+              { "name": "query_output", "types": ["Data"], "method": "query_output" }
+            ]
+          }
+        }
+      },
+      {
+        "id": "CustomComponent-ExecuteMySQL",
+        "data": {
+          "type": "CustomComponent",
+          "node": {
+            "template": {
+              "instruction_data": { "type": "Data", "required": true, "list": false, "input_types": ["Data"] },
+              "DB_HOST": { "type": "str", "required": false, "list": false, "input_types": [] },
+              "DB_USER": { "type": "str", "required": false, "list": false, "input_types": [] },
+              "DB_PASSWORD": { "type": "str", "required": false, "list": false, "input_types": [] },
+              "DB_NAME": { "type": "str", "required": false, "list": false, "input_types": [] }
+            },
+            "outputs": [
+              { "name": "query_output", "types": ["Data"], "method": "query_output" }
+            ]
+          }
+        }
+      },
+      {
+        "id": "CustomComponent-QueryCombiner",
+        "data": {
+          "type": "CustomComponent",
+          "node": {
+            "template": {
+              "cassandra_rows": { "type": "Data", "required": false, "list": false, "input_types": ["Data"] },
+              "oracle_rows": { "type": "Data", "required": false, "list": false, "input_types": ["Data"] },
+              "mysql_rows": { "type": "Data", "required": false, "list": false, "input_types": ["Data"] }
+            },
+            "outputs": [
+              { "name": "output", "types": ["Data"], "method": "build_output" }
+            ]
+          }
+        }
+      }
+    ],
+    "edges": [
+      {
+        "source": "ChatInput-init1", "target": "CustomComponent-QueryRouter",
+        "sourceHandle": "message", "targetHandle": "instruction_data",
+        "data": {
+          "sourceHandle": { "dataType": "ChatInput", "name": "message", "output_types": ["Data"] },
+          "targetHandle": { "fieldName": "instruction_data", "inputTypes": ["Data"], "type": "Data" }
+        }
+      },
+      {
+        "source": "CustomComponent-QueryRouter", "target": "CustomComponent-ExecuteCassandra",
+        "sourceHandle": "cassandra_output", "targetHandle": "instruction_data",
+        "data": {
+          "sourceHandle": { "dataType": "CustomComponent", "name": "cassandra_output", "output_types": ["Data"] },
+          "targetHandle": { "fieldName": "instruction_data", "inputTypes": ["Data"], "type": "Data" }
+        }
+      },
+      {
+        "source": "CustomComponent-QueryRouter", "target": "CustomComponent-ExecuteMySQL",
+        "sourceHandle": "mysql_output", "targetHandle": "instruction_data",
+        "data": {
+          "sourceHandle": { "dataType": "CustomComponent", "name": "mysql_output", "output_types": ["Data"] },
+          "targetHandle": { "fieldName": "instruction_data", "inputTypes": ["Data"], "type": "Data" }
+        }
+      },
+      {
+        "source": "CustomComponent-ExecuteCassandra", "target": "CustomComponent-QueryCombiner",
+        "sourceHandle": "query_output", "targetHandle": "cassandra_rows",
+        "data": {
+          "sourceHandle": { "dataType": "CustomComponent", "name": "query_output", "output_types": ["Data"] },
+          "targetHandle": { "fieldName": "cassandra_rows", "inputTypes": ["Data"], "type": "Data" }
+        }
+      },
+      {
+        "source": "CustomComponent-ExecuteMySQL", "target": "CustomComponent-QueryCombiner",
+        "sourceHandle": "query_output", "targetHandle": "mysql_rows",
+        "data": {
+          "sourceHandle": { "dataType": "CustomComponent", "name": "query_output", "output_types": ["Data"] },
+          "targetHandle": { "fieldName": "mysql_rows", "inputTypes": ["Data"], "type": "Data" }
+        }
+      }
+    ]
+  }
+}

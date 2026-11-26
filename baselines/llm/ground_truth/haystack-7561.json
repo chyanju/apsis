@@ -1,0 +1,16 @@
+{
+  "base": "haystack-7561",
+  "framework": "haystack",
+  "families": [
+    "liveness_termination"
+  ],
+  "location_ids": [
+    "answer",
+    "answer.valid_replies",
+    "error_message",
+    "invalid_replies",
+    "output_validator.valid_replies",
+    "retry",
+    "valid_replies"
+  ]
+}

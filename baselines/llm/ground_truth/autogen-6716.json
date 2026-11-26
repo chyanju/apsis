@@ -1,0 +1,10 @@
+{
+  "base": "autogen-6716",
+  "framework": "autogen",
+  "families": [
+    "routing_resolution"
+  ],
+  "location_ids": [
+    "any"
+  ]
+}

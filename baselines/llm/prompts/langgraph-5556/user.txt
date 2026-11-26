@@ -1,0 +1,32 @@
+# This is a LangGraph agent workflow (Python definition).
+# Analyze the workflow below for bugs, working only from this source.
+
+from typing import Annotated, Literal, TypedDict
+from langgraph.graph import StateGraph, START, END
+from langgraph.graph.message import add_messages
+from langgraph.types import Command
+
+class ResearcherState(TypedDict):
+    researcher_messages: Annotated[list, add_messages]
+    tool_call_iterations: int
+
+def researcher_llm_call(state: ResearcherState) -> Command:
+    if state.get('tool_call_iterations', 0) >= 2:
+        return Command(goto='compress_research', update={'researcher_messages': [('ai', 'done researching')]})
+    return Command(goto='researcher_tool_node', update={'researcher_messages': [('ai', 'calling a research tool')], 'tool_call_iterations': state.get('tool_call_iterations', 0) + 1})
+
+def researcher_tools(state: ResearcherState) -> Command[Literal['researcher_llm_call']]:
+    return Command(goto='researcher_llm_call', update={'researcher_messages': [('tool', 'tool result')]})
+
+def compress_research(state: ResearcherState) -> dict:
+    return {'researcher_messages': [('ai', 'compressed research summary')]}
+
+def build():
+    g = StateGraph(ResearcherState)
+    g.add_node('researcher_llm_call', researcher_llm_call)
+    g.add_node('researcher_tools', researcher_tools)
+    g.add_node('compress_research', compress_research)
+    g.add_edge(START, 'researcher_llm_call')
+    g.add_edge('compress_research', END)
+    return g.compile()
+graph = build()

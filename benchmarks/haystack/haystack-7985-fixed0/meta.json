@@ -1,0 +1,9 @@
+{
+  "id": "haystack-7985-fixed0",
+  "of": "haystack-7985",
+  "fix_kind": "workflow",
+  "framework_version": "2.2.0",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [],
+  "fix_note": "Removes the defaults of the connected inputs (`spellchecker.prompt`, `prompt_builder3.replies`, `prompt_builder2.question`, `llm.prompt`), so each component waits for its predecessor and runs once."
+}

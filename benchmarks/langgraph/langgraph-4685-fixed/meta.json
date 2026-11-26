@@ -1,0 +1,9 @@
+{
+  "id": "langgraph-4685-fixed",
+  "of": "langgraph-4685",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [],
+  "fix_note": "Changes the return annotation of `worker_node` to `Command[Literal[END]]` and its return value to `goto=END`, so the node no longer targets itself and the graph can be drawn."
+}

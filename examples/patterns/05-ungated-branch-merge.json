@@ -1,0 +1,42 @@
+{
+ "execution_model": "visual-dataflow",
+ "framework": "example",
+ "nodes": [
+  {
+   "id": "r",
+   "type_name": "Step",
+   "kind": "router"
+  },
+  {
+   "id": "t",
+   "type_name": "Step",
+   "kind": "component"
+  }
+ ],
+ "edges": [
+  {
+   "from": {
+    "node": "r",
+    "socket": ""
+   },
+   "to": {
+    "node": "t",
+    "socket": ""
+   },
+   "kind": "conditional",
+   "branch": "l1"
+  },
+  {
+   "from": {
+    "node": "r",
+    "socket": ""
+   },
+   "to": {
+    "node": "t",
+    "socket": ""
+   },
+   "kind": "conditional",
+   "branch": "l2"
+  }
+ ]
+}

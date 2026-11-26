@@ -1,0 +1,9 @@
+{
+  "id": "flowise-2969-fixed",
+  "of": "flowise-2969",
+  "fix_kind": "workflow",
+  "framework_version": "2.0.1",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "Inserts an LLM Node `seqLLMNode_anchor` ('Loop anchor') between `seqStart_0` and `seqConditionAgent_0` and sets `loopToName` of `seqLoop_0` to 'Loop anchor', so the loop edge ends at a graph node."
+}

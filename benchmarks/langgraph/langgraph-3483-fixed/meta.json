@@ -1,0 +1,9 @@
+{
+  "id": "langgraph-3483-fixed",
+  "of": "langgraph-3483",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [],
+  "fix_note": "Annotates the router on the conditional edge of `node_1` with `OverallState` in place of `InputType`, so its input view includes the hidden key `messages` that `node_1` writes."
+}

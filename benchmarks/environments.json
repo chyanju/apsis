@@ -1,0 +1,63 @@
+{
+ "description": "The Python environments the front-ends run in when the benchmark suite is analyzed. scripts/setup_envs.py creates one per entry, and scripts/evaluate.py picks the environment of each artifact with the rules below. The flow.json front-ends (langflow, flowise) need none.",
+ "environments": {
+  "haystack": {"requirements": ["haystack-ai==2.30.2"]},
+  "haystack-2.0.0b5": {"requirements": ["haystack-ai==2.0.0b5"]},
+  "langgraph": {"requirements": ["langgraph==1.2.6"]},
+  "langgraph-0.3.18": {"requirements": ["langgraph==0.3.18"]},
+  "langgraph-1.0.2": {"requirements": ["langgraph==1.0.2"]},
+  "agent-framework": {"requirements": ["agent-framework-core==1.9.0", "agent-framework-orchestrations==1.0.0"]},
+  "autogen-0.2": {"python_below": "3.13", "requirements": ["pyautogen==0.2.32"]},
+  "autogen-0.4": {"requirements": ["autogen-agentchat==0.6.1", "autogen-core==0.6.1", "autogen-ext[openai]==0.6.1"]},
+  "autogen-0.4.0.dev6": {"python_below": "3.13", "requirements": ["autogen-agentchat==0.4.0.dev6", "autogen-core==0.4.0.dev6", "autogen-ext==0.4.0.dev6"]},
+  "autogen-0.4.1": {"requirements": ["autogen-agentchat==0.4.1", "autogen-core==0.4.1", "autogen-ext[openai]==0.4.1"]},
+  "autogen-0.4.7-web": {"requirements": ["autogen-agentchat==0.4.7", "autogen-core==0.4.7", "autogen-ext[web-surfer,openai]==0.4.7"]},
+  "autogen-0.7.4": {"requirements": ["autogen-agentchat==0.7.4", "autogen-core==0.7.4", "autogen-ext==0.7.4"]}
+ },
+ "framework_default": {
+  "haystack": "haystack",
+  "langgraph": "langgraph",
+  "agent-framework": "agent-framework",
+  "autogen": "autogen-0.4",
+  "langflow": null,
+  "flowise": null
+ },
+ "rules": [
+  {"framework": "autogen", "requirements_contain": "pyautogen", "environment": "autogen-0.2"}
+ ],
+ "case_overrides": {
+  "haystack-6433": "haystack-2.0.0b5",
+  "haystack-6433-fixed0": "haystack-2.0.0b5",
+  "haystack-6359": "haystack-2.0.0b5",
+  "haystack-6359-fixed": "haystack-2.0.0b5",
+  "haystack-6431": "haystack-2.0.0b5",
+  "haystack-6431-fixed": "haystack-2.0.0b5",
+  "autogen-4199": "autogen-0.4.0.dev6",
+  "autogen-4199-fixed": "autogen-0.4.0.dev6",
+  "autogen-5059": "autogen-0.4.1",
+  "autogen-5059-fixed": "autogen-0.4.1",
+  "autogen-6084": "autogen-0.4.7-web",
+  "autogen-6084-fixed0": "autogen-0.4.7-web",
+  "autogen-6808": "autogen-0.7.4",
+  "autogen-6808-fixed": "autogen-0.7.4",
+  "langgraph-3950": "langgraph-0.3.18",
+  "langgraph-3950-fixed": "langgraph-0.3.18",
+  "langgraph-3570": "langgraph-0.3.18",
+  "langgraph-3570-fixed0": "langgraph-0.3.18",
+  "langgraph-6409": "langgraph-1.0.2",
+  "langgraph-6409-fixed0": "langgraph-1.0.2"
+ },
+ "notes": [
+  "The benchmarks of a framework share one environment. AutoGen has two, since pyautogen 0.2 (Python 3.12 or older) and autogen-agentchat 0.4+ cannot be installed together, and the benchmarks in case_overrides run under a release of their own.",
+  "autogen-5059: AutoGen 0.4.1, whose MagenticOne orchestrator accepts only TextMessage and MultiModalMessage from a participant (0.4.7 also accepts ToolCallSummaryMessage).",
+  "autogen-4199: AutoGen 0.4.0.dev6, the release of the issue; its workflow imports autogen_agentchat.task, which 0.4.7 and later lack. It needs Python 3.12 or older.",
+  "autogen-6084: AutoGen 0.4.7, the release of the issue, with the web-surfer extra that MultimodalWebSurfer needs.",
+  "autogen-6808: AutoGen 0.7.4; the issue's GraphFlow example passes activation_group to DiGraphBuilder.add_edge, which 0.6.1 lacks.",
+ "haystack-6433: Haystack 2.0.0b5, the last release before #6729, in which a component without inputs is never scheduled.",
+  "haystack-6359, haystack-6431: Haystack 2.0.0b5, which accepts a component instance that already belongs to another pipeline; 2.30.2 refuses it.",
+  "langgraph-3950: LangGraph 0.3.18, the release of the issue; up to 0.3.29 a state model passed as Command(update=...) overwrites the fields that were not set.",
+ "langgraph-3570: LangGraph 0.3.18; before 0.4.8 a Command.PARENT handoff from a subgraph compiled with checkpointer=True raises ParentCommand.",
+ "langgraph-6409: LangGraph 1.0.2, the release of the issue; before 1.0.6 a Command.PARENT handoff out of a subgraph nested two levels deep in checkpointed graphs raises ParentCommand.",
+  "The C# benchmarks (entry Workflow.csproj:...) need no Python environment: scripts/setup_envs.py dotnet publishes the .NET front-end and builds each project under the release it pins."
+ ]
+}

@@ -1,0 +1,16 @@
+# This is a AutoGen agent workflow (Python definition).
+# Analyze the workflow below for bugs, working only from this source.
+
+from autogen_agentchat.agents import AssistantAgent
+from autogen_agentchat.teams import Swarm
+from autogen_agentchat.task import HandoffTermination, MaxMessageTermination
+
+class _PlaceholderModelClient:
+
+    def __init__(self, model: str='gpt-4o') -> None:
+        self.model = model
+model_client = _PlaceholderModelClient(model='gpt-4o')
+triage = AssistantAgent('triage', model_client=model_client, handoffs=['refunds', 'user'], system_message='Route the customer to the right specialist, or hand back to the user.')
+refunds = AssistantAgent('refunds', model_client=model_client, handoffs=['user'], system_message='You process refund requests, then hand control back to the user.')
+termination = HandoffTermination(target='user') | MaxMessageTermination(10)
+workflow = Swarm([triage, refunds], termination_condition=termination)

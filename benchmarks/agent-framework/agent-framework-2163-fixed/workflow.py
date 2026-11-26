@@ -1,0 +1,60 @@
+from agent_framework import (
+    Agent,
+    AgentExecutorResponse,
+    AgentResponse,
+    BaseChatClient,
+    ChatResponse,
+    Executor,
+    Message,
+    WorkflowBuilder,
+    WorkflowContext,
+    WorkflowExecutor,
+    handler,
+)
+from agent_framework.orchestrations import ConcurrentBuilder
+
+
+class _OfflineChatClient(BaseChatClient):
+    async def _inner_get_response(self, *, messages, stream, options, **kwargs) -> ChatResponse:
+        return ChatResponse(messages=[Message("assistant", ["(stub)"])])
+
+
+class EssayToTranslatorAdapter(Executor):
+    @handler
+    async def adapt(self, response: AgentExecutorResponse, ctx: WorkflowContext[str]) -> None:
+        await ctx.send_message(response.agent_response.text)
+
+
+class PostProcessExecutor(Executor):
+    @handler
+    async def post_process(self, results: AgentResponse, ctx: WorkflowContext[None, str]) -> None:
+        await ctx.yield_output(results.text)
+
+
+def _build() -> "object":
+    client = _OfflineChatClient()
+
+    essay_agent = Agent(client, instructions="Write an essay on the given topic.", name="EssayAgent")
+
+    translator_fr = Agent(client, instructions="Translate the essay to French.", name="Translator_FR")
+    translator_es = Agent(client, instructions="Translate the essay to Spanish.", name="Translator_ES")
+    translator_de = Agent(client, instructions="Translate the essay to German.", name="Translator_DE")
+    translator_workflow = ConcurrentBuilder(
+        participants=[translator_fr, translator_es, translator_de]
+    ).build()
+
+    subworkflow_executor = WorkflowExecutor(translator_workflow, id="TranslatorWorkflow")
+
+    adapter = EssayToTranslatorAdapter(id="EssayToTranslator")
+    post_process = PostProcessExecutor(id="PostProcess")
+
+    return (
+        WorkflowBuilder(start_executor=essay_agent, output_from=[post_process])
+        .add_edge(essay_agent, adapter)
+        .add_edge(adapter, subworkflow_executor)
+        .add_edge(subworkflow_executor, post_process)
+        .build()
+    )
+
+
+workflow = _build()

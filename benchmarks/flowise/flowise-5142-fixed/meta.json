@@ -1,0 +1,9 @@
+{
+  "id": "flowise-5142-fixed",
+  "of": "flowise-5142",
+  "fix_kind": "workflow",
+  "framework_version": "3.0.6",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "`customFunctionAgentflow_0` returns the keys directly and binds them in `customFunctionUpdateState` to `{{ output.dialogue_finished }}` and `{{ output.counter }}`, so the Condition sees 'true' and 'Wrap Up' runs."
+}

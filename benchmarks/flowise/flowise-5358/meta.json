@@ -1,0 +1,11 @@
+{
+  "id": "flowise-5358",
+  "issue_url": "https://github.com/FlowiseAI/Flowise/issues/5358",
+  "fix_kind": "workflow",
+  "framework_version": "3.0.6",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "router-branch-gating"
+  ],
+  "note": "The input `iterationAgentflow_0-input-iterationInput-string` has two incoming edges, one from `agentAgentflow_0` and one from `conditionAgentflow_0-output-0`. Flowise does not handle a Condition or Human Input node feeding an input that is already occupied, so execution stalls at `conditionAgentflow_0`."
+}

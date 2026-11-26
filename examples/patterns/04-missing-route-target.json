@@ -1,0 +1,27 @@
+{
+ "execution_model": "bsp-superstep",
+ "framework": "example",
+ "nodes": [
+  {
+   "id": "r",
+   "type_name": "Step",
+   "kind": "router",
+   "declared_targets": [
+    "x"
+   ]
+  }
+ ],
+ "edges": [
+  {
+   "from": {
+    "node": "__start__",
+    "socket": ""
+   },
+   "to": {
+    "node": "r",
+    "socket": ""
+   },
+   "kind": "control"
+  }
+ ]
+}

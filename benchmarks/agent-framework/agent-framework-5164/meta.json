@@ -1,0 +1,11 @@
+{
+  "id": "agent-framework-5164",
+  "issue_url": "https://github.com/microsoft/agent-framework/issues/5164",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.0",
+  "entry": "Workflow.csproj:AgentFramework5164.Case.Build",
+  "expected_detectors": [
+    "channel-write-merge"
+  ],
+  "note": "The fan-in barrier edge from `ReverseExecutor` and `UppercaseExecutor` delivers each `TransformComplete` to `CompleteExecutor` on its own, but its only handler takes `List<TransformComplete>`. The edge drops both messages, so `CompleteExecutor` never runs and the workflow yields no output."
+}

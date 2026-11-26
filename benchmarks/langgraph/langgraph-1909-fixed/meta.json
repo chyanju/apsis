@@ -1,0 +1,9 @@
+{
+  "id": "langgraph-1909-fixed",
+  "of": "langgraph-1909",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [],
+  "fix_note": "Declares `private_var` in `State` (`Annotated[List[str], operator.add]`), so each `Send` task writes a key of the graph state and the reducer merges their writes."
+}

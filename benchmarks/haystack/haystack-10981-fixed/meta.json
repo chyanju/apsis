@@ -1,0 +1,9 @@
+{
+  "id": "haystack-10981-fixed",
+  "of": "haystack-10981",
+  "fix_kind": "workflow",
+  "framework_version": "2.30.2",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [],
+  "fix_note": "The `no_docs` route also forwards the (empty) document list to `filter.documents`, so `documents_output` is produced on every route, as `[]` for an empty search."
+}

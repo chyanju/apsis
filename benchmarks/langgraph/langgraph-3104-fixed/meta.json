@@ -1,0 +1,9 @@
+{
+  "id": "langgraph-3104-fixed",
+  "of": "langgraph-3104",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [],
+  "fix_note": "Declares `private_b` in `NodeBInput`, the input schema of `node_b`. The router `node_b_edge` receives that input view, so it can route on the value `node_b` wrote."
+}

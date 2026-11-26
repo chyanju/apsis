@@ -1,0 +1,9 @@
+{
+  "id": "agent-framework-3840-fixed",
+  "of": "agent-framework-3840",
+  "fix_kind": "workflow",
+  "framework_version": "1.9.0",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [],
+  "fix_note": "`critic` gets conditional edges back to `drafter` (`_needs_more_work`) and to the new `finalizer` (`_is_good_enough`), which yields the output, so the sub-workflow ends and `refine_loop` completes."
+}

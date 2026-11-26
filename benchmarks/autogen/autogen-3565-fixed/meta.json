@@ -1,0 +1,9 @@
+{
+  "id": "autogen-3565-fixed",
+  "of": "autogen-3565",
+  "fix_kind": "workflow",
+  "framework_version": "0.2.37",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [],
+  "fix_note": "The nested chat's `summary_method` becomes `reflection_with_llm`, which reads the inner group chat's messages (`chat_messages_for_summary`), with a prompt to return its last reply verbatim."
+}

@@ -1,0 +1,11 @@
+{
+  "id": "langgraph-2775",
+  "issue_url": "https://github.com/langchain-ai/langgraph/issues/2775",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [
+    "channel-write-merge"
+  ],
+  "note": "The router `router_fn` on `a` picks one of `b`, `c` and `d`, but `e` is wired with the list-source edge `add_edge([\"b\", \"c\", \"d\"], \"e\")`, which waits for all three, so `e` is silently skipped and the run returns `{'path': ['node a', 'node d']}`."
+}

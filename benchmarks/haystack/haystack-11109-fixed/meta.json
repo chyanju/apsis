@@ -1,0 +1,9 @@
+{
+  "id": "haystack-11109-fixed",
+  "of": "haystack-11109",
+  "fix_kind": "workflow",
+  "framework_version": "2.30.2",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [],
+  "fix_note": "Removes the default of `executor.messages`, so `executor` waits for `joiner.value`; a value passed to `streaming_callback` alone no longer starts it."
+}

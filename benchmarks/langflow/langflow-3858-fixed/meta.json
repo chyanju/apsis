@@ -1,0 +1,9 @@
+{
+  "id": "langflow-3858-fixed",
+  "of": "langflow-3858",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.18",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "Declares the inputs `cassandra_rows`, `oracle_rows` and `mysql_rows` of `CustomComponent-QueryCombiner` with `required: false`, so the combiner runs with the results that arrived."
+}

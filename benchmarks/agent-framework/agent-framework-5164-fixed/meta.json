@@ -1,0 +1,9 @@
+{
+  "id": "agent-framework-5164-fixed",
+  "of": "agent-framework-5164",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.0",
+  "entry": "Workflow.csproj:AgentFramework5164.Case.Build",
+  "expected_detectors": [],
+  "fix_note": "`CompleteExecutor` handles a single `TransformComplete`, keeps the messages it receives and yields their concatenated values after the second one."
+}

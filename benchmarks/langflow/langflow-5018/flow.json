@@ -1,0 +1,175 @@
+{
+  "id": "langflow-5018",
+  "name": "Run Flow over Chat-Output subflow",
+  "last_tested_version": "1.0.19",
+  "is_component": false,
+  "data": {
+    "nodes": [
+      {
+        "id": "ChatInput-pa1in",
+        "data": {
+          "type": "ChatInput",
+          "node": {
+            "template": {
+              "input_value": { "type": "str", "required": false, "list": false, "input_types": [] }
+            },
+            "outputs": [
+              { "name": "message", "display_name": "Message", "types": ["Message"], "method": "message_response" }
+            ]
+          }
+        }
+      },
+      {
+        "id": "RunFlow-rf001",
+        "data": {
+          "type": "RunFlow",
+          "node": {
+            "beta": true,
+            "template": {
+              "input_value": { "type": "str", "required": false, "list": false, "input_types": ["Message"] },
+              "flow_name": { "type": "str", "required": false, "list": false, "input_types": [], "value": "Greeter Subflow" },
+              "tweaks": { "type": "NestedDict", "required": false, "list": false, "input_types": [] }
+            },
+            "outputs": [
+              { "name": "run_outputs", "display_name": "Run Outputs", "types": ["Data"], "method": "generate_results" }
+            ]
+          }
+        }
+      },
+      {
+        "id": "ParseData-pd001",
+        "data": {
+          "type": "ParseData",
+          "node": {
+            "template": {
+              "data": { "type": "Data", "required": false, "list": false, "input_types": ["Data"] },
+              "template": { "type": "str", "required": false, "list": false, "input_types": [], "value": "{text}" }
+            },
+            "outputs": [
+              { "name": "text", "display_name": "Text", "types": ["Message"], "method": "parse_data" }
+            ]
+          }
+        }
+      },
+      {
+        "id": "ChatOutput-pa1ut",
+        "data": {
+          "type": "ChatOutput",
+          "node": {
+            "template": {
+              "input_value": { "type": "str", "required": false, "list": false, "input_types": ["Message"] }
+            },
+            "outputs": [
+              { "name": "message", "display_name": "Message", "types": ["Message"], "method": "message_response" }
+            ]
+          }
+        }
+      }
+    ],
+    "edges": [
+      {
+        "source": "ChatInput-pa1in",
+        "target": "RunFlow-rf001",
+        "sourceHandle": "message",
+        "targetHandle": "input_value",
+        "data": {
+          "sourceHandle": { "dataType": "ChatInput", "name": "message", "output_types": ["Message"] },
+          "targetHandle": { "fieldName": "input_value", "inputTypes": ["Message"], "type": "str" }
+        }
+      },
+      {
+        "source": "RunFlow-rf001",
+        "target": "ParseData-pd001",
+        "sourceHandle": "run_outputs",
+        "targetHandle": "data",
+        "data": {
+          "sourceHandle": { "dataType": "RunFlow", "name": "run_outputs", "output_types": ["Data"] },
+          "targetHandle": { "fieldName": "data", "inputTypes": ["Data"], "type": "Data" }
+        }
+      },
+      {
+        "source": "ParseData-pd001",
+        "target": "ChatOutput-pa1ut",
+        "sourceHandle": "text",
+        "targetHandle": "input_value",
+        "data": {
+          "sourceHandle": { "dataType": "ParseData", "name": "text", "output_types": ["Message"] },
+          "targetHandle": { "fieldName": "input_value", "inputTypes": ["Message"], "type": "str" }
+        }
+      }
+    ]
+  },
+  "referenced_flows": {
+    "Greeter Subflow": {
+      "data": {
+        "nodes": [
+          {
+            "id": "ChatInput-sub01",
+            "data": {
+              "type": "ChatInput",
+              "node": {
+                "template": {
+                  "input_value": { "type": "str", "required": false, "list": false, "input_types": [] }
+                },
+                "outputs": [
+                  { "name": "message", "display_name": "Message", "types": ["Message"], "method": "message_response" }
+                ]
+              }
+            }
+          },
+          {
+            "id": "Prompt-sub02",
+            "data": {
+              "type": "Prompt",
+              "node": {
+                "template": {
+                  "template": { "type": "prompt", "required": true, "list": false, "input_types": [], "value": "Say hi to {name}" },
+                  "name": { "type": "str", "required": false, "list": false, "input_types": ["Message"] }
+                },
+                "outputs": [
+                  { "name": "prompt", "display_name": "Prompt Message", "types": ["Message"], "method": "build_prompt" }
+                ]
+              }
+            }
+          },
+          {
+            "id": "ChatOutput-sub03",
+            "data": {
+              "type": "ChatOutput",
+              "node": {
+                "template": {
+                  "input_value": { "type": "str", "required": false, "list": false, "input_types": ["Message"] }
+                },
+                "outputs": [
+                  { "name": "message", "display_name": "Message", "types": ["Message"], "method": "message_response" }
+                ]
+              }
+            }
+          }
+        ],
+        "edges": [
+          {
+            "source": "ChatInput-sub01",
+            "target": "Prompt-sub02",
+            "sourceHandle": "message",
+            "targetHandle": "name",
+            "data": {
+              "sourceHandle": { "dataType": "ChatInput", "name": "message", "output_types": ["Message"] },
+              "targetHandle": { "fieldName": "name", "inputTypes": ["Message"], "type": "str" }
+            }
+          },
+          {
+            "source": "Prompt-sub02",
+            "target": "ChatOutput-sub03",
+            "sourceHandle": "prompt",
+            "targetHandle": "input_value",
+            "data": {
+              "sourceHandle": { "dataType": "Prompt", "name": "prompt", "output_types": ["Message"] },
+              "targetHandle": { "fieldName": "input_value", "inputTypes": ["Message"], "type": "str" }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

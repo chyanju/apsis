@@ -1,0 +1,11 @@
+{
+  "id": "flowise-2740",
+  "issue_url": "https://github.com/FlowiseAI/Flowise/issues/2740",
+  "fix_kind": "workflow",
+  "framework_version": "1.8.2",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "readiness-liveness"
+  ],
+  "note": "The `workerPrompt` of `worker_0` uses `{chat_history}`, but nothing is connected to the worker's `memory` input and no other node supplies the variable. `{chat_history}` resolves to empty, so the conversation history never reaches the worker."
+}

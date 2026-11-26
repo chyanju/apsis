@@ -1,0 +1,9 @@
+{
+  "id": "agent-framework-2809-fixed",
+  "of": "agent-framework-2809",
+  "fix_kind": "workflow",
+  "framework_version": "1.9.0",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [],
+  "fix_note": "`refund_agent` is an agent and the workflow is built with `HandoffBuilder`, which wraps every participant in a `HandoffAgentExecutor`; `refund_agent` hands off to `triage_agent`."
+}

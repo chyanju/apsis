@@ -1,0 +1,11 @@
+{
+  "id": "autogen-6716",
+  "issue_url": "https://github.com/microsoft/autogen/issues/6716",
+  "fix_kind": "workflow",
+  "framework_version": "0.6.1",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [
+    "router-branch-gating"
+  ],
+  "note": "`web_surfer` has two parents, `generator` and `reviewer` (loop-back when the reply lacks \"APPROVE\"), and keeps the default activation \"all\". `reviewer` runs only after `web_surfer`, so `web_surfer` never becomes ready and GraphFlow ends the run early with \"Digraph execution is complete\"."
+}

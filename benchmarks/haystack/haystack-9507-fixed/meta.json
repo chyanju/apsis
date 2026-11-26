@@ -1,0 +1,9 @@
+{
+  "id": "haystack-9507-fixed",
+  "of": "haystack-9507",
+  "fix_kind": "workflow",
+  "framework_version": "2.30.2",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [],
+  "fix_note": "Gives the two inputs of `consumer` the default `None`, so `consumer` runs as soon as either output of the router arrives."
+}

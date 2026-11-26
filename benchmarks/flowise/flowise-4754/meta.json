@@ -1,0 +1,11 @@
+{
+  "id": "flowise-4754",
+  "issue_url": "https://github.com/FlowiseAI/Flowise/issues/4754",
+  "fix_kind": "workflow",
+  "framework_version": "3.1.3",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "router-branch-gating"
+  ],
+  "note": "`conditionAgentflow_0` routes its two outputs to `llmAgentflow_0` ('Text2SQL Branch 1') and `llmAgentflow_1` ('Text2SQL Branch 2'), but an extra edge `llmAgentflow_0` -> `llmAgentflow_1` joins the branches. When only the first output is selected, both Text2SQL nodes still run."
+}

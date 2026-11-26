@@ -1,0 +1,11 @@
+{
+  "id": "langflow-5018",
+  "issue_url": "https://github.com/langflow-ai/langflow/issues/5018",
+  "fix_kind": "mixed",
+  "framework_version": "1.0.19",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "subflow-port-binding"
+  ],
+  "note": "`RunFlow-rf001` declares its output `run_outputs` as `Data`, but the sub-flow it runs, `Greeter Subflow`, ends in `ChatOutput-sub03`, whose `message` output is a `Message`. `run_outputs` therefore hands `Message` objects to `ParseData-pd001.data`, an input that takes `Data`."
+}

@@ -1,0 +1,9 @@
+{
+  "id": "autogen-6808-fixed",
+  "of": "autogen-6808",
+  "fix_kind": "workflow",
+  "framework_version": "0.7.4",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [],
+  "fix_note": "Adds `agent_e` to the participants and bounds the cyclic graph with `MaxMessageTermination(10)`; the flow runs `A`, `B`, `C`, `B` and `E` and ends."
+}

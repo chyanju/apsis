@@ -1,0 +1,9 @@
+{
+  "id": "haystack-8556-fixed",
+  "of": "haystack-8556",
+  "fix_kind": "workflow",
+  "framework_version": "2.30.2",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [],
+  "fix_note": "Builds the router with `optional_variables=[\"path\"]`, so `path` defaults to `None` and a run without it takes the `{{ True }}` fallback route to `fallback_handler`."
+}

@@ -1,0 +1,11 @@
+{
+  "id": "flowise-3931",
+  "issue_url": "https://github.com/FlowiseAI/Flowise/issues/3931",
+  "fix_kind": "mixed",
+  "framework_version": "2.2.3",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "binding-capability"
+  ],
+  "note": "`chatMoonshotAI_0` is connected to the `model` input of `seqConditionAgent_0` to override the main model. Flowise starts a conditional edge at the source of every edge into a Condition Agent, so compilation fails with 'Found edge starting at unknown node MoonshotAI'."
+}

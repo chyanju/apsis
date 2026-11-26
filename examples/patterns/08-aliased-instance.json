@@ -1,0 +1,19 @@
+{
+ "execution_model": "dataflow-readiness",
+ "framework": "example",
+ "nodes": [
+  {
+   "id": "a",
+   "type_name": "Step",
+   "kind": "component",
+   "instance_id": "0x1"
+  },
+  {
+   "id": "b",
+   "type_name": "Step",
+   "kind": "component",
+   "instance_id": "0x1"
+  }
+ ],
+ "edges": []
+}

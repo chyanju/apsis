@@ -1,0 +1,9 @@
+{
+  "id": "flowise-4930-fixed",
+  "of": "flowise-4930",
+  "fix_kind": "workflow",
+  "framework_version": "3.0.3",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "Adds the key `summaries` with value `{{ output }}` to `customFunctionUpdateState` of `customFunctionAgentflow_1`, so the returned array is committed on each pass and the summaries accumulate."
+}

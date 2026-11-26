@@ -1,0 +1,38 @@
+# This is a Haystack agent workflow (Python definition).
+# Analyze the workflow below for bugs, working only from this source.
+
+from typing import Optional
+from haystack import Pipeline, component
+
+@component
+class PromptBuilder:
+
+    @component.output_types(prompt=str)
+    def run(self, invalid_replies: Optional[str]=None, error_message: Optional[str]=None):
+        return {'prompt': 'build'}
+
+@component
+class Generator:
+
+    @component.output_types(replies=str)
+    def run(self, prompt: str):
+        return {'replies': prompt}
+
+@component
+class OutputValidator:
+
+    @component.output_types(invalid_replies=str, error_message=str)
+    def run(self, replies: str):
+        return {'invalid_replies': replies, 'error_message': 'retry'}
+
+def build() -> Pipeline:
+    p = Pipeline(max_runs_per_component=5)
+    p.add_component('prompt_builder', PromptBuilder())
+    p.add_component('llm', Generator())
+    p.add_component('output_validator', OutputValidator())
+    p.connect('prompt_builder.prompt', 'llm.prompt')
+    p.connect('llm.replies', 'output_validator.replies')
+    p.connect('output_validator.invalid_replies', 'prompt_builder.invalid_replies')
+    p.connect('output_validator.error_message', 'prompt_builder.error_message')
+    return p
+pipeline = build()

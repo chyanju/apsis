@@ -1,0 +1,11 @@
+{
+  "id": "langgraph-4685",
+  "issue_url": "https://github.com/langchain-ai/langgraph/issues/4685",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [
+    "target-resolution"
+  ],
+  "note": "The return annotation `Command[Literal[\"worker_node\", END]]` of `worker_node`, which runs a `create_react_agent` agent, lists the node itself as a goto target, so `get_graph(xray=True).to_json()` raises KeyError 'worker_node'."
+}

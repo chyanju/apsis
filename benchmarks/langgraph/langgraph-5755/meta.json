@@ -1,0 +1,11 @@
+{
+  "id": "langgraph-5755",
+  "issue_url": "https://github.com/langchain-ai/langgraph/issues/5755",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [
+    "subflow-port-binding"
+  ],
+  "note": "The compiled subgraph is added directly as the node `subgraph`; its node `removing_message` deletes every message, but the parent receives only the final `messages` (`[]`), and merging `[]` through `add_messages` removes nothing, so `invoke` returns the input message."
+}

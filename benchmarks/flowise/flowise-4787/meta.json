@@ -1,0 +1,11 @@
+{
+  "id": "flowise-4787",
+  "issue_url": "https://github.com/FlowiseAI/Flowise/issues/4787",
+  "fix_kind": "workflow",
+  "framework_version": "3.0.2",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "interrupt-ordering"
+  ],
+  "note": "Two Human Input nodes, `humanInputAgentflow_0` ('Approve Draft') and `humanInputAgentflow_1` ('Approve Final'), lie in series on one path, with `agentAgentflow_1` between them. A single Proceed is dispatched to every Human Input node on that path, so clicking Proceed on one of them resumes them all."
+}

@@ -1,0 +1,188 @@
+# This is a Flowise agent workflow (exported flow.json).
+# Analyze the workflow below for bugs, working only from this source.
+
+{
+  "nodes": [
+    {
+      "id": "seqStart_0",
+      "data": {
+        "id": "seqStart_0",
+        "name": "seqStart",
+        "label": "Start",
+        "category": "Sequential Agents",
+        "inputAnchors": [],
+        "inputParams": [],
+        "inputs": {},
+        "outputAnchors": [
+          {
+            "id": "seqStart_0-output-seqStart-Start",
+            "name": "seqStart",
+            "label": "Start",
+            "type": "Start"
+          }
+        ]
+      }
+    },
+    {
+      "id": "azureChatOpenAI_0",
+      "data": {
+        "id": "azureChatOpenAI_0",
+        "name": "azureChatOpenAI",
+        "label": "Azure ChatOpenAI",
+        "category": "Chat Models",
+        "inputAnchors": [
+          {
+            "id": "azureChatOpenAI_0-input-cache-BaseCache",
+            "name": "cache",
+            "label": "Cache",
+            "type": "BaseCache",
+            "optional": true
+          }
+        ],
+        "inputParams": [
+          {
+            "id": "azureChatOpenAI_0-input-modelName-string",
+            "name": "modelName",
+            "type": "string"
+          },
+          {
+            "id": "azureChatOpenAI_0-input-temperature-number",
+            "name": "temperature",
+            "type": "number"
+          }
+        ],
+        "inputs": {
+          "modelName": "gpt-4o",
+          "temperature": "0"
+        },
+        "outputAnchors": [
+          {
+            "id": "azureChatOpenAI_0-output-azureChatOpenAI-AzureChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable",
+            "name": "azureChatOpenAI",
+            "label": "AzureChatOpenAI",
+            "type": "AzureChatOpenAI | BaseChatModel | BaseLanguageModel | Runnable"
+          }
+        ]
+      }
+    },
+    {
+      "id": "customMCP_5",
+      "data": {
+        "id": "customMCP_5",
+        "name": "customMCP",
+        "label": "Custom MCP",
+        "category": "Tools",
+        "inputAnchors": [],
+        "inputParams": [
+          {
+            "id": "customMCP_5-input-mcpServerConfig-string",
+            "name": "mcpServerConfig",
+            "type": "string"
+          },
+          {
+            "id": "customMCP_5-input-mcpActions-asyncMultiOptions",
+            "name": "mcpActions",
+            "type": "asyncMultiOptions"
+          }
+        ],
+        "inputs": {
+          "mcpServerConfig": "{\"command\":\"npx\",\"args\":[\"-y\",\"mcp-remote\",\"https://mcp.atlassian.com/v1/sse\"]}",
+          "mcpActions": "[\"getConfluencePage\",\"searchConfluence\"]"
+        },
+        "outputAnchors": [
+          {
+            "id": "customMCP_5-output-customMCP-Tool|StructuredTool|Runnable",
+            "name": "customMCP",
+            "label": "Custom MCP",
+            "type": "Tool | StructuredTool | Runnable"
+          }
+        ]
+      }
+    },
+    {
+      "id": "seqAgent_0",
+      "data": {
+        "id": "seqAgent_0",
+        "name": "seqAgent",
+        "label": "assistant",
+        "category": "Sequential Agents",
+        "inputAnchors": [
+          {
+            "id": "seqAgent_0-input-model-BaseChatModel",
+            "name": "model",
+            "label": "Chat Model",
+            "type": "BaseChatModel",
+            "optional": true
+          },
+          {
+            "id": "seqAgent_0-input-tools-Tool",
+            "name": "tools",
+            "label": "Tools",
+            "type": "Tool",
+            "list": true,
+            "optional": true
+          },
+          {
+            "id": "seqAgent_0-input-sequentialNode-Start|Agent|Condition|LLMNode|ToolNode|CustomFunction|ExecuteFlow",
+            "name": "sequentialNode",
+            "label": "Start | Agent | Condition | LLMNode | Tool Node | Custom Function | Execute Flow",
+            "type": "Start | Agent | Condition | LLMNode | ToolNode | CustomFunction | ExecuteFlow",
+            "list": true
+          }
+        ],
+        "inputParams": [
+          {
+            "id": "seqAgent_0-input-agentName-string",
+            "name": "agentName",
+            "type": "string"
+          },
+          {
+            "id": "seqAgent_0-input-systemMessagePrompt-string",
+            "name": "systemMessagePrompt",
+            "type": "string",
+            "optional": true
+          }
+        ],
+        "inputs": {
+          "model": "{{azureChatOpenAI_0.data.instance}}",
+          "tools": [
+            "{{customMCP_5.data.instance}}"
+          ],
+          "sequentialNode": [
+            "{{seqStart_0.data.instance}}"
+          ],
+          "agentName": "assistant",
+          "systemMessagePrompt": "You are an Atlassian assistant. Use the MCP tools to look up Confluence pages and answer the user."
+        },
+        "outputAnchors": [
+          {
+            "id": "seqAgent_0-output-seqAgent-Agent",
+            "name": "seqAgent",
+            "label": "Agent",
+            "type": "Agent"
+          }
+        ]
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "azureChatOpenAI_0",
+      "target": "seqAgent_0",
+      "sourceHandle": "azureChatOpenAI_0-output-azureChatOpenAI-AzureChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable",
+      "targetHandle": "seqAgent_0-input-model-BaseChatModel"
+    },
+    {
+      "source": "customMCP_5",
+      "target": "seqAgent_0",
+      "sourceHandle": "customMCP_5-output-customMCP-Tool|StructuredTool|Runnable",
+      "targetHandle": "seqAgent_0-input-tools-Tool"
+    },
+    {
+      "source": "seqStart_0",
+      "target": "seqAgent_0",
+      "sourceHandle": "seqStart_0-output-seqStart-Start",
+      "targetHandle": "seqAgent_0-input-sequentialNode-Start|Agent|Condition|LLMNode|ToolNode|CustomFunction|ExecuteFlow"
+    }
+  ]
+}

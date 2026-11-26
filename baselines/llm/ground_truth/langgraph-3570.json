@@ -1,0 +1,8 @@
+{
+  "base": "langgraph-3570",
+  "framework": "langgraph",
+  "families": [
+    "state_concurrency"
+  ],
+  "location_ids": []
+}

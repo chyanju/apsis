@@ -1,0 +1,9 @@
+{
+  "id": "flowise-3929-fixed",
+  "of": "flowise-3929",
+  "fix_kind": "workflow",
+  "framework_version": "2.2.4",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "Removes `chatOpenAI_0` and its edge into `seqConditionAgent_0`, which then uses the Start node's model `chatOpenAI_2`. The only edge into the Condition Agent comes from `seqStart_0`, and the graph compiles."
+}

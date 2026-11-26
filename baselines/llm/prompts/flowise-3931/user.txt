@@ -1,0 +1,274 @@
+# This is a Flowise agent workflow (exported flow.json).
+# Analyze the workflow below for bugs, working only from this source.
+
+{
+  "nodes": [
+    {
+      "id": "seqStart_0",
+      "data": {
+        "id": "seqStart_0",
+        "name": "seqStart",
+        "label": "Start",
+        "category": "Sequential Agents",
+        "inputAnchors": [
+          {
+            "id": "seqStart_0-input-model-BaseChatModel",
+            "name": "model",
+            "label": "Chat Model",
+            "type": "BaseChatModel"
+          }
+        ],
+        "inputParams": [],
+        "inputs": {
+          "model": "{{chatOpenAI_0.data.instance}}"
+        },
+        "outputAnchors": [
+          {
+            "id": "seqStart_0-output-seqStart-Start",
+            "name": "seqStart",
+            "label": "Start",
+            "type": "Start"
+          }
+        ]
+      }
+    },
+    {
+      "id": "chatOpenAI_0",
+      "data": {
+        "id": "chatOpenAI_0",
+        "name": "chatOpenAI",
+        "label": "ChatOpenAI",
+        "category": "Chat Models",
+        "inputParams": [
+          {
+            "id": "chatOpenAI_0-input-modelName-string",
+            "name": "modelName",
+            "type": "string"
+          }
+        ],
+        "inputs": {
+          "modelName": "gpt-4o"
+        },
+        "outputAnchors": [
+          {
+            "id": "chatOpenAI_0-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable",
+            "name": "chatOpenAI",
+            "label": "ChatOpenAI",
+            "type": "ChatOpenAI | BaseChatModel | BaseLanguageModel | Runnable"
+          }
+        ]
+      }
+    },
+    {
+      "id": "chatMoonshotAI_0",
+      "data": {
+        "id": "chatMoonshotAI_0",
+        "name": "chatMoonshotAI",
+        "label": "MoonshotAI",
+        "category": "Chat Models",
+        "inputParams": [
+          {
+            "id": "chatMoonshotAI_0-input-modelName-string",
+            "name": "modelName",
+            "type": "string"
+          }
+        ],
+        "inputs": {
+          "modelName": "moonshot-v1-8k"
+        },
+        "outputAnchors": [
+          {
+            "id": "chatMoonshotAI_0-output-chatMoonshotAI-ChatMoonshot|BaseChatModel|BaseLanguageModel|Runnable",
+            "name": "chatMoonshotAI",
+            "label": "MoonshotAI",
+            "type": "ChatMoonshot | BaseChatModel | BaseLanguageModel | Runnable"
+          }
+        ]
+      }
+    },
+    {
+      "id": "seqAgent_0",
+      "data": {
+        "id": "seqAgent_0",
+        "name": "seqAgent",
+        "label": "Worker",
+        "category": "Sequential Agents",
+        "inputAnchors": [
+          {
+            "id": "seqAgent_0-input-model-BaseChatModel",
+            "name": "model",
+            "label": "Chat Model",
+            "type": "BaseChatModel",
+            "optional": true
+          },
+          {
+            "id": "seqAgent_0-input-sequentialNode-Start|Agent|Condition|LLMNode|ToolNode|CustomFunction|ExecuteFlow",
+            "name": "sequentialNode",
+            "label": "Start | Agent | LLMNode",
+            "type": "Start | Agent | Condition | LLMNode | ToolNode | CustomFunction | ExecuteFlow",
+            "list": true
+          }
+        ],
+        "inputParams": [
+          {
+            "id": "seqAgent_0-input-agentName-string",
+            "name": "agentName",
+            "type": "string"
+          },
+          {
+            "id": "seqAgent_0-input-systemMessagePrompt-string",
+            "name": "systemMessagePrompt",
+            "type": "string",
+            "optional": true
+          }
+        ],
+        "inputs": {
+          "agentName": "Worker",
+          "systemMessagePrompt": "You are a helpful worker agent. Answer the user's question.",
+          "sequentialNode": [
+            "{{seqStart_0.data.instance}}"
+          ]
+        },
+        "outputAnchors": [
+          {
+            "id": "seqAgent_0-output-seqAgent-Agent",
+            "name": "seqAgent",
+            "label": "Agent",
+            "type": "Agent"
+          }
+        ]
+      }
+    },
+    {
+      "id": "seqConditionAgent_0",
+      "data": {
+        "id": "seqConditionAgent_0",
+        "name": "seqConditionAgent",
+        "label": "Condition Agent",
+        "category": "Sequential Agents",
+        "inputAnchors": [
+          {
+            "id": "seqConditionAgent_0-input-model-BaseChatModel",
+            "name": "model",
+            "label": "Chat Model",
+            "type": "BaseChatModel"
+          },
+          {
+            "id": "seqConditionAgent_0-input-sequentialNode-Start|Agent|Condition|LLMNode|ToolNode|CustomFunction|ExecuteFlow",
+            "name": "sequentialNode",
+            "label": "Start | Agent | Condition | LLMNode | Tool Node | Custom Function | Execute Flow",
+            "type": "Start | Agent | Condition | LLMNode | ToolNode | CustomFunction | ExecuteFlow",
+            "list": true
+          }
+        ],
+        "inputParams": [
+          {
+            "id": "seqConditionAgent_0-input-conditionAgentInstructions-string",
+            "name": "conditionAgentInstructions",
+            "type": "string"
+          },
+          {
+            "id": "seqConditionAgent_0-input-conditionAgentInput-string",
+            "name": "conditionAgentInput",
+            "type": "string"
+          }
+        ],
+        "inputs": {
+          "model": "{{chatMoonshotAI_0.data.instance}}",
+          "sequentialNode": [
+            "{{seqAgent_0.data.instance}}"
+          ],
+          "conditionAgentInstructions": "Decide whether the worker answer is complete.",
+          "conditionAgentInput": "{{ $flow.state.messages }}"
+        },
+        "outputAnchors": [
+          {
+            "id": "seqConditionAgent_0-output-seqConditionAgent-Condition",
+            "name": "seqConditionAgent",
+            "label": "Condition Agent",
+            "type": "Condition",
+            "options": [
+              {
+                "id": "seqConditionAgent_0-output-0-Condition",
+                "name": "0",
+                "label": "Agent"
+              },
+              {
+                "id": "seqConditionAgent_0-output-1-Condition",
+                "name": "1",
+                "label": "End"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "seqEnd_0",
+      "data": {
+        "id": "seqEnd_0",
+        "name": "seqEnd",
+        "label": "End",
+        "category": "Sequential Agents",
+        "inputAnchors": [
+          {
+            "id": "seqEnd_0-input-sequentialNode-Start|Agent|Condition|LLMNode|ToolNode|CustomFunction|ExecuteFlow",
+            "name": "sequentialNode",
+            "label": "Agent | LLMNode",
+            "type": "Start | Agent | Condition | LLMNode | ToolNode | CustomFunction | ExecuteFlow"
+          }
+        ],
+        "inputParams": [],
+        "inputs": {
+          "sequentialNode": "{{seqConditionAgent_0.data.instance}}"
+        },
+        "outputAnchors": [
+          {
+            "id": "seqEnd_0-output-seqEnd-End",
+            "name": "seqEnd",
+            "label": "End",
+            "type": "End"
+          }
+        ]
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "chatOpenAI_0",
+      "target": "seqStart_0",
+      "sourceHandle": "chatOpenAI_0-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable",
+      "targetHandle": "seqStart_0-input-model-BaseChatModel"
+    },
+    {
+      "source": "seqStart_0",
+      "target": "seqAgent_0",
+      "sourceHandle": "seqStart_0-output-seqStart-Start",
+      "targetHandle": "seqAgent_0-input-sequentialNode-Start|Agent|Condition|LLMNode|ToolNode|CustomFunction|ExecuteFlow"
+    },
+    {
+      "source": "chatMoonshotAI_0",
+      "target": "seqConditionAgent_0",
+      "sourceHandle": "chatMoonshotAI_0-output-chatMoonshotAI-ChatMoonshot|BaseChatModel|BaseLanguageModel|Runnable",
+      "targetHandle": "seqConditionAgent_0-input-model-BaseChatModel"
+    },
+    {
+      "source": "seqAgent_0",
+      "target": "seqConditionAgent_0",
+      "sourceHandle": "seqAgent_0-output-seqAgent-Agent",
+      "targetHandle": "seqConditionAgent_0-input-sequentialNode-Start|Agent|Condition|LLMNode|ToolNode|CustomFunction|ExecuteFlow"
+    },
+    {
+      "source": "seqConditionAgent_0",
+      "target": "seqAgent_0",
+      "sourceHandle": "seqConditionAgent_0-output-0-Condition",
+      "targetHandle": "seqAgent_0-input-sequentialNode-Start|Agent|Condition|LLMNode|ToolNode|CustomFunction|ExecuteFlow"
+    },
+    {
+      "source": "seqConditionAgent_0",
+      "target": "seqEnd_0",
+      "sourceHandle": "seqConditionAgent_0-output-1-Condition",
+      "targetHandle": "seqEnd_0-input-sequentialNode-Start|Agent|Condition|LLMNode|ToolNode|CustomFunction|ExecuteFlow"
+    }
+  ]
+}

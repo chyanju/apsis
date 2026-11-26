@@ -1,0 +1,11 @@
+{
+  "id": "langgraph-3532",
+  "issue_url": "https://github.com/langchain-ai/langgraph/issues/3532",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [
+    "type-contract"
+  ],
+  "note": "The router `validate_transition` on the conditional edge of `entry_node` is annotated with `InputState`, which lacks `route_flag`, so it never sees the `route_flag` that `entry_node` writes and always returns `other_node`."
+}

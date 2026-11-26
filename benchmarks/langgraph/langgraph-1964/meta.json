@@ -1,0 +1,11 @@
+{
+  "id": "langgraph-1964",
+  "issue_url": "https://github.com/langchain-ai/langgraph/issues/1964",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [
+    "channel-write-merge"
+  ],
+  "note": "`question_generation` fans out to the compiled subgraphs `child1` and `child2`, which share `question` with the parent and both write it back in the same superstep; `question` has no reducer in `ParentState`, so LangGraph raises `InvalidUpdateError: At key 'question'`."
+}

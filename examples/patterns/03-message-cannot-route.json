@@ -1,0 +1,41 @@
+{
+ "execution_model": "group-chat-speaker",
+ "framework": "example",
+ "nodes": [
+  {
+   "id": "a",
+   "type_name": "Step",
+   "kind": "agent",
+   "outputs": [
+    {
+     "name": "o",
+     "type_repr": "A"
+    }
+   ]
+  },
+  {
+   "id": "b",
+   "type_name": "Step",
+   "kind": "executor",
+   "inputs": [
+    {
+     "name": "i",
+     "type_repr": "B"
+    }
+   ]
+  }
+ ],
+ "edges": [
+  {
+   "from": {
+    "node": "a",
+    "socket": ""
+   },
+   "to": {
+    "node": "b",
+    "socket": ""
+   },
+   "kind": "control"
+  }
+ ]
+}

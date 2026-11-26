@@ -1,0 +1,9 @@
+{
+  "id": "langgraph-3648-fixed",
+  "of": "langgraph-3648",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [],
+  "fix_note": "Declares the deduplicating reducer `unique_list_merge` (`list(dict.fromkeys(a + b))`) on `list` in every schema instead of `add`, so each entry appears once in the final list."
+}

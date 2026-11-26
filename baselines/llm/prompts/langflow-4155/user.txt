@@ -1,0 +1,402 @@
+# This is a Langflow agent workflow (exported flow.json).
+# Analyze the workflow below for bugs, working only from this source.
+
+{
+  "data": {
+    "nodes": [
+      {
+        "id": "ChatInput-aB3kp",
+        "data": {
+          "type": "ChatInput",
+          "node": {
+            "template": {
+              "input_value": {
+                "type": "str",
+                "required": false,
+                "list": false,
+                "input_types": [
+                  "Message"
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "name": "message",
+                "types": [
+                  "Message"
+                ],
+                "method": "message_response"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "ConditionalRouter-r7QmX",
+        "data": {
+          "type": "ConditionalRouter",
+          "node": {
+            "template": {
+              "input_text": {
+                "type": "str",
+                "required": false,
+                "list": false,
+                "input_types": [
+                  "Message"
+                ]
+              },
+              "match_text": {
+                "type": "str",
+                "required": false,
+                "list": false,
+                "input_types": [
+                  "Message"
+                ],
+                "value": "yes"
+              },
+              "operator": {
+                "type": "str",
+                "required": false,
+                "list": false,
+                "input_types": [],
+                "value": "equals"
+              },
+              "case_sensitive": {
+                "type": "bool",
+                "required": false,
+                "list": false,
+                "input_types": [],
+                "value": false
+              },
+              "message": {
+                "type": "str",
+                "required": false,
+                "list": false,
+                "input_types": [
+                  "Message"
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "name": "true_result",
+                "types": [
+                  "Message"
+                ],
+                "method": "true_response"
+              },
+              {
+                "name": "false_result",
+                "types": [
+                  "Message"
+                ],
+                "method": "false_response"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "Prompt-trueBranch",
+        "data": {
+          "type": "Prompt",
+          "node": {
+            "template": {
+              "template": {
+                "type": "prompt",
+                "required": false,
+                "list": false,
+                "input_types": [],
+                "value": "The user said yes: {passage}"
+              },
+              "passage": {
+                "type": "str",
+                "required": false,
+                "list": false,
+                "input_types": [
+                  "Message",
+                  "Text"
+                ],
+                "value": ""
+              }
+            },
+            "outputs": [
+              {
+                "name": "prompt",
+                "types": [
+                  "Message"
+                ],
+                "method": "build_prompt"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "Prompt-falseBranch",
+        "data": {
+          "type": "Prompt",
+          "node": {
+            "template": {
+              "template": {
+                "type": "prompt",
+                "required": false,
+                "list": false,
+                "input_types": [],
+                "value": "The user did not say yes: {passage}"
+              },
+              "passage": {
+                "type": "str",
+                "required": false,
+                "list": false,
+                "input_types": [
+                  "Message",
+                  "Text"
+                ],
+                "value": ""
+              }
+            },
+            "outputs": [
+              {
+                "name": "prompt",
+                "types": [
+                  "Message"
+                ],
+                "method": "build_prompt"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "CombineText-mergeZ9",
+        "data": {
+          "type": "CombineText",
+          "node": {
+            "template": {
+              "text1": {
+                "type": "str",
+                "required": false,
+                "list": false,
+                "input_types": [
+                  "Message"
+                ]
+              },
+              "text2": {
+                "type": "str",
+                "required": false,
+                "list": false,
+                "input_types": [
+                  "Message"
+                ]
+              },
+              "delimiter": {
+                "type": "str",
+                "required": false,
+                "list": false,
+                "input_types": [
+                  "Message"
+                ],
+                "value": " "
+              }
+            },
+            "outputs": [
+              {
+                "name": "combined_text",
+                "types": [
+                  "Message"
+                ],
+                "method": "combine_texts"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "TextOutput-outZ9",
+        "data": {
+          "type": "TextOutput",
+          "node": {
+            "template": {
+              "input_value": {
+                "type": "str",
+                "required": false,
+                "list": false,
+                "input_types": [
+                  "Message"
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "name": "text",
+                "types": [
+                  "Message"
+                ],
+                "method": "text_response"
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "edges": [
+      {
+        "source": "ChatInput-aB3kp",
+        "target": "ConditionalRouter-r7QmX",
+        "sourceHandle": "message",
+        "targetHandle": "input_text",
+        "data": {
+          "sourceHandle": {
+            "dataType": "ChatInput",
+            "name": "message",
+            "output_types": [
+              "Message"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "input_text",
+            "inputTypes": [
+              "Message"
+            ],
+            "type": "str"
+          }
+        }
+      },
+      {
+        "source": "ChatInput-aB3kp",
+        "target": "ConditionalRouter-r7QmX",
+        "sourceHandle": "message",
+        "targetHandle": "message",
+        "data": {
+          "sourceHandle": {
+            "dataType": "ChatInput",
+            "name": "message",
+            "output_types": [
+              "Message"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "message",
+            "inputTypes": [
+              "Message"
+            ],
+            "type": "str"
+          }
+        }
+      },
+      {
+        "source": "ConditionalRouter-r7QmX",
+        "target": "Prompt-trueBranch",
+        "sourceHandle": "true_result",
+        "targetHandle": "passage",
+        "data": {
+          "sourceHandle": {
+            "dataType": "ConditionalRouter",
+            "name": "true_result",
+            "output_types": [
+              "Message"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "passage",
+            "inputTypes": [
+              "Message",
+              "Text"
+            ],
+            "type": "str"
+          }
+        }
+      },
+      {
+        "source": "ConditionalRouter-r7QmX",
+        "target": "Prompt-falseBranch",
+        "sourceHandle": "false_result",
+        "targetHandle": "passage",
+        "data": {
+          "sourceHandle": {
+            "dataType": "ConditionalRouter",
+            "name": "false_result",
+            "output_types": [
+              "Message"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "passage",
+            "inputTypes": [
+              "Message",
+              "Text"
+            ],
+            "type": "str"
+          }
+        }
+      },
+      {
+        "source": "Prompt-trueBranch",
+        "target": "CombineText-mergeZ9",
+        "sourceHandle": "prompt",
+        "targetHandle": "text1",
+        "data": {
+          "sourceHandle": {
+            "dataType": "Prompt",
+            "name": "prompt",
+            "output_types": [
+              "Message"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "text1",
+            "inputTypes": [
+              "Message"
+            ],
+            "type": "str"
+          }
+        }
+      },
+      {
+        "source": "Prompt-falseBranch",
+        "target": "CombineText-mergeZ9",
+        "sourceHandle": "prompt",
+        "targetHandle": "text2",
+        "data": {
+          "sourceHandle": {
+            "dataType": "Prompt",
+            "name": "prompt",
+            "output_types": [
+              "Message"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "text2",
+            "inputTypes": [
+              "Message"
+            ],
+            "type": "str"
+          }
+        }
+      },
+      {
+        "source": "CombineText-mergeZ9",
+        "target": "TextOutput-outZ9",
+        "sourceHandle": "combined_text",
+        "targetHandle": "input_value",
+        "data": {
+          "sourceHandle": {
+            "dataType": "CombineText",
+            "name": "combined_text",
+            "output_types": [
+              "Message"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "input_value",
+            "inputTypes": [
+              "Message"
+            ],
+            "type": "str"
+          }
+        }
+      }
+    ]
+  }
+}

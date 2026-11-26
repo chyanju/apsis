@@ -1,0 +1,11 @@
+{
+  "id": "flowise-5501",
+  "issue_url": "https://github.com/FlowiseAI/Flowise/issues/5501",
+  "fix_kind": "workflow",
+  "framework_version": "3.0.10",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "router-branch-gating"
+  ],
+  "note": "Both outputs of `conditionAgentflow_0`, `conditionAgentflow_0-output-0` and `conditionAgentflow_0-output-1`, lead to the same node `llmAgentflow_4` ('to_operator'). The flow stalls silently at the Condition node: neither branch runs and no error is raised."
+}

@@ -1,0 +1,11 @@
+{
+  "id": "langflow-7552",
+  "issue_url": "https://github.com/langflow-ai/langflow/issues/7552",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.0",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "type-contract"
+  ],
+  "note": "`OpenAIModel-Kp7uH` has `stream` set to true, and its `text_output` feeds `MessageToData-vN3oP.message` instead of a `ChatOutput`. Langflow rejects an edge from a streaming component to anything but a `ChatOutput`, so the flow is dropped and the client is disconnected."
+}

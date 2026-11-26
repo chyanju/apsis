@@ -1,0 +1,9 @@
+{
+  "id": "haystack-7533-fixed0",
+  "of": "haystack-7533",
+  "fix_kind": "workflow",
+  "framework_version": "2.0.0b8",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [],
+  "fix_note": "Connects `router.go_custom` to a new component `answerer`, so an answerable query leaves the loop, and feeds `router.go_prompt` into `prompt_builder.replies`, which has no default."
+}

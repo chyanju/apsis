@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "apsis-langgraph"
+version = "0.1.0"
+description = "apsis LangGraph front-end: introspect a compiled StateGraph into the apsis IR"
+requires-python = ">=3.10"
+dependencies = ["langgraph>=0.3"]
+
+[tool.setuptools]
+packages = ["apsis_langgraph"]

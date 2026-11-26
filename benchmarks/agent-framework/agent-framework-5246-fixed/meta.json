@@ -1,0 +1,9 @@
+{
+  "id": "agent-framework-5246-fixed",
+  "of": "agent-framework-5246",
+  "fix_kind": "workflow",
+  "framework_version": "1.9.0",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [],
+  "fix_note": "`upper_case` declares `output=AgentExecutorResponse` and forwards an `AgentExecutorResponse` whose `full_conversation` extends the upstream conversation with its uppercased message."
+}

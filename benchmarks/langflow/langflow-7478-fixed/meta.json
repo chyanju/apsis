@@ -1,0 +1,9 @@
+{
+  "id": "langflow-7478-fixed",
+  "of": "langflow-7478",
+  "fix_kind": "workflow",
+  "framework_version": "1.3.2",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "`LoopComponent-rows2.data` is fed by `LoopComponent-files1.done`, the `done` output of the first loop, in place of `MessagetoData-rowbk.data`. The second loop receives its input before it starts."
+}

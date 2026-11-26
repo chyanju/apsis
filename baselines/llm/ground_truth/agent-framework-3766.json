@@ -1,0 +1,11 @@
+{
+  "base": "agent-framework-3766",
+  "framework": "agent-framework",
+  "families": [
+    "composition"
+  ],
+  "location_ids": [
+    "ExternalGuessNumber",
+    "hitl-workflow"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "id": "haystack-8024-fixed",
+  "of": "haystack-8024",
+  "fix_kind": "workflow",
+  "framework_version": "2.3.1",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [],
+  "fix_note": "Removes the default of `refiner.scratchpad`, so `refiner` waits for `loop_joiner` and runs once per round, in order."
+}

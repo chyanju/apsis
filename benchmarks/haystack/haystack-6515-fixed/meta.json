@@ -1,0 +1,9 @@
+{
+  "id": "haystack-6515-fixed",
+  "of": "haystack-6515",
+  "fix_kind": "workflow",
+  "framework_version": "2.30.2",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [],
+  "fix_note": "Connects `ranker.documents` to `prompt_builder.documents` instead of `prompt_builder.question`; the question comes from the caller."
+}

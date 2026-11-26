@@ -1,0 +1,11 @@
+{
+  "id": "agent-framework-1814",
+  "issue_url": "https://github.com/microsoft/agent-framework/issues/1814",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.0-preview.251028.1",
+  "entry": "Workflow.csproj:WorkflowConcurrentSample.Case.Build",
+  "expected_detectors": [
+    "channel-write-merge"
+  ],
+  "note": "The agents `Physicist` and `Chemist` each send a `List<ChatMessage>` over the fan-in edge to `ConcurrentAggregationExecutor`, whose only handler takes a single `ChatMessage`. The edge drops every message (\"dropped type mismatch\"): the aggregator never runs and no `WorkflowOutputEvent` is raised."
+}

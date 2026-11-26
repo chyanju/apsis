@@ -1,0 +1,9 @@
+{
+  "id": "haystack-7960-fixed0",
+  "of": "haystack-7960",
+  "fix_kind": "workflow",
+  "framework_version": "2.30.2",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [],
+  "fix_note": "Uses Haystack's own `BranchJoiner(List[str])` as the loop head `main_input`. Its `GreedyVariadic` socket is cleared after each run, the caller's value included, so every pass receives one value."
+}

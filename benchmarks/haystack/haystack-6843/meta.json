@@ -1,0 +1,11 @@
+{
+  "id": "haystack-6843",
+  "issue_url": "https://github.com/deepset-ai/haystack/issues/6843",
+  "fix_kind": "mixed",
+  "framework_version": "2.0.0b6",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [
+    "readiness-liveness"
+  ],
+  "note": "`filter_retriever` has no inputs and belongs to the lookup branch of a `ConditionalRouter`. The pipeline schedules it at once and runs it on every query, even when the router selects `semantic_query` and nothing consumes its `documents`."
+}

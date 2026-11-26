@@ -1,0 +1,11 @@
+{
+  "id": "langflow-7995",
+  "issue_url": "https://github.com/langflow-ai/langflow/issues/7995",
+  "fix_kind": "workflow",
+  "framework_version": "1.4.1",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "readiness-liveness"
+  ],
+  "note": "`Prompt-outerNz`, outside the loop, is wired into `Prompt-bodyTk.instruction`, and `Prompt-bodyTk` is the body of `Loop-aZ9kP`. The outside input puts the per-iteration build out of step, and the loop fails with \"The data input must be a list of Data objects or a single Data object\"."
+}

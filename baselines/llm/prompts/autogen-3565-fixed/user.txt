@@ -1,0 +1,16 @@
+# This is a AutoGen agent workflow (Python definition).
+# Analyze the workflow below for bugs, working only from this source.
+
+from autogen import ConversableAgent, GroupChat, GroupChatManager, UserProxyAgent, AssistantAgent
+LLM_CONFIG = {'config_list': [{'model': 'gpt-4o', 'api_key': 'PLACEHOLDER'}]}
+agent_1 = ConversableAgent(name='agent_1', default_auto_reply='I hate orcas', llm_config=False)
+agent_2 = ConversableAgent(name='agent_2', default_auto_reply='I like orcas', llm_config=False)
+group_chat = GroupChat(agents=[agent_1, agent_2], messages=[], allow_repeat_speaker=False, speaker_selection_method='round_robin', max_round=3)
+group_chat_manager = GroupChatManager(groupchat=group_chat, llm_config=LLM_CONFIG)
+user = UserProxyAgent(name='user', description='user', code_execution_config=False)
+group_chat_proxy = AssistantAgent(name='group_chat_proxy', description='A simple proxy agent that passes messages to and from the user and the group chat', system_message='You are a proxy agent that passes messages to and from the group_chat_manager and the user. Do not modify the received message.', llm_config=LLM_CONFIG)
+group_chat_proxy.register_nested_chats([{'recipient': group_chat_manager, 'summary_method': 'reflection_with_llm', 'summary_args': {'summary_prompt': 'Return the last reply from the group chat verbatim.'}}], trigger=user)
+
+def build():
+    return group_chat_proxy
+workflow = build()

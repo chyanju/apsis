@@ -1,0 +1,726 @@
+[
+  {
+    "fw": "haystack",
+    "base": "haystack-4047",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-4047-fixed0",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-6356",
+    "is_buggy": true,
+    "fired": [
+      "apsis-baseline/cycle-termination"
+    ]
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-6356-fixed0",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-6359",
+    "is_buggy": true,
+    "fired": [
+      "apsis-baseline/shared-instance-aliasing"
+    ]
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-6359-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-6431",
+    "is_buggy": true,
+    "fired": [
+      "apsis-baseline/shared-instance-aliasing"
+    ]
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-6431-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-6433",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-6433-fixed0",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-6515",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-6515-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-6723",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-6723-fixed0",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-6843",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-6843-fixed0",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-7243",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-7243-fixed0",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-7371",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-7371-fixed0",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-7391",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-7391-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-7392",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-7392-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-7533",
+    "is_buggy": true,
+    "fired": [
+      "apsis-baseline/cycle-termination"
+    ]
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-7533-fixed0",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-7561",
+    "is_buggy": true,
+    "fired": [
+      "apsis-baseline/cycle-termination"
+    ]
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-7561-fixed0",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-7960",
+    "is_buggy": true,
+    "fired": [
+      "apsis-baseline/cycle-termination"
+    ]
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-7960-fixed0",
+    "is_buggy": false,
+    "fired": [
+      "apsis-baseline/cycle-termination"
+    ]
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-7985",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-7985-fixed0",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-8024",
+    "is_buggy": true,
+    "fired": [
+      "apsis-baseline/cycle-termination"
+    ]
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-8024-fixed",
+    "is_buggy": false,
+    "fired": [
+      "apsis-baseline/cycle-termination"
+    ]
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-8028",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-8028-fixed0",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-8341",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-8341-fixed0",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-8389",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-8389-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-8556",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-8556-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-9044",
+    "is_buggy": true,
+    "fired": [
+      "apsis-baseline/cycle-termination"
+    ]
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-9044-fixed",
+    "is_buggy": false,
+    "fired": [
+      "apsis-baseline/cycle-termination"
+    ]
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-9507",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-9507-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-10981",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-10981-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-11109",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "haystack",
+    "base": "haystack-11109-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-142",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-142-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-492",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-492-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-766",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-766-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-953",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-953-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-954",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-954-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-987",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-987-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-1406",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-1406-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-1909",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-1909-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-1964",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-1964-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-2336",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-2336-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-2504",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-2504-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-2775",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-2775-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-2893",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-2893-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-3020",
+    "is_buggy": true,
+    "fired": [
+      "apsis-baseline/target-resolution"
+    ]
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-3020-fixed",
+    "is_buggy": false,
+    "fired": [
+      "apsis-baseline/target-resolution"
+    ]
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-3104",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-3104-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-3483",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-3483-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-3532",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-3532-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-3570",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-3570-fixed0",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-3648",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-3648-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-3950",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-3950-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-4007",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-4007-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-4026",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-4026-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-4305",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-4305-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-4377",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-4377-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-4685",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-4685-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-5556",
+    "is_buggy": true,
+    "fired": [
+      "apsis-baseline/target-resolution"
+    ]
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-5556-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-5755",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-5755-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-5829",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-5829-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-6340",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-6340-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-6409",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-6409-fixed0",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-6446",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-6446-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-6735",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-6735-fixed",
+    "is_buggy": false,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-7727",
+    "is_buggy": true,
+    "fired": []
+  },
+  {
+    "fw": "langgraph",
+    "base": "langgraph-7727-fixed",
+    "is_buggy": false,
+    "fired": []
+  }
+]

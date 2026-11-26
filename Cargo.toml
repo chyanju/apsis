@@ -1,0 +1,27 @@
+# apsis — static analyzer for agentic workflows.
+#
+#   apsis-ir        the workflow IR and its JSON form
+#   apsis-analysis  the detector catalog over the IR
+#   apsis-frontend  runs a framework's front-end (a Python module under frontends/, or the .NET program for the
+#                   .NET SDK of Agent Framework) and reads the IR it writes
+#   apsis-cli       the `apsis` binary
+[workspace]
+resolver = "2"
+members = [
+    "crates/apsis-ir",
+    "crates/apsis-frontend",
+    "crates/apsis-analysis",
+    "crates/apsis-cli",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+[workspace.dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+apsis-ir = { path = "crates/apsis-ir" }
+apsis-frontend = { path = "crates/apsis-frontend" }
+apsis-analysis = { path = "crates/apsis-analysis" }

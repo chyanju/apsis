@@ -1,0 +1,11 @@
+{
+  "id": "autogen-3565",
+  "issue_url": "https://github.com/microsoft/autogen/issues/3565",
+  "fix_kind": "workflow",
+  "framework_version": "0.2.37",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [
+    "binding-capability"
+  ],
+  "note": "`group_chat_proxy` registers a nested chat with `summary_method` `last_msg` and a `GroupChatManager` as recipient. `last_msg` reads the channel between proxy and manager, which holds only the trigger, so the nested chat returns it instead of the inner group chat's last turn (\"I like orcas\")."
+}

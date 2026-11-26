@@ -1,0 +1,35 @@
+from __future__ import annotations
+
+from typing_extensions import Never
+
+from agent_framework import (
+    Executor,
+    WorkflowBuilder,
+    WorkflowContext,
+    handler,
+)
+
+
+class Writer(Executor):
+    @handler
+    async def write(self, prompt: str, ctx: WorkflowContext[str]) -> None:
+        draft = f"draft for: {prompt}"
+        await ctx.send_message(draft)
+
+
+class Reviewer(Executor):
+    @handler
+    async def review(self, draft: str, ctx: WorkflowContext[Never, str]) -> None:
+        feedback = f"feedback on {draft}: concise, actionable."
+        await ctx.yield_output(feedback)
+
+
+writer = Writer(id="writer")
+reviewer = Reviewer(id="reviewer")
+
+
+workflow = (
+    WorkflowBuilder(start_executor=writer, output_from=[reviewer])
+    .add_edge(writer, reviewer)
+    .build()
+)

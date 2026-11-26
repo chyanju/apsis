@@ -1,0 +1,9 @@
+{
+  "id": "flowise-3149-fixed",
+  "of": "flowise-3149",
+  "fix_kind": "workflow",
+  "framework_version": "2.0.5",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "Adds the edge from the output of `customFunction_0` to the `promptValues` input of `chatPromptTemplate_0`, so `{schema}` is filled with the database schema."
+}

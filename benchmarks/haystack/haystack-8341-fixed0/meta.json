@@ -1,0 +1,9 @@
+{
+  "id": "haystack-8341-fixed0",
+  "of": "haystack-8341",
+  "fix_kind": "workflow",
+  "framework_version": "2.5.1",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [],
+  "fix_note": "Each creator always emits `documents`, an empty list when it has nothing to add, and has no `noop` output, so every sender of `joiner.documents` delivers and `joiner` runs."
+}

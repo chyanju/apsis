@@ -1,0 +1,11 @@
+{
+  "id": "haystack-7391",
+  "issue_url": "https://github.com/deepset-ai/haystack/issues/7391",
+  "fix_kind": "workflow",
+  "framework_version": "2.0.0b8",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [
+    "readiness-liveness"
+  ],
+  "note": "`summarizer.text` and `ranker.text` are both connected from `splitter` and both have a default, so either component can run before `splitter` delivers and again afterwards. Which one runs early follows the graph's node order, which differs between a pipeline built in code and one loaded from YAML."
+}

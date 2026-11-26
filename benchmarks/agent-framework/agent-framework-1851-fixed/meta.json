@@ -1,0 +1,9 @@
+{
+  "id": "agent-framework-1851-fixed",
+  "of": "agent-framework-1851",
+  "fix_kind": "workflow",
+  "framework_version": "1.9.0",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [],
+  "fix_note": "`.add_handoff(triage, [refund, order, support])` replaces the handoff `refund_agent` -> `triage_agent`, so `triage_agent` can hand off to every specialist."
+}

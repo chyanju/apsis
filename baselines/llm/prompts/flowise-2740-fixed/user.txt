@@ -1,0 +1,231 @@
+# This is a Flowise agent workflow (exported flow.json).
+# Analyze the workflow below for bugs, working only from this source.
+
+{
+  "nodes": [
+    {
+      "id": "chatOpenAI_0",
+      "data": {
+        "id": "chatOpenAI_0",
+        "name": "chatOpenAI",
+        "label": "ChatOpenAI",
+        "category": "Chat Models",
+        "inputAnchors": [
+          {
+            "id": "chatOpenAI_0-input-cache-BaseCache",
+            "name": "cache",
+            "label": "Cache",
+            "type": "BaseCache",
+            "optional": true
+          }
+        ],
+        "inputParams": [
+          {
+            "id": "chatOpenAI_0-input-modelName-string",
+            "name": "modelName",
+            "type": "string"
+          },
+          {
+            "id": "chatOpenAI_0-input-temperature-number",
+            "name": "temperature",
+            "type": "number"
+          }
+        ],
+        "inputs": {
+          "modelName": "gpt-4o",
+          "temperature": "0.1"
+        },
+        "outputAnchors": [
+          {
+            "id": "chatOpenAI_0-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable",
+            "name": "chatOpenAI",
+            "label": "ChatOpenAI",
+            "type": "ChatOpenAI | BaseChatModel | BaseLanguageModel | Runnable"
+          }
+        ]
+      }
+    },
+    {
+      "id": "agentMemory_0",
+      "data": {
+        "id": "agentMemory_0",
+        "name": "agentMemory",
+        "label": "Agent Memory",
+        "category": "Memory",
+        "inputAnchors": [],
+        "inputParams": [
+          {
+            "id": "agentMemory_0-input-databaseFilePath-string",
+            "name": "databaseFilePath",
+            "type": "string",
+            "optional": true
+          },
+          {
+            "id": "agentMemory_0-input-tableName-string",
+            "name": "tableName",
+            "type": "string",
+            "optional": true
+          }
+        ],
+        "inputs": {
+          "tableName": "checkpoints"
+        },
+        "outputAnchors": [
+          {
+            "id": "agentMemory_0-output-agentMemory-AgentMemory|BaseCheckpointSaver|BaseChatMemory",
+            "name": "agentMemory",
+            "label": "Agent Memory",
+            "type": "AgentMemory | BaseCheckpointSaver | BaseChatMemory"
+          }
+        ]
+      }
+    },
+    {
+      "id": "supervisor_0",
+      "data": {
+        "id": "supervisor_0",
+        "name": "supervisor",
+        "label": "Supervisor",
+        "category": "Multi Agents",
+        "inputAnchors": [
+          {
+            "id": "supervisor_0-input-model-BaseChatModel",
+            "name": "model",
+            "label": "Chat Model",
+            "type": "BaseChatModel"
+          },
+          {
+            "id": "supervisor_0-input-inputModeration-Moderation",
+            "name": "inputModeration",
+            "label": "Input Moderation",
+            "type": "Moderation",
+            "list": true,
+            "optional": true
+          }
+        ],
+        "inputParams": [
+          {
+            "id": "supervisor_0-input-supervisorName-string",
+            "name": "supervisorName",
+            "type": "string"
+          },
+          {
+            "id": "supervisor_0-input-supervisorPrompt-string",
+            "name": "supervisorPrompt",
+            "type": "string"
+          },
+          {
+            "id": "supervisor_0-input-recursionLimit-number",
+            "name": "recursionLimit",
+            "type": "number"
+          }
+        ],
+        "inputs": {
+          "model": "{{chatOpenAI_0.data.instance}}",
+          "supervisorName": "Supervisor",
+          "recursionLimit": 100
+        },
+        "outputAnchors": [
+          {
+            "id": "supervisor_0-output-supervisor-Supervisor",
+            "name": "supervisor",
+            "label": "Supervisor",
+            "type": "Supervisor"
+          }
+        ]
+      }
+    },
+    {
+      "id": "worker_0",
+      "data": {
+        "id": "worker_0",
+        "name": "worker",
+        "label": "Worker",
+        "category": "Multi Agents",
+        "inputAnchors": [
+          {
+            "id": "worker_0-input-tools-Tool",
+            "name": "tools",
+            "label": "Tools",
+            "type": "Tool",
+            "list": true,
+            "optional": true
+          },
+          {
+            "id": "worker_0-input-supervisor-Supervisor",
+            "name": "supervisor",
+            "label": "Supervisor",
+            "type": "Supervisor"
+          },
+          {
+            "id": "worker_0-input-model-BaseChatModel",
+            "name": "model",
+            "label": "Chat Model",
+            "type": "BaseChatModel",
+            "optional": true
+          },
+          {
+            "id": "worker_0-input-memory-BaseChatMemory",
+            "name": "memory",
+            "label": "Agent Memory",
+            "type": "BaseChatMemory",
+            "optional": true
+          }
+        ],
+        "inputParams": [
+          {
+            "id": "worker_0-input-workerName-string",
+            "name": "workerName",
+            "type": "string"
+          },
+          {
+            "id": "worker_0-input-workerPrompt-string",
+            "name": "workerPrompt",
+            "type": "string"
+          },
+          {
+            "id": "worker_0-input-maxIterations-number",
+            "name": "maxIterations",
+            "type": "number"
+          }
+        ],
+        "inputs": {
+          "tools": [],
+          "supervisor": "{{supervisor_0.data.instance}}",
+          "model": "",
+          "memory": "{{agentMemory_0.data.instance}}",
+          "workerName": "Validator",
+          "workerPrompt": "You validate the user before starting a task. Here is the prior conversation:\n{chat_history}\nDecide whether to proceed."
+        },
+        "outputAnchors": [
+          {
+            "id": "worker_0-output-worker-Worker",
+            "name": "worker",
+            "label": "Worker",
+            "type": "Worker"
+          }
+        ]
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "chatOpenAI_0",
+      "target": "supervisor_0",
+      "sourceHandle": "chatOpenAI_0-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable",
+      "targetHandle": "supervisor_0-input-model-BaseChatModel"
+    },
+    {
+      "source": "supervisor_0",
+      "target": "worker_0",
+      "sourceHandle": "supervisor_0-output-supervisor-Supervisor",
+      "targetHandle": "worker_0-input-supervisor-Supervisor"
+    },
+    {
+      "source": "agentMemory_0",
+      "target": "worker_0",
+      "sourceHandle": "agentMemory_0-output-agentMemory-AgentMemory|BaseCheckpointSaver|BaseChatMemory",
+      "targetHandle": "worker_0-input-memory-BaseChatMemory"
+    }
+  ]
+}

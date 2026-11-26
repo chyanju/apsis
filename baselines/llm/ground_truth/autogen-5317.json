@@ -1,0 +1,11 @@
+{
+  "base": "autogen-5317",
+  "framework": "autogen",
+  "families": [
+    "liveness_termination"
+  ],
+  "location_ids": [
+    "modifier",
+    "modifier1"
+  ]
+}

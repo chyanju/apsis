@@ -1,0 +1,11 @@
+{
+  "id": "langflow-6653",
+  "issue_url": "https://github.com/langflow-ai/langflow/issues/6653",
+  "fix_kind": "workflow",
+  "framework_version": "1.1.5",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "readiness-liveness"
+  ],
+  "note": "`CalculatorComponent-tool1`, which provides `Agent-agent1.tools`, takes its `expression` from `LoopComponent-loop1.item`, inside the agent's own loop. The agent is built before its `tools` and model are available and fails with \"Failed to initialize language model: Invalid model provider\"."
+}

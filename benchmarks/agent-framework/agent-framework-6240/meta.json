@@ -1,0 +1,11 @@
+{
+  "id": "agent-framework-6240",
+  "issue_url": "https://github.com/microsoft/agent-framework/issues/6240",
+  "fix_kind": "workflow",
+  "framework_version": "1.9.0",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [
+    "subflow-port-binding"
+  ],
+  "note": "The autonomous handoff step (`triage` -> `coder`) has no `output_from`, so each of its three replies reaches the one-shot Magentic step as a task. The first completes the Magentic workflow and the second fails with `RuntimeError: This Magentic workflow has already been completed.`"
+}

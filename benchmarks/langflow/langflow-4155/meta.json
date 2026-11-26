@@ -1,0 +1,11 @@
+{
+  "id": "langflow-4155",
+  "issue_url": "https://github.com/langflow-ai/langflow/issues/4155",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.18",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "router-branch-gating"
+  ],
+  "note": "`CombineText-mergeZ9` merges the exclusive branches of `ConditionalRouter-r7QmX` (`Prompt-trueBranch` into `text1`, `Prompt-falseBranch` into `text2`) and feeds `TextOutput-outZ9`. Stopping the untaken route deactivates the merge for good, so it and `TextOutput-outZ9` never run, whichever branch is taken."
+}

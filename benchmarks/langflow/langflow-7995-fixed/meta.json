@@ -1,0 +1,9 @@
+{
+  "id": "langflow-7995-fixed",
+  "of": "langflow-7995",
+  "fix_kind": "workflow",
+  "framework_version": "1.4.1",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "The edge from `Prompt-outerNz.prompt` to `Prompt-bodyTk.instruction` is removed together with the `Prompt-outerNz` component and the `instruction` input, so `Prompt-bodyTk` is fed only from inside the loop."
+}

@@ -1,0 +1,9 @@
+{
+  "id": "agent-framework-4144-fixed",
+  "of": "agent-framework-4144",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.0-rc1",
+  "entry": "Workflow.csproj:WorkflowHumanInTheLoopBasicSample.Case.Build",
+  "expected_detectors": [],
+  "fix_note": "`JudgeExecutor` declares `[YieldsOutput(typeof(string))]` and `[SendsMessage(typeof(NumberSignal))]`, so a wrong guess sends its hint back to `GuessNumber` and the right guess yields the result."
+}

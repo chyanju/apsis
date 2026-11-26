@@ -1,0 +1,11 @@
+{
+  "id": "flowise-2176",
+  "issue_url": "https://github.com/FlowiseAI/Flowise/issues/2176",
+  "fix_kind": "workflow",
+  "framework_version": "1.6.5",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "readiness-liveness"
+  ],
+  "note": "`llmChain_1` and `llmChain_2`, behind the `returnTrue` and `returnFalse` outputs of `ifElseFunction_0`, have an empty `model` input with no incoming edge; only `llmChain_0` is connected to `chatOpenAI_0`. The run fails with 'nodeInstance.run is not a function'."
+}

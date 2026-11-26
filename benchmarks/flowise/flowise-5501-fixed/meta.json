@@ -1,0 +1,9 @@
+{
+  "id": "flowise-5501-fixed",
+  "of": "flowise-5501",
+  "fix_kind": "workflow",
+  "framework_version": "3.0.10",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "Adds `llmAgentflow_5`, a copy of `llmAgentflow_4`, and points `conditionAgentflow_0-output-0` at it, so each output of `conditionAgentflow_0` leads to its own node."
+}

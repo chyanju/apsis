@@ -1,0 +1,14 @@
+# This is a AutoGen agent workflow (Python definition).
+# Analyze the workflow below for bugs, working only from this source.
+
+from autogen import ConversableAgent, UserProxyAgent
+llm_config = {'config_list': [{'model': 'gpt-4o-mini', 'api_key': 'PLACEHOLDER'}]}
+agent1 = ConversableAgent(name='agent1', system_message='You are good at writing math poems.', llm_config=llm_config)
+agent2 = ConversableAgent(name='agent2', system_message='You are excellent at critiquing math poems to be witty.', llm_config=llm_config)
+controller = ConversableAgent(name='controller', system_message='You are the controller routing messages between agents.', llm_config=llm_config)
+user = UserProxyAgent(name='user', system_message='A human admin.', max_consecutive_auto_reply=0, code_execution_config=False, human_input_mode='NEVER')
+agent1_chat_queue = [{'max_turns': 1, 'recipient': agent1, 'message': None}]
+agent2_chat_queue = [{'max_turns': 1, 'recipient': agent2, 'message': None}]
+controller.register_nested_chats(agent1_chat_queue, trigger='user')
+controller.register_nested_chats(agent2_chat_queue, trigger='agent1')
+workflow = controller

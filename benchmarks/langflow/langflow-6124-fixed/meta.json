@@ -1,0 +1,9 @@
+{
+  "id": "langflow-6124-fixed",
+  "of": "langflow-6124",
+  "fix_kind": "workflow",
+  "framework_version": "1.1.1",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "`ConditionalRouter-zRRVB.true_result` goes to `ChatOutput-5dYR6.input_value` instead of back to `ChatInput-vAd7W.input_value`, and the edge `ChatInput-vAd7W.message` -> `ChatOutput-5dYR6` is dropped, so the flow has no cycle."
+}

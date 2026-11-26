@@ -1,0 +1,11 @@
+{
+  "id": "haystack-7561",
+  "issue_url": "https://github.com/deepset-ai/haystack/issues/7561",
+  "fix_kind": "mixed",
+  "framework_version": "2.0.1",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [
+    "cycle-termination"
+  ],
+  "note": "`output_validator` emits only `invalid_replies` and `error_message`, both connected back to `prompt_builder`, and has no `valid_replies` output, so nothing leaves the loop `prompt_builder -> llm -> output_validator`, which keeps running."
+}

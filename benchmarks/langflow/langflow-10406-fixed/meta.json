@@ -1,0 +1,9 @@
+{
+  "id": "langflow-10406-fixed",
+  "of": "langflow-10406",
+  "fix_kind": "workflow",
+  "framework_version": "1.5.0",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "`Notify-Wn3kp.result` goes to `ChatOutput-hFryt.input_value` instead of back to `ConditionalRouter-zRRVB.input_text`. The true branch ends at an output and the flow has no cycle."
+}

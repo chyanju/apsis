@@ -1,0 +1,31 @@
+# This is a LangGraph agent workflow (Python definition).
+# Analyze the workflow below for bugs, working only from this source.
+
+from typing import Annotated, Literal, TypedDict
+import operator
+from langgraph.graph import StateGraph, START, END
+from langgraph.types import Command
+
+class State(TypedDict):
+    executed_nodes: Annotated[list[str], operator.add]
+
+def start_node(state: State) -> Command[Literal['goto_target']]:
+    return Command(goto='goto_target', update={'executed_nodes': ['start_node']})
+
+def goto_target(state: State) -> dict:
+    return {'executed_nodes': ['goto_target']}
+
+def static_target(state: State) -> dict:
+    return {'executed_nodes': ['static_target']}
+
+def build():
+    g = StateGraph(State)
+    g.add_node('start_node', start_node)
+    g.add_node('goto_target', goto_target)
+    g.add_node('static_target', static_target)
+    g.add_edge(START, 'start_node')
+    g.add_edge('start_node', 'static_target')
+    g.add_edge('goto_target', END)
+    g.add_edge('static_target', END)
+    return g.compile()
+graph = build()

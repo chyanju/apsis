@@ -1,0 +1,400 @@
+# This is a Flowise agent workflow (exported flow.json).
+# Analyze the workflow below for bugs, working only from this source.
+
+{
+  "nodes": [
+    {
+      "id": "customFunction_0",
+      "data": {
+        "id": "customFunction_0",
+        "name": "customFunction",
+        "label": "Get Database Schema",
+        "category": "Utilities",
+        "inputAnchors": [],
+        "inputParams": [
+          {
+            "id": "customFunction_0-input-functionInputVariables-json",
+            "name": "functionInputVariables",
+            "type": "json"
+          },
+          {
+            "id": "customFunction_0-input-javascriptFunction-code",
+            "name": "javascriptFunction",
+            "type": "code"
+          }
+        ],
+        "inputs": {
+          "javascriptFunction": "const { Client } = require('pg');\nconst client = new Client({ connectionString: $vars.PG_URL });\nawait client.connect();\nconst res = await client.query(\"SELECT table_name, column_name, data_type FROM information_schema.columns WHERE table_schema='public'\");\nawait client.end();\nconst schema = res.rows.map(r => `${r.table_name}.${r.column_name} ${r.data_type}`).join('\\n');\nconsole.log(schema);\nreturn schema;"
+        },
+        "outputAnchors": [
+          {
+            "name": "output",
+            "label": "Output",
+            "type": "options",
+            "options": [
+              {
+                "id": "customFunction_0-output-output-string|number|boolean|json|array",
+                "name": "output",
+                "label": "Output",
+                "type": "string | number | boolean | json | array"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "chatPromptTemplate_0",
+      "data": {
+        "id": "chatPromptTemplate_0",
+        "name": "chatPromptTemplate",
+        "label": "Write SQL Query",
+        "category": "Prompts",
+        "inputAnchors": [],
+        "inputParams": [
+          {
+            "id": "chatPromptTemplate_0-input-systemMessagePrompt-string",
+            "name": "systemMessagePrompt",
+            "type": "string"
+          },
+          {
+            "id": "chatPromptTemplate_0-input-humanMessagePrompt-string",
+            "name": "humanMessagePrompt",
+            "type": "string"
+          },
+          {
+            "id": "chatPromptTemplate_0-input-promptValues-json",
+            "name": "promptValues",
+            "type": "json"
+          }
+        ],
+        "inputs": {
+          "systemMessagePrompt": "You are a PostgreSQL expert. Given the database schema, write a syntactically correct SQL query that answers the question. Only output the SQL.\nSchema:\n{schema}",
+          "humanMessagePrompt": "{question}",
+          "promptValues": ""
+        },
+        "outputAnchors": [
+          {
+            "id": "chatPromptTemplate_0-output-chatPromptTemplate-ChatPromptTemplate|BaseChatPromptTemplate|BasePromptTemplate|Runnable",
+            "name": "chatPromptTemplate",
+            "label": "ChatPromptTemplate",
+            "type": "ChatPromptTemplate | BasePromptTemplate | Runnable"
+          }
+        ]
+      }
+    },
+    {
+      "id": "chatOpenAI_0",
+      "data": {
+        "id": "chatOpenAI_0",
+        "name": "chatOpenAI",
+        "label": "ChatOpenAI (SQL)",
+        "category": "Chat Models",
+        "inputAnchors": [
+          {
+            "id": "chatOpenAI_0-input-cache-BaseCache",
+            "name": "cache",
+            "label": "Cache",
+            "type": "BaseCache",
+            "optional": true
+          }
+        ],
+        "inputParams": [
+          {
+            "id": "chatOpenAI_0-input-modelName-string",
+            "name": "modelName",
+            "type": "string"
+          },
+          {
+            "id": "chatOpenAI_0-input-temperature-number",
+            "name": "temperature",
+            "type": "number"
+          }
+        ],
+        "inputs": {
+          "modelName": "gpt-4o",
+          "temperature": "0"
+        },
+        "outputAnchors": [
+          {
+            "id": "chatOpenAI_0-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable",
+            "name": "chatOpenAI",
+            "label": "ChatOpenAI",
+            "type": "ChatOpenAI | BaseChatModel | BaseLanguageModel | Runnable"
+          }
+        ]
+      }
+    },
+    {
+      "id": "llmChain_0",
+      "data": {
+        "id": "llmChain_0",
+        "name": "llmChain",
+        "label": "Generate SQL Query",
+        "category": "Chains",
+        "inputAnchors": [
+          {
+            "id": "llmChain_0-input-model-BaseLanguageModel",
+            "name": "model",
+            "label": "Language Model",
+            "type": "BaseLanguageModel"
+          },
+          {
+            "id": "llmChain_0-input-prompt-BasePromptTemplate",
+            "name": "prompt",
+            "label": "Prompt",
+            "type": "BasePromptTemplate"
+          }
+        ],
+        "inputParams": [
+          {
+            "id": "llmChain_0-input-chainName-string",
+            "name": "chainName",
+            "type": "string"
+          }
+        ],
+        "inputs": {
+          "model": "{{chatOpenAI_0.data.instance}}",
+          "prompt": "{{chatPromptTemplate_0.data.instance}}"
+        },
+        "outputAnchors": [
+          {
+            "name": "output",
+            "label": "Output",
+            "type": "options",
+            "options": [
+              {
+                "id": "llmChain_0-output-llmChain-LLMChain|BaseChain|Runnable",
+                "name": "llmChain",
+                "label": "LLM Chain",
+                "type": "LLMChain | BaseChain | Runnable"
+              },
+              {
+                "id": "llmChain_0-output-outputPrediction-string|json",
+                "name": "outputPrediction",
+                "label": "Output Prediction",
+                "type": "string | json"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "customFunction_1",
+      "data": {
+        "id": "customFunction_1",
+        "name": "customFunction",
+        "label": "Run SQL Query",
+        "category": "Utilities",
+        "inputAnchors": [],
+        "inputParams": [
+          {
+            "id": "customFunction_1-input-functionInputVariables-json",
+            "name": "functionInputVariables",
+            "type": "json"
+          },
+          {
+            "id": "customFunction_1-input-javascriptFunction-code",
+            "name": "javascriptFunction",
+            "type": "code"
+          }
+        ],
+        "inputs": {
+          "functionInputVariables": "{\"sql_query\":\"{{llmChain_0.data.instance}}\"}",
+          "javascriptFunction": "const { Client } = require('pg');\nconst client = new Client({ connectionString: $vars.PG_URL });\nawait client.connect();\nconst res = await client.query($sql_query);\nawait client.end();\nreturn JSON.stringify(res.rows);"
+        },
+        "outputAnchors": [
+          {
+            "name": "output",
+            "label": "Output",
+            "type": "options",
+            "options": [
+              {
+                "id": "customFunction_1-output-output-string|number|boolean|json|array",
+                "name": "output",
+                "label": "Output",
+                "type": "string | number | boolean | json | array"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "chatPromptTemplate_1",
+      "data": {
+        "id": "chatPromptTemplate_1",
+        "name": "chatPromptTemplate",
+        "label": "Write Answer",
+        "category": "Prompts",
+        "inputAnchors": [],
+        "inputParams": [
+          {
+            "id": "chatPromptTemplate_1-input-systemMessagePrompt-string",
+            "name": "systemMessagePrompt",
+            "type": "string"
+          },
+          {
+            "id": "chatPromptTemplate_1-input-humanMessagePrompt-string",
+            "name": "humanMessagePrompt",
+            "type": "string"
+          },
+          {
+            "id": "chatPromptTemplate_1-input-promptValues-json",
+            "name": "promptValues",
+            "type": "json"
+          }
+        ],
+        "inputs": {
+          "systemMessagePrompt": "Given the question, the SQL query and its result, write a natural-language answer.\nQuestion: {question}\nSQL: {sql_query}\nResult: {sql_response}",
+          "humanMessagePrompt": "{question}",
+          "promptValues": ""
+        },
+        "outputAnchors": [
+          {
+            "id": "chatPromptTemplate_1-output-chatPromptTemplate-ChatPromptTemplate|BaseChatPromptTemplate|BasePromptTemplate|Runnable",
+            "name": "chatPromptTemplate",
+            "label": "ChatPromptTemplate",
+            "type": "ChatPromptTemplate | BasePromptTemplate | Runnable"
+          }
+        ]
+      }
+    },
+    {
+      "id": "chatOpenAI_1",
+      "data": {
+        "id": "chatOpenAI_1",
+        "name": "chatOpenAI",
+        "label": "ChatOpenAI (Answer)",
+        "category": "Chat Models",
+        "inputAnchors": [
+          {
+            "id": "chatOpenAI_1-input-cache-BaseCache",
+            "name": "cache",
+            "label": "Cache",
+            "type": "BaseCache",
+            "optional": true
+          }
+        ],
+        "inputParams": [
+          {
+            "id": "chatOpenAI_1-input-modelName-string",
+            "name": "modelName",
+            "type": "string"
+          },
+          {
+            "id": "chatOpenAI_1-input-temperature-number",
+            "name": "temperature",
+            "type": "number"
+          }
+        ],
+        "inputs": {
+          "modelName": "gpt-4o",
+          "temperature": "0"
+        },
+        "outputAnchors": [
+          {
+            "id": "chatOpenAI_1-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable",
+            "name": "chatOpenAI",
+            "label": "ChatOpenAI",
+            "type": "ChatOpenAI | BaseChatModel | BaseLanguageModel | Runnable"
+          }
+        ]
+      }
+    },
+    {
+      "id": "llmChain_1",
+      "data": {
+        "id": "llmChain_1",
+        "name": "llmChain",
+        "label": "Generate Answer",
+        "category": "Chains",
+        "inputAnchors": [
+          {
+            "id": "llmChain_1-input-model-BaseLanguageModel",
+            "name": "model",
+            "label": "Language Model",
+            "type": "BaseLanguageModel"
+          },
+          {
+            "id": "llmChain_1-input-prompt-BasePromptTemplate",
+            "name": "prompt",
+            "label": "Prompt",
+            "type": "BasePromptTemplate"
+          }
+        ],
+        "inputParams": [
+          {
+            "id": "llmChain_1-input-chainName-string",
+            "name": "chainName",
+            "type": "string"
+          }
+        ],
+        "inputs": {
+          "model": "{{chatOpenAI_1.data.instance}}",
+          "prompt": "{{chatPromptTemplate_1.data.instance}}"
+        },
+        "outputAnchors": [
+          {
+            "name": "output",
+            "label": "Output",
+            "type": "options",
+            "options": [
+              {
+                "id": "llmChain_1-output-llmChain-LLMChain|BaseChain|Runnable",
+                "name": "llmChain",
+                "label": "LLM Chain",
+                "type": "LLMChain | BaseChain | Runnable"
+              },
+              {
+                "id": "llmChain_1-output-outputPrediction-string|json",
+                "name": "outputPrediction",
+                "label": "Output Prediction",
+                "type": "string | json"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "chatPromptTemplate_0",
+      "target": "llmChain_0",
+      "sourceHandle": "chatPromptTemplate_0-output-chatPromptTemplate-ChatPromptTemplate|BaseChatPromptTemplate|BasePromptTemplate|Runnable",
+      "targetHandle": "llmChain_0-input-prompt-BasePromptTemplate"
+    },
+    {
+      "source": "chatOpenAI_0",
+      "target": "llmChain_0",
+      "sourceHandle": "chatOpenAI_0-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable",
+      "targetHandle": "llmChain_0-input-model-BaseLanguageModel"
+    },
+    {
+      "source": "llmChain_0",
+      "target": "customFunction_1",
+      "sourceHandle": "llmChain_0-output-outputPrediction-string|json",
+      "targetHandle": "customFunction_1-input-functionInputVariables-json"
+    },
+    {
+      "source": "customFunction_1",
+      "target": "chatPromptTemplate_1",
+      "sourceHandle": "customFunction_1-output-output-string|number|boolean|json|array",
+      "targetHandle": "chatPromptTemplate_1-input-promptValues-json"
+    },
+    {
+      "source": "chatPromptTemplate_1",
+      "target": "llmChain_1",
+      "sourceHandle": "chatPromptTemplate_1-output-chatPromptTemplate-ChatPromptTemplate|BaseChatPromptTemplate|BasePromptTemplate|Runnable",
+      "targetHandle": "llmChain_1-input-prompt-BasePromptTemplate"
+    },
+    {
+      "source": "chatOpenAI_1",
+      "target": "llmChain_1",
+      "sourceHandle": "chatOpenAI_1-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable",
+      "targetHandle": "llmChain_1-input-model-BaseLanguageModel"
+    }
+  ]
+}

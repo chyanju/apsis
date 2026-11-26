@@ -1,0 +1,70 @@
+# This is a Microsoft Agent Framework agent workflow (Python definition).
+# Analyze the workflow below for bugs, working only from this source.
+
+from typing import NamedTuple
+from agent_framework import Agent, AgentResponse, BaseChatClient, ChatResponse, ChatResponseUpdate, Content, Executor, FunctionInvocationLayer, Message, WorkflowBuilder, WorkflowContext, WorkflowExecutor, handler
+from agent_framework_orchestrations import HandoffBuilder, MagenticBuilder, MagenticContext, MagenticManagerBase, MagenticProgressLedger, MagenticProgressLedgerItem
+
+class ToolCall(NamedTuple):
+    name: str
+
+class ScriptedChatClient(FunctionInvocationLayer, BaseChatClient):
+
+    def __init__(self, *replies: str | ToolCall) -> None:
+        super().__init__()
+        self._replies = list(replies)
+        self._calls = 0
+
+    def _inner_get_response(self, *, messages, stream, options, **kwargs):
+        reply = self._replies.pop(0) if self._replies else 'Nothing to add.'
+        self._calls += 1
+        if isinstance(reply, ToolCall):
+            content = Content.from_function_call(call_id=f'call_{self._calls}', name=reply.name, arguments='{}')
+        else:
+            content = Content.from_text(reply)
+        response_id = f'scripted-{self._calls}'
+        if stream:
+
+            async def _updates():
+                yield ChatResponseUpdate(role='assistant', contents=[content], response_id=response_id)
+            return self._build_response_stream(_updates())
+
+        async def _response():
+            return ChatResponse(messages=[Message(role='assistant', contents=[content])], response_id=response_id)
+        return _response()
+
+def _agent(name: str, instructions: str, *replies: str | ToolCall) -> Agent:
+    return Agent(client=ScriptedChatClient(*replies), name=name, instructions=instructions, require_per_service_call_history_persistence=True)
+
+class ScriptedMagenticManager(MagenticManagerBase):
+
+    async def plan(self, magentic_context: MagenticContext) -> Message:
+        return Message(role='assistant', contents=['Plan: the reviewer checks the code.'], author_name='manager')
+
+    async def replan(self, magentic_context: MagenticContext) -> Message:
+        return await self.plan(magentic_context)
+
+    async def create_progress_ledger(self, magentic_context: MagenticContext) -> MagenticProgressLedger:
+        done = magentic_context.round_count > 1
+
+        def item(answer: str | bool) -> MagenticProgressLedgerItem:
+            return MagenticProgressLedgerItem(reason='scripted', answer=answer)
+        return MagenticProgressLedger(is_request_satisfied=item(done), is_in_loop=item(False), is_progress_being_made=item(True), next_speaker=item('reviewer'), instruction_or_question=item('Review the code.'))
+
+    async def prepare_final_answer(self, magentic_context: MagenticContext) -> Message:
+        return Message(role='assistant', contents=['Review complete.'], author_name='manager')
+
+class TaskAdapter(Executor):
+
+    @handler
+    async def to_task(self, response: AgentResponse, ctx: WorkflowContext[str]) -> None:
+        await ctx.send_message(response.text)
+triage = _agent('triage', 'Understand the request, then hand it to the coder.', 'I will look at the request and pass it to the coder.', ToolCall('handoff_to_coder'))
+coder = _agent('coder', 'Write the code the user asks for.', 'def reverse(text):\n    return text[::-1]')
+reviewer = Agent(client=ScriptedChatClient('The function is correct.'), name='reviewer', instructions='Review the code you are given.')
+handoff_workflow = HandoffBuilder(participants=[triage, coder], termination_condition=lambda conversation: any((m.author_name == 'coder' for m in conversation))).with_start_agent(triage).with_autonomous_mode().build()
+magentic_workflow = MagenticBuilder(participants=[reviewer], manager=ScriptedMagenticManager()).build()
+handoff_step = WorkflowExecutor(handoff_workflow, id='handoff')
+to_task = TaskAdapter(id='to_task')
+magentic_step = WorkflowExecutor(magentic_workflow, id='magentic', allow_direct_output=True)
+workflow = WorkflowBuilder(start_executor=handoff_step, output_from=[magentic_step]).add_edge(handoff_step, to_task).add_edge(to_task, magentic_step).build()

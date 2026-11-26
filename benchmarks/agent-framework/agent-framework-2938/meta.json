@@ -1,0 +1,11 @@
+{
+  "id": "agent-framework-2938",
+  "issue_url": "https://github.com/microsoft/agent-framework/issues/2938",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.0-preview.251204.1",
+  "entry": "Workflow.csproj:AgentsInWorkflows.Case.Build",
+  "expected_detectors": [
+    "readiness-liveness"
+  ],
+  "note": "The chain `frenchAgent -> spanishAgent -> englishAgent` is built with `WorkflowBuilder`, names no executor with `WithOutputFrom`, and its agents yield nothing. All three agents run, but no `WorkflowOutputEvent` is raised and the final translation never reaches the caller."
+}

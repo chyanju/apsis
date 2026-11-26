@@ -1,0 +1,11 @@
+{
+  "id": "langflow-7478",
+  "issue_url": "https://github.com/langflow-ai/langflow/issues/7478",
+  "fix_kind": "workflow",
+  "framework_version": "1.3.2",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "readiness-liveness"
+  ],
+  "note": "The required `data` input of the second loop, `LoopComponent-rows2`, is fed only by `MessagetoData-rowbk`, which lies inside that loop's own cycle. Nothing produces `data` before the loop runs, so the loop starts with an empty input and raises \"Input Map is empty or None.\""
+}

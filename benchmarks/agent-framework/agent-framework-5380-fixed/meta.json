@@ -1,0 +1,9 @@
+{
+  "id": "agent-framework-5380-fixed",
+  "of": "agent-framework-5380",
+  "fix_kind": "workflow",
+  "framework_version": "1.1.0",
+  "entry": "Workflow.csproj:AgentFramework5380.Case.Build",
+  "expected_detectors": [],
+  "fix_note": "`IntentRoutingExecutor` declares `[SendsMessage(typeof(List<IntentResult>))]`, the type its handler passes to `SendMessageAsync`."
+}

@@ -1,0 +1,11 @@
+{
+  "id": "langgraph-3648",
+  "issue_url": "https://github.com/langchain-ai/langgraph/issues/3648",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [
+    "subflow-port-binding"
+  ],
+  "note": "In three nested graphs (`graph` > `subgraph2` > `subgraph1`, each added as the parent's `node1`), `list` has the reducer `add`; each subgraph returns its full `list`, which the parent adds again, so the final list holds `initial` three times."
+}

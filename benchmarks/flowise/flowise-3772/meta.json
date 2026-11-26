@@ -1,0 +1,11 @@
+{
+  "id": "flowise-3772",
+  "issue_url": "https://github.com/FlowiseAI/Flowise/issues/3772",
+  "fix_kind": "workflow",
+  "framework_version": "2.2.1",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "target-resolution"
+  ],
+  "note": "`seqLoop_0` loops back by name, and its `loopToName` is 'Customer Agent', but the only agent on the canvas is `seqAgent_0`, named 'Shopify Agent'. The lookup of the loop target returns undefined, and the flow fails with 'Error buildAgentGraph - Cannot read properties of undefined (reading name)'."
+}

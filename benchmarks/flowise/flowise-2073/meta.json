@@ -1,0 +1,11 @@
+{
+  "id": "flowise-2073",
+  "issue_url": "https://github.com/FlowiseAI/Flowise/issues/2073",
+  "fix_kind": "workflow",
+  "framework_version": "1.6.2",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "cycle-termination"
+  ],
+  "note": "The chatflow has a cycle `chatPromptTemplate_1` -> `llmChain_1` -> `ifElseFunction_0` -> `chatPromptTemplate_2` -> `llmChain_2` -> `chatPromptTemplate_1` and nothing bounds it. Flowise builds a chatflow by recursive traversal, so the flow fails with 'Max call stack size exceeded'."
+}

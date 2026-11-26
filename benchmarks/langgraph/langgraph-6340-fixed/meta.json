@@ -1,0 +1,9 @@
+{
+  "id": "langgraph-6340-fixed",
+  "of": "langgraph-6340",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [],
+  "fix_note": "Moves the store lookup into the new node `read_store`, which writes its decision to the new key `route`; the conditional edge now leaves `read_store`, and its router `route_on_state` reads only `route`."
+}

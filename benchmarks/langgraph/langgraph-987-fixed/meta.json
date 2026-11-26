@@ -1,0 +1,9 @@
+{
+  "id": "langgraph-987-fixed",
+  "of": "langgraph-987",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [],
+  "fix_note": "Passes the path map `{\"node5\": \"node5\", \"__end__\": \"__end__\"}` to `add_conditional_edges`, which declares every value `route` returns, so the targets of `node4` are `node5` and `END` only."
+}

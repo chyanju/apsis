@@ -1,0 +1,346 @@
+# This is a Flowise agent workflow (exported flow.json).
+# Analyze the workflow below for bugs, working only from this source.
+
+{
+  "nodes": [
+    {
+      "id": "startAgentflow_0",
+      "data": {
+        "id": "startAgentflow_0",
+        "name": "startAgentflow",
+        "label": "Start",
+        "category": "Agent Flows",
+        "baseClasses": [
+          "Start"
+        ],
+        "inputAnchors": [],
+        "inputParams": [
+          {
+            "id": "startAgentflow_0-input-startInputType-options",
+            "name": "startInputType",
+            "label": "Input Type",
+            "type": "options"
+          },
+          {
+            "id": "startAgentflow_0-input-startState-array",
+            "name": "startState",
+            "label": "State",
+            "type": "array"
+          }
+        ],
+        "inputs": {
+          "startInputType": "chatInput",
+          "startState": [
+            {
+              "key": "documents",
+              "value": ""
+            },
+            {
+              "key": "approved",
+              "value": ""
+            }
+          ]
+        },
+        "outputAnchors": [
+          {
+            "id": "startAgentflow_0-output-startAgentflow-Start",
+            "name": "startAgentflow",
+            "label": "Start",
+            "type": "Start"
+          }
+        ]
+      }
+    },
+    {
+      "id": "agentAgentflow_0",
+      "data": {
+        "id": "agentAgentflow_0",
+        "name": "agentAgentflow",
+        "label": "Collect Documents Agent",
+        "category": "Agent Flows",
+        "baseClasses": [
+          "Agent"
+        ],
+        "inputAnchors": [],
+        "inputParams": [
+          {
+            "id": "agentAgentflow_0-input-agentModel-asyncOptions",
+            "name": "agentModel",
+            "label": "Model",
+            "type": "asyncOptions"
+          },
+          {
+            "id": "agentAgentflow_0-input-agentMessages-array",
+            "name": "agentMessages",
+            "label": "Messages",
+            "type": "array",
+            "optional": true
+          }
+        ],
+        "inputs": {
+          "agentModel": "chatOpenAI",
+          "agentMessages": [
+            {
+              "role": "system",
+              "content": "Build the list of documents and write it into flow state."
+            }
+          ]
+        },
+        "outputAnchors": [
+          {
+            "id": "agentAgentflow_0-output-agentAgentflow-Agent",
+            "name": "agentAgentflow",
+            "label": "Agent",
+            "type": "Agent"
+          }
+        ]
+      }
+    },
+    {
+      "id": "conditionAgentflow_0",
+      "data": {
+        "id": "conditionAgentflow_0",
+        "name": "conditionAgentflow",
+        "label": "Has Extra Documents",
+        "category": "Agent Flows",
+        "baseClasses": [
+          "Condition"
+        ],
+        "inputAnchors": [],
+        "inputParams": [
+          {
+            "id": "conditionAgentflow_0-input-conditions-array",
+            "name": "conditions",
+            "label": "Conditions",
+            "type": "array"
+          }
+        ],
+        "inputs": {
+          "conditions": [
+            {
+              "type": "string",
+              "value1": "{{ $flow.state.documents }}",
+              "operation": "notEmpty",
+              "value2": ""
+            }
+          ]
+        },
+        "outputAnchors": [
+          {
+            "id": "conditionAgentflow_0-output-0",
+            "name": "conditionAgentflow",
+            "label": "0",
+            "type": "Condition"
+          },
+          {
+            "id": "conditionAgentflow_0-output-1",
+            "name": "conditionAgentflow",
+            "label": "1",
+            "type": "Condition"
+          }
+        ]
+      }
+    },
+    {
+      "id": "iterationAgentflow_0",
+      "data": {
+        "id": "iterationAgentflow_0",
+        "name": "iterationAgentflow",
+        "label": "Process Each Document",
+        "category": "Agent Flows",
+        "baseClasses": [
+          "Iteration"
+        ],
+        "inputAnchors": [
+          {
+            "id": "iterationAgentflow_0-input-iterationInput-string",
+            "name": "iterationInput",
+            "label": "Array Input",
+            "type": "string"
+          }
+        ],
+        "inputParams": [
+          {
+            "id": "iterationAgentflow_0-input-iterationInput-string",
+            "name": "iterationInput",
+            "label": "Array Input",
+            "type": "string"
+          }
+        ],
+        "inputs": {
+          "iterationInput": "{{ $flow.state.documents }}"
+        },
+        "outputAnchors": [
+          {
+            "id": "iterationAgentflow_0-output-iterationAgentflow",
+            "name": "iterationAgentflow",
+            "label": "Iteration",
+            "type": "Iteration"
+          }
+        ]
+      }
+    },
+    {
+      "id": "iterationAgentflow_1",
+      "data": {
+        "id": "iterationAgentflow_1",
+        "name": "iterationAgentflow",
+        "label": "Process Extra Documents",
+        "category": "Agent Flows",
+        "baseClasses": [
+          "Iteration"
+        ],
+        "inputAnchors": [
+          {
+            "id": "iterationAgentflow_1-input-iterationInput-string",
+            "name": "iterationInput",
+            "label": "Array Input",
+            "type": "string"
+          }
+        ],
+        "inputParams": [
+          {
+            "id": "iterationAgentflow_1-input-iterationInput-string",
+            "name": "iterationInput",
+            "label": "Array Input",
+            "type": "string"
+          }
+        ],
+        "inputs": {
+          "iterationInput": "{{ $flow.state.documents }}"
+        },
+        "outputAnchors": [
+          {
+            "id": "iterationAgentflow_1-output-iterationAgentflow",
+            "name": "iterationAgentflow",
+            "label": "Iteration",
+            "type": "Iteration"
+          }
+        ]
+      }
+    },
+    {
+      "id": "humanInputAgentflow_0",
+      "data": {
+        "id": "humanInputAgentflow_0",
+        "name": "humanInputAgentflow",
+        "label": "Approve Run",
+        "category": "Agent Flows",
+        "baseClasses": [
+          "HumanInput"
+        ],
+        "inputAnchors": [],
+        "inputParams": [
+          {
+            "id": "humanInputAgentflow_0-input-humanInputDescriptionType-options",
+            "name": "humanInputDescriptionType",
+            "label": "Description Type",
+            "type": "options"
+          },
+          {
+            "id": "humanInputAgentflow_0-input-humanInputDescription-string",
+            "name": "humanInputDescription",
+            "label": "Description",
+            "type": "string",
+            "optional": true
+          }
+        ],
+        "inputs": {
+          "humanInputDescriptionType": "fixed",
+          "humanInputDescription": "Approve processing the documents?"
+        },
+        "outputAnchors": [
+          {
+            "id": "humanInputAgentflow_0-output-humanInputAgentflow",
+            "name": "humanInputAgentflow",
+            "label": "Human Input",
+            "type": "HumanInput",
+            "options": [
+              {
+                "id": "humanInputAgentflow_0-output-proceed",
+                "name": "proceed",
+                "label": "Proceed",
+                "type": "HumanInput"
+              },
+              {
+                "id": "humanInputAgentflow_0-output-reject",
+                "name": "reject",
+                "label": "Reject",
+                "type": "HumanInput"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "directReplyAgentflow_0",
+      "data": {
+        "id": "directReplyAgentflow_0",
+        "name": "directReplyAgentflow",
+        "label": "Done Reply",
+        "category": "Agent Flows",
+        "baseClasses": [
+          "DirectReply"
+        ],
+        "inputAnchors": [],
+        "inputParams": [
+          {
+            "id": "directReplyAgentflow_0-input-directReplyMessage-string",
+            "name": "directReplyMessage",
+            "label": "Message",
+            "type": "string"
+          }
+        ],
+        "inputs": {
+          "directReplyMessage": "Documents processed."
+        },
+        "outputAnchors": []
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "startAgentflow_0",
+      "target": "agentAgentflow_0",
+      "sourceHandle": "startAgentflow_0-output-startAgentflow-Start",
+      "targetHandle": "agentAgentflow_0"
+    },
+    {
+      "source": "agentAgentflow_0",
+      "target": "humanInputAgentflow_0",
+      "sourceHandle": "agentAgentflow_0-output-agentAgentflow-Agent",
+      "targetHandle": "humanInputAgentflow_0"
+    },
+    {
+      "source": "humanInputAgentflow_0",
+      "target": "conditionAgentflow_0",
+      "sourceHandle": "humanInputAgentflow_0-output-proceed",
+      "targetHandle": "conditionAgentflow_0"
+    },
+    {
+      "source": "agentAgentflow_0",
+      "target": "iterationAgentflow_0",
+      "sourceHandle": "agentAgentflow_0-output-agentAgentflow-Agent",
+      "targetHandle": "iterationAgentflow_0-input-iterationInput-string"
+    },
+    {
+      "source": "conditionAgentflow_0",
+      "target": "iterationAgentflow_1",
+      "sourceHandle": "conditionAgentflow_0-output-0",
+      "targetHandle": "iterationAgentflow_1-input-iterationInput-string"
+    },
+    {
+      "source": "iterationAgentflow_0",
+      "target": "directReplyAgentflow_0",
+      "sourceHandle": "iterationAgentflow_0-output-iterationAgentflow",
+      "targetHandle": "directReplyAgentflow_0"
+    },
+    {
+      "source": "iterationAgentflow_1",
+      "target": "directReplyAgentflow_0",
+      "sourceHandle": "iterationAgentflow_1-output-iterationAgentflow",
+      "targetHandle": "directReplyAgentflow_0"
+    }
+  ]
+}

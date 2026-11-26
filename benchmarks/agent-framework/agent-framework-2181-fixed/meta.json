@@ -1,0 +1,9 @@
+{
+  "id": "agent-framework-2181-fixed",
+  "of": "agent-framework-2181",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.0-preview.251112.1",
+  "entry": "Workflow.csproj:MixedWorkflowWithAgentsAndExecutors.Case.Build",
+  "expected_detectors": [],
+  "fix_note": "`JailbreakSync` and `FinalOutput` take the `List<ChatMessage>` an agent sends, so every message of the chain has a handler."
+}

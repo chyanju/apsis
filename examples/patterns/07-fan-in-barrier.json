@@ -1,0 +1,91 @@
+{
+ "execution_model": "bsp-superstep",
+ "framework": "example",
+ "nodes": [
+  {
+   "id": "s",
+   "type_name": "Step",
+   "kind": "start"
+  },
+  {
+   "id": "a",
+   "type_name": "Step",
+   "kind": "component"
+  },
+  {
+   "id": "b1",
+   "type_name": "Step",
+   "kind": "component"
+  },
+  {
+   "id": "b2",
+   "type_name": "Step",
+   "kind": "component"
+  },
+  {
+   "id": "d",
+   "type_name": "Step",
+   "kind": "component"
+  }
+ ],
+ "edges": [
+  {
+   "from": {
+    "node": "s",
+    "socket": ""
+   },
+   "to": {
+    "node": "a",
+    "socket": ""
+   },
+   "kind": "control"
+  },
+  {
+   "from": {
+    "node": "s",
+    "socket": ""
+   },
+   "to": {
+    "node": "b1",
+    "socket": ""
+   },
+   "kind": "control"
+  },
+  {
+   "from": {
+    "node": "b1",
+    "socket": ""
+   },
+   "to": {
+    "node": "b2",
+    "socket": ""
+   },
+   "kind": "control"
+  },
+  {
+   "from": {
+    "node": "a",
+    "socket": ""
+   },
+   "to": {
+    "node": "d",
+    "socket": ""
+   },
+   "kind": "control"
+  },
+  {
+   "from": {
+    "node": "b2",
+    "socket": ""
+   },
+   "to": {
+    "node": "d",
+    "socket": ""
+   },
+   "kind": "control"
+  }
+ ],
+ "start_nodes": [
+  "s"
+ ]
+}

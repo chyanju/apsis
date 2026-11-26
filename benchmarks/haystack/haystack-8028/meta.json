@@ -1,0 +1,11 @@
+{
+  "id": "haystack-8028",
+  "issue_url": "https://github.com/deepset-ai/haystack/issues/8028",
+  "fix_kind": "mixed",
+  "framework_version": "2.2.4",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [
+    "readiness-liveness"
+  ],
+  "note": "Both inputs of `prompt_builder` have defaults, including `documents`, which is connected from the RAG branch behind `router.ok_query`. Haystack counts them as already satisfied, so `prompt_builder` and then `llm` run even when the router selected `too_short_query` and no documents arrived."
+}

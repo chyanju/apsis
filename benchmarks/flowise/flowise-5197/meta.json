@@ -1,0 +1,11 @@
+{
+  "id": "flowise-5197",
+  "issue_url": "https://github.com/FlowiseAI/Flowise/issues/5197",
+  "fix_kind": "workflow",
+  "framework_version": "3.0.5",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "interrupt-ordering"
+  ],
+  "note": "`humanInputAgentflow_0` is reached only through `startAgentflow_0` (form input) and `customFunctionAgentflow_0`, so no Agent or LLM node produces a message before it. It reads the last message's content and fails with 'Cannot read properties of undefined (reading content)'."
+}

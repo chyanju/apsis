@@ -1,0 +1,11 @@
+{
+  "id": "langgraph-3570",
+  "issue_url": "https://github.com/langchain-ai/langgraph/issues/3570",
+  "fix_kind": "mixed",
+  "framework_version": "0.3.18",
+  "entry": "graph.py:graph",
+  "expected_detectors": [
+    "channel-write-merge"
+  ],
+  "note": "`node_c_child` returns `Command(graph=Command.PARENT, goto=\"node_sibling\")` from a subgraph compiled with `checkpointer=True`; LangGraph before 0.4.8 does not pass such a handoff to the parent, so the run raises `ParentCommand` whenever `node_b_child` picks `node_c_child`."
+}

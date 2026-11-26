@@ -1,0 +1,11 @@
+{
+  "base": "flowise-3929",
+  "framework": "flowise",
+  "families": [
+    "type_contracts"
+  ],
+  "location_ids": [
+    "chatOpenAI_0",
+    "chatOpenAI_0->seqConditionAgent_0"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "id": "agent-framework-2162-fixed",
+  "of": "agent-framework-2162",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.0-preview.251112.1",
+  "entry": "Workflow.csproj:AgentFramework2162.Case.Build",
+  "expected_detectors": [],
+  "fix_note": "Both calls pass `scopeName: Constants.FlowStateScope`, a scope shared by both executors, so `WordCountExecutor` reads the text that `StoreTextExecutor` wrote and the workflow outputs its word count."
+}

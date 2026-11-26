@@ -1,0 +1,11 @@
+{
+  "id": "langgraph-492",
+  "issue_url": "https://github.com/langchain-ai/langgraph/issues/492",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [
+    "channel-write-merge"
+  ],
+  "note": "The router `middle_router` on `start` returns both `path1` and `path2`, so they run in the same superstep and both write `documents`, a key without a reducer; LangGraph raises InvalidUpdateError."
+}

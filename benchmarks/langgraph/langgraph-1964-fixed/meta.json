@@ -1,0 +1,9 @@
+{
+  "id": "langgraph-1964-fixed",
+  "of": "langgraph-1964",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [],
+  "fix_note": "Declares `question` as `Annotated[str, own_reducer]` in `ChildState` and `ParentState`; `own_reducer` keeps the existing value, so the writes of `child1` and `child2` are merged."
+}

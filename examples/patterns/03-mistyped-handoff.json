@@ -1,0 +1,49 @@
+{
+ "execution_model": "dataflow-readiness",
+ "framework": "example",
+ "nodes": [
+  {
+   "id": "a",
+   "type_name": "Step",
+   "kind": "component",
+   "inputs": [
+    {
+     "name": "x",
+     "type_repr": "str",
+     "mandatory": true
+    }
+   ],
+   "outputs": [
+    {
+     "name": "o",
+     "type_repr": "str"
+    }
+   ]
+  },
+  {
+   "id": "b",
+   "type_name": "Step",
+   "kind": "component",
+   "inputs": [
+    {
+     "name": "i",
+     "type_repr": "int",
+     "mandatory": true
+    }
+   ]
+  }
+ ],
+ "edges": [
+  {
+   "from": {
+    "node": "a",
+    "socket": "o"
+   },
+   "to": {
+    "node": "b",
+    "socket": "i"
+   },
+   "kind": "data"
+  }
+ ]
+}

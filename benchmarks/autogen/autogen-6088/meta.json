@@ -1,0 +1,11 @@
+{
+  "id": "autogen-6088",
+  "issue_url": "https://github.com/microsoft/autogen/issues/6088",
+  "fix_kind": "workflow",
+  "framework_version": "0.4.8",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [
+    "shared-instance-aliasing"
+  ],
+  "note": "`get_team` builds a new agent and team per session, but the agent's `model_context` comes from `assistant_configs`, which holds one `BufferedChatCompletionContext` (`SHARED_MODEL_CONTEXT`). All sessions append to it, so one session's messages appear in another's model context and saved state."
+}

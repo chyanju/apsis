@@ -1,0 +1,11 @@
+{
+  "id": "agent-framework-2419",
+  "issue_url": "https://github.com/microsoft/agent-framework/issues/2419",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.0-preview.251114.1",
+  "entry": "Workflow.csproj:AgentFramework2419.Case.Build",
+  "expected_detectors": [
+    "subflow-port-binding"
+  ],
+  "note": "`TextReadExecutor` writes the text to the scope `WordStateScope`, but `TextTrimExecutor` reads it inside the sub-workflow bound as `textTrim`, whose state is separate from the parent's. `ReadStateAsync` returns null, `TextTrimExecutor` throws \"Word state not found\" and `CharCountingExecutor` never runs."
+}

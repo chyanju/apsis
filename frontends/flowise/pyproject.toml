@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "apsis-flowise"
+version = "0.1.0"
+description = "apsis Flowise front-end: parse a Flowise flow.json into the apsis IR"
+requires-python = ">=3.10"
+dependencies = []
+
+[tool.setuptools]
+packages = ["apsis_flowise"]

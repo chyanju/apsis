@@ -1,0 +1,9 @@
+{
+  "id": "agent-framework-3620-fixed",
+  "of": "agent-framework-3620",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.0-preview.260128.1",
+  "entry": "Workflow.csproj:AgentFramework3620.Case.Build",
+  "expected_detectors": [],
+  "fix_note": "The factory is registered with `AddKeyedTransient`, so each request for \"pricing\" resolves its own `Workflow` instance and concurrent runs do not contend for ownership."
+}

@@ -1,0 +1,11 @@
+{
+  "id": "haystack-7960",
+  "issue_url": "https://github.com/deepset-ai/haystack/issues/7960",
+  "fix_kind": "mixed",
+  "framework_version": "2.30.2",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [
+    "readiness-liveness"
+  ],
+  "note": "The loop head `main_input`, a custom `BranchJoiner` with a lazy `Variadic` socket, is fed by the caller and by `concat`. The caller's value stays in the lazy socket, so the second pass receives two values and raises `ValueError: BranchJoiner expects only one input, but 2 were received.`"
+}

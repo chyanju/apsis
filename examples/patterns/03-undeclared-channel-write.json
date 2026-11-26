@@ -1,0 +1,37 @@
+{
+ "execution_model": "bsp-superstep",
+ "framework": "example",
+ "nodes": [
+  {
+   "id": "v",
+   "type_name": "Step",
+   "kind": "component",
+   "outputs": [
+    {
+     "name": "y",
+     "type_repr": "Any"
+    }
+   ]
+  }
+ ],
+ "edges": [
+  {
+   "from": {
+    "node": "__start__",
+    "socket": ""
+   },
+   "to": {
+    "node": "v",
+    "socket": ""
+   },
+   "kind": "control"
+  }
+ ],
+ "channels": [
+  {
+   "name": "x",
+   "writers": [],
+   "readers": []
+  }
+ ]
+}

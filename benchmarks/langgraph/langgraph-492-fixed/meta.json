@@ -1,0 +1,9 @@
+{
+  "id": "langgraph-492-fixed",
+  "of": "langgraph-492",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [],
+  "fix_note": "Declares a reducer on `documents` (`Annotated[list, operator.add]`), so the writes of `path1` and `path2` in the same superstep are merged."
+}

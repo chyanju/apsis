@@ -1,0 +1,9 @@
+{
+  "id": "haystack-6356-fixed0",
+  "of": "haystack-6356",
+  "fix_kind": "workflow",
+  "framework_version": "2.0.0b5",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [],
+  "fix_note": "Adds a `ConditionalRouter` after `validator`: an invalid reply goes back to `prompt_builder.replies` (`router.retry`), a valid one leaves the loop to the new component `done` (`router.exit`)."
+}

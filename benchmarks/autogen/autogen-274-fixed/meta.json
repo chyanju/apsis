@@ -1,0 +1,9 @@
+{
+  "id": "autogen-274-fixed",
+  "of": "autogen-274",
+  "fix_kind": "workflow",
+  "framework_version": "0.2.2",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [],
+  "fix_note": "`writer_proxy` registers `write_txt` in its `function_map`, so every function the `assistant` declares has a member of the group chat that can execute it."
+}

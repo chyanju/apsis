@@ -1,0 +1,9 @@
+{
+  "id": "flowise-2073-fixed",
+  "of": "flowise-2073",
+  "fix_kind": "workflow",
+  "framework_version": "1.6.2",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "The output of `llmChain_2` goes to the final `customFunction_0` instead of back into `chatPromptTemplate_1`, so the flow has no cycle."
+}

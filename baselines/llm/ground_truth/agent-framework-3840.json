@@ -1,0 +1,10 @@
+{
+  "base": "agent-framework-3840",
+  "framework": "agent-framework",
+  "families": [
+    "composition"
+  ],
+  "location_ids": [
+    "finalizer"
+  ]
+}

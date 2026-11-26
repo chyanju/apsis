@@ -1,0 +1,11 @@
+{
+  "id": "flowise-3250",
+  "issue_url": "https://github.com/FlowiseAI/Flowise/issues/3250",
+  "fix_kind": "workflow",
+  "framework_version": "2.0.5",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "target-resolution"
+  ],
+  "note": "The `model` input of `seqLLMNode_1` ('responder') holds `{{chatOpenAI_1.data.instance}}`, but the flow has no node `chatOpenAI_1` and no edge into that input. The reference resolves to no chat model, and building the graph fails with 'Expected a Runnable, function or object'."
+}

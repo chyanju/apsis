@@ -1,0 +1,9 @@
+{
+  "id": "langgraph-6409-fixed0",
+  "of": "langgraph-6409",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.2",
+  "entry": "graph.py:graph",
+  "expected_detectors": [],
+  "fix_note": "Moves `sub_child_3` into `sub_sub_graph` and replaces the `Command.PARENT` handoff with a plain `Command(goto=\"sub_child_3\")`, so the target is in the same graph as the node that routes to it."
+}

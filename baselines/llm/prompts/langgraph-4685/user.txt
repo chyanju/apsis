@@ -1,0 +1,40 @@
+# This is a LangGraph agent workflow (Python definition).
+# Analyze the workflow below for bugs, working only from this source.
+
+from typing import Literal
+from langchain_core.language_models.chat_models import BaseChatModel
+from langchain_core.messages import AIMessage
+from langchain_core.outputs import ChatGeneration, ChatResult
+from langchain_core.tools import tool
+from langgraph.graph import END, START, MessagesState, StateGraph
+from langgraph.prebuilt import create_react_agent
+from langgraph.types import Command
+
+class _StubChatModel(BaseChatModel):
+
+    @property
+    def _llm_type(self) -> str:
+        return 'stub'
+
+    def _generate(self, messages, stop=None, run_manager=None, **kwargs):
+        return ChatResult(generations=[ChatGeneration(message=AIMessage(content='ok'))])
+
+    def bind_tools(self, tools, **kwargs):
+        return self
+
+@tool
+def minimal_tool() -> str:
+    return 'Minimal tool executed.'
+minimal_agent = create_react_agent(model=_StubChatModel(), tools=[minimal_tool], prompt='You are an agent. Use tools if necessary. Respond to the user.')
+
+async def worker_node(state: MessagesState) -> Command[Literal['worker_node', END]]:
+    agent_result = await minimal_agent.ainvoke({'messages': state['messages']})
+    new_messages = state['messages'] + agent_result.get('messages', [])
+    return Command(update={'messages': new_messages}, goto='worker_node')
+
+def build():
+    self_loop_builder = StateGraph(MessagesState)
+    self_loop_builder.add_node('worker_node', worker_node)
+    self_loop_builder.add_edge(START, 'worker_node')
+    return self_loop_builder.compile()
+graph = build()

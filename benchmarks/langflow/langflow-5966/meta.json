@@ -1,0 +1,11 @@
+{
+  "id": "langflow-5966",
+  "issue_url": "https://github.com/langflow-ai/langflow/issues/5966",
+  "fix_kind": "workflow",
+  "framework_version": "1.1.2.dev2",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "subflow-port-binding"
+  ],
+  "note": "The outputs of `RunFlow-run01` read the result key `message` of its sub-flow, but `Greeting Subflow` ends in `TextOutput-sout1`, whose only output is named `text`. The lookup raises a KeyError, reported as \"Error building Component Run Flow: 'message'\"."
+}

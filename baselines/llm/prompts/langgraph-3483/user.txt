@@ -1,0 +1,38 @@
+# This is a LangGraph agent workflow (Python definition).
+# Analyze the workflow below for bugs, working only from this source.
+
+from typing_extensions import Annotated, TypedDict
+from langgraph.graph import END, START, StateGraph
+from langgraph.graph.message import add_messages
+
+class InputType(TypedDict):
+    input: str
+
+class OutputType(TypedDict):
+    output: str
+
+class OverallState(TypedDict):
+    input: str
+    messages: Annotated[list, add_messages]
+    output: str
+
+def node_1(state: InputType) -> OverallState:
+    return {'messages': ['out_node_1']}
+
+def node_2(state: OverallState) -> OutputType:
+    return {'output': 'out_node_2'}
+
+def router(state: InputType) -> str:
+    if state.get('messages'):
+        return 'node_2'
+    return END
+
+def build():
+    g = StateGraph(OverallState, input=InputType, output=OutputType)
+    g.add_node('node_1', node_1)
+    g.add_node('node_2', node_2)
+    g.add_edge(START, 'node_1')
+    g.add_conditional_edges('node_1', router, ['node_2', END])
+    g.add_edge('node_2', END)
+    return g.compile()
+graph = build()

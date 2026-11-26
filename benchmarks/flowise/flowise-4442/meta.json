@@ -1,0 +1,11 @@
+{
+  "id": "flowise-4442",
+  "issue_url": "https://github.com/FlowiseAI/Flowise/issues/4442",
+  "fix_kind": "workflow",
+  "framework_version": "3.0.0",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "target-resolution"
+  ],
+  "note": "The `tools` input of `seqAgent_0` holds `{{customMCP_5.data.instance}}`, but no edge connects `customMCP_5` to `seqAgent_0-input-tools-Tool`, so the reference stays a raw string. Binding it as a tool fails with 'Cannot use in operator to search for type in {{customMCP_5.data.instance}}'."
+}

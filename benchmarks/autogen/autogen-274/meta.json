@@ -1,0 +1,11 @@
+{
+  "id": "autogen-274",
+  "issue_url": "https://github.com/microsoft/autogen/issues/274",
+  "fix_kind": "workflow",
+  "framework_version": "0.2.2",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [
+    "target-resolution"
+  ],
+  "note": "The `assistant` declares `say_hello`, `say_goodbye` and `write_txt`, but `write_txt` is in no member's `function_map` (`greeter_proxy` registers the two greeting functions, `writer_proxy` none). A `write_txt` call finds no member that can run it, and AutoGen raises `function_call not found`."
+}

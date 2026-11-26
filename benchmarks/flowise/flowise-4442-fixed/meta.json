@@ -1,0 +1,9 @@
+{
+  "id": "flowise-4442-fixed",
+  "of": "flowise-4442",
+  "fix_kind": "workflow",
+  "framework_version": "3.0.0",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "Adds the edge from the output of `customMCP_5` to `seqAgent_0-input-tools-Tool`, so the reference resolves to the Custom MCP tool instance."
+}

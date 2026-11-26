@@ -1,0 +1,11 @@
+{
+  "id": "agent-framework-2696",
+  "issue_url": "https://github.com/microsoft/agent-framework/issues/2696",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.0-preview.251204.1",
+  "entry": "Workflow.csproj:MixedWorkflowWithAgentsAndExecutors.Case.Build",
+  "expected_detectors": [
+    "type-contract"
+  ],
+  "note": "`JailbreakDetector` sends a `List<ChatMessage>` and a turn token to `JailbreakSync`, which, like `FinalOutput`, handles only a single `ChatMessage`. Both messages are dropped, so the run ends after `JailbreakDetector` without an error and the workflow yields no output."
+}

@@ -1,0 +1,9 @@
+{
+  "id": "langgraph-3570-fixed0",
+  "of": "langgraph-3570",
+  "fix_kind": "workflow",
+  "framework_version": "0.3.18",
+  "entry": "graph.py:graph",
+  "expected_detectors": [],
+  "fix_note": "Compiles the subgraph without `checkpointer=True`, so the handoff reaches `node_sibling`. `dialog_state` becomes a list with `operator.add`, as `node_sibling` and `node_b_parent` now write it in one superstep."
+}

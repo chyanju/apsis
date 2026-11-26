@@ -1,0 +1,231 @@
+# This is a Flowise agent workflow (exported flow.json).
+# Analyze the workflow below for bugs, working only from this source.
+
+{
+  "nodes": [
+    {
+      "id": "chatOpenAI_0",
+      "data": {
+        "id": "chatOpenAI_0",
+        "name": "chatOpenAI",
+        "label": "ChatOpenAI",
+        "category": "Chat Models",
+        "inputAnchors": [
+          {
+            "id": "chatOpenAI_0-input-cache-BaseCache",
+            "name": "cache",
+            "label": "Cache",
+            "type": "BaseCache",
+            "optional": true
+          }
+        ],
+        "inputParams": [
+          {
+            "id": "chatOpenAI_0-input-modelName-string",
+            "name": "modelName",
+            "type": "string"
+          },
+          {
+            "id": "chatOpenAI_0-input-temperature-number",
+            "name": "temperature",
+            "type": "number"
+          }
+        ],
+        "inputs": {
+          "modelName": "gpt-4o",
+          "temperature": "0.1"
+        },
+        "outputAnchors": [
+          {
+            "id": "chatOpenAI_0-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable",
+            "name": "chatOpenAI",
+            "label": "ChatOpenAI",
+            "type": "ChatOpenAI | BaseChatModel | BaseLanguageModel | Runnable"
+          }
+        ]
+      }
+    },
+    {
+      "id": "supervisor_0",
+      "data": {
+        "id": "supervisor_0",
+        "name": "supervisor",
+        "label": "Supervisor",
+        "category": "Multi Agents",
+        "inputAnchors": [
+          {
+            "id": "supervisor_0-input-model-BaseChatModel",
+            "name": "model",
+            "label": "Chat Model",
+            "type": "BaseChatModel"
+          },
+          {
+            "id": "supervisor_0-input-inputModeration-Moderation",
+            "name": "inputModeration",
+            "label": "Input Moderation",
+            "type": "Moderation",
+            "list": true,
+            "optional": true
+          }
+        ],
+        "inputParams": [
+          {
+            "id": "supervisor_0-input-supervisorName-string",
+            "name": "supervisorName",
+            "type": "string"
+          },
+          {
+            "id": "supervisor_0-input-supervisorPrompt-string",
+            "name": "supervisorPrompt",
+            "type": "string"
+          },
+          {
+            "id": "supervisor_0-input-recursionLimit-number",
+            "name": "recursionLimit",
+            "type": "number"
+          }
+        ],
+        "inputs": {
+          "model": "{{chatOpenAI_0.data.instance}}",
+          "supervisorName": "supervisor",
+          "supervisorPrompt": "You are a router supervisor managing the workers: billing_support, frontline_support. Given the user request, decide which worker should act next.",
+          "recursionLimit": 100
+        },
+        "outputAnchors": [
+          {
+            "id": "supervisor_0-output-supervisor-Supervisor",
+            "name": "supervisor",
+            "label": "Supervisor",
+            "type": "Supervisor"
+          }
+        ]
+      }
+    },
+    {
+      "id": "worker_0",
+      "data": {
+        "id": "worker_0",
+        "name": "worker",
+        "label": "Worker",
+        "category": "Multi Agents",
+        "inputAnchors": [
+          {
+            "id": "worker_0-input-tools-Tool",
+            "name": "tools",
+            "label": "Tools",
+            "type": "Tool",
+            "list": true,
+            "optional": true
+          },
+          {
+            "id": "worker_0-input-supervisor-Supervisor",
+            "name": "supervisor",
+            "label": "Supervisor",
+            "type": "Supervisor"
+          },
+          {
+            "id": "worker_0-input-model-BaseChatModel",
+            "name": "model",
+            "label": "Chat Model",
+            "type": "BaseChatModel",
+            "optional": true
+          }
+        ],
+        "inputParams": [
+          {
+            "id": "worker_0-input-workerName-string",
+            "name": "workerName",
+            "type": "string"
+          },
+          {
+            "id": "worker_0-input-workerPrompt-string",
+            "name": "workerPrompt",
+            "type": "string"
+          }
+        ],
+        "inputs": {
+          "tools": [],
+          "supervisor": "{{supervisor_0.data.instance}}",
+          "model": "",
+          "workerName": "frontline_support",
+          "workerPrompt": "You are the frontline support agent. Greet the customer and triage the request."
+        },
+        "outputAnchors": [
+          {
+            "id": "worker_0-output-worker-Worker",
+            "name": "worker",
+            "label": "Worker",
+            "type": "Worker"
+          }
+        ]
+      }
+    },
+    {
+      "id": "worker_1",
+      "data": {
+        "id": "worker_1",
+        "name": "worker",
+        "label": "Worker",
+        "category": "Multi Agents",
+        "inputAnchors": [
+          {
+            "id": "worker_1-input-tools-Tool",
+            "name": "tools",
+            "label": "Tools",
+            "type": "Tool",
+            "list": true,
+            "optional": true
+          },
+          {
+            "id": "worker_1-input-supervisor-Supervisor",
+            "name": "supervisor",
+            "label": "Supervisor",
+            "type": "Supervisor"
+          },
+          {
+            "id": "worker_1-input-model-BaseChatModel",
+            "name": "model",
+            "label": "Chat Model",
+            "type": "BaseChatModel",
+            "optional": true
+          }
+        ],
+        "inputParams": [
+          {
+            "id": "worker_1-input-workerName-string",
+            "name": "workerName",
+            "type": "string"
+          },
+          {
+            "id": "worker_1-input-workerPrompt-string",
+            "name": "workerPrompt",
+            "type": "string"
+          }
+        ],
+        "inputs": {
+          "tools": [],
+          "supervisor": "{{supervisor_0.data.instance}}",
+          "model": "",
+          "workerName": "billing_support",
+          "workerPrompt": "You are the billing support agent. Resolve invoice and payment questions."
+        },
+        "outputAnchors": [
+          {
+            "id": "worker_1-output-worker-Worker",
+            "name": "worker",
+            "label": "Worker",
+            "type": "Worker"
+          }
+        ]
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "chatOpenAI_0",
+      "target": "supervisor_0",
+      "sourceHandle": "chatOpenAI_0-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable",
+      "targetHandle": "supervisor_0-input-model-BaseChatModel"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "id": "langgraph-4026",
+  "issue_url": "https://github.com/langchain-ai/langgraph/issues/4026",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [
+    "channel-write-merge"
+  ],
+  "note": "The join `d` is wired with two separate edges, `add_edge(\"b_2\", \"d\")` and `add_edge(\"c\", \"d\")`, each triggering it on its own; `c` finishes a superstep before `b_2`, so `d` runs twice, first on partial state, and appends \"D\" to `aggregate` twice."
+}

@@ -1,0 +1,367 @@
+# This is a Langflow agent workflow (exported flow.json).
+# Analyze the workflow below for bugs, working only from this source.
+
+{
+  "data": {
+    "nodes": [
+      {
+        "id": "ChatInput-in01",
+        "data": {
+          "type": "ChatInput",
+          "node": {
+            "template": {
+              "input_value": {
+                "type": "str",
+                "required": false,
+                "list": false,
+                "input_types": [
+                  "Message"
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "name": "message",
+                "display_name": "Message",
+                "types": [
+                  "Message"
+                ],
+                "method": "message_response"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "RunFlow-run01",
+        "data": {
+          "type": "RunFlow",
+          "node": {
+            "template": {
+              "flow_name_selected": {
+                "type": "str",
+                "required": true,
+                "list": false,
+                "input_types": [],
+                "options": [
+                  "Greeting Subflow"
+                ],
+                "value": "Greeting Subflow"
+              },
+              "session_id": {
+                "type": "str",
+                "required": false,
+                "list": false,
+                "input_types": [
+                  "Message"
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "name": "flow_outputs_data",
+                "display_name": "Flow Data Output",
+                "types": [
+                  "Data"
+                ],
+                "method": "data_output"
+              },
+              {
+                "name": "flow_outputs_dataframe",
+                "display_name": "Flow Dataframe Output",
+                "types": [
+                  "DataFrame"
+                ],
+                "method": "dataframe_output"
+              },
+              {
+                "name": "flow_outputs_message",
+                "display_name": "Flow Message Output",
+                "types": [
+                  "Message"
+                ],
+                "method": "message_output"
+              }
+            ]
+          },
+          "referenced_flow": "Greeting Subflow",
+          "consumes_output_key": "message"
+        }
+      },
+      {
+        "id": "ChatOutput-out01",
+        "data": {
+          "type": "ChatOutput",
+          "node": {
+            "template": {
+              "input_value": {
+                "type": "str",
+                "required": true,
+                "list": false,
+                "input_types": [
+                  "Message"
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "name": "message",
+                "display_name": "Message",
+                "types": [
+                  "Message"
+                ],
+                "method": "message_response"
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "edges": [
+      {
+        "source": "ChatInput-in01",
+        "target": "RunFlow-run01",
+        "sourceHandle": "message",
+        "targetHandle": "session_id",
+        "data": {
+          "sourceHandle": {
+            "dataType": "ChatInput",
+            "name": "message",
+            "output_types": [
+              "Message"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "session_id",
+            "inputTypes": [
+              "Message"
+            ],
+            "type": "str"
+          }
+        }
+      },
+      {
+        "source": "RunFlow-run01",
+        "target": "ChatOutput-out01",
+        "sourceHandle": "flow_outputs_message",
+        "targetHandle": "input_value",
+        "data": {
+          "sourceHandle": {
+            "dataType": "RunFlow",
+            "name": "flow_outputs_message",
+            "output_types": [
+              "Message"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "input_value",
+            "inputTypes": [
+              "Message"
+            ],
+            "type": "str"
+          }
+        }
+      }
+    ]
+  },
+  "referenced_flows": {
+    "Greeting Subflow": {
+      "data": {
+        "nodes": [
+          {
+            "id": "ChatInput-sname1",
+            "data": {
+              "type": "ChatInput",
+              "node": {
+                "template": {
+                  "input_value": {
+                    "type": "str",
+                    "required": false,
+                    "list": false,
+                    "input_types": [
+                      "Message"
+                    ]
+                  }
+                },
+                "outputs": [
+                  {
+                    "name": "message",
+                    "display_name": "Message",
+                    "types": [
+                      "Message"
+                    ],
+                    "method": "message_response"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "id": "Prompt-sprompt1",
+            "data": {
+              "type": "Prompt",
+              "node": {
+                "template": {
+                  "template": {
+                    "type": "str",
+                    "required": true,
+                    "list": false,
+                    "input_types": []
+                  },
+                  "name": {
+                    "type": "str",
+                    "required": false,
+                    "list": false,
+                    "input_types": [
+                      "Message"
+                    ]
+                  }
+                },
+                "outputs": [
+                  {
+                    "name": "prompt",
+                    "display_name": "Prompt Message",
+                    "types": [
+                      "Message"
+                    ],
+                    "method": "build_prompt"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "id": "OpenAIModel-smodel1",
+            "data": {
+              "type": "OpenAIModel",
+              "node": {
+                "template": {
+                  "input_value": {
+                    "type": "str",
+                    "required": true,
+                    "list": false,
+                    "input_types": [
+                      "Message"
+                    ]
+                  },
+                  "api_key": {
+                    "type": "str",
+                    "required": true,
+                    "list": false,
+                    "input_types": []
+                  }
+                },
+                "outputs": [
+                  {
+                    "name": "text_output",
+                    "display_name": "Text",
+                    "types": [
+                      "Message"
+                    ],
+                    "method": "text_response"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "id": "ChatOutput-sout1",
+            "data": {
+              "type": "ChatOutput",
+              "node": {
+                "template": {
+                  "input_value": {
+                    "type": "str",
+                    "required": true,
+                    "list": false,
+                    "input_types": [
+                      "Message"
+                    ]
+                  }
+                },
+                "outputs": [
+                  {
+                    "name": "message",
+                    "display_name": "Message",
+                    "types": [
+                      "Message"
+                    ],
+                    "method": "message_response"
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "edges": [
+          {
+            "source": "ChatInput-sname1",
+            "target": "Prompt-sprompt1",
+            "sourceHandle": "message",
+            "targetHandle": "name",
+            "data": {
+              "sourceHandle": {
+                "dataType": "ChatInput",
+                "name": "message",
+                "output_types": [
+                  "Message"
+                ]
+              },
+              "targetHandle": {
+                "fieldName": "name",
+                "inputTypes": [
+                  "Message"
+                ],
+                "type": "str"
+              }
+            }
+          },
+          {
+            "source": "Prompt-sprompt1",
+            "target": "OpenAIModel-smodel1",
+            "sourceHandle": "prompt",
+            "targetHandle": "input_value",
+            "data": {
+              "sourceHandle": {
+                "dataType": "Prompt",
+                "name": "prompt",
+                "output_types": [
+                  "Message"
+                ]
+              },
+              "targetHandle": {
+                "fieldName": "input_value",
+                "inputTypes": [
+                  "Message"
+                ],
+                "type": "str"
+              }
+            }
+          },
+          {
+            "source": "OpenAIModel-smodel1",
+            "target": "ChatOutput-sout1",
+            "sourceHandle": "text_output",
+            "targetHandle": "input_value",
+            "data": {
+              "sourceHandle": {
+                "dataType": "OpenAIModel",
+                "name": "text_output",
+                "output_types": [
+                  "Message"
+                ]
+              },
+              "targetHandle": {
+                "fieldName": "input_value",
+                "inputTypes": [
+                  "Message"
+                ],
+                "type": "str"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

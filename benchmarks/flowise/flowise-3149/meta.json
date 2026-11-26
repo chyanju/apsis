@@ -1,0 +1,11 @@
+{
+  "id": "flowise-3149",
+  "issue_url": "https://github.com/FlowiseAI/Flowise/issues/3149",
+  "fix_kind": "workflow",
+  "framework_version": "2.0.5",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "readiness-liveness"
+  ],
+  "note": "The system message of `chatPromptTemplate_0` ('Write SQL Query') uses `{schema}`, which only `customFunction_0` ('Get Database Schema') produces, but `customFunction_0` has no outgoing edge and nothing feeds the template's `promptValues`. `{schema}` resolves to empty in the prompt."
+}

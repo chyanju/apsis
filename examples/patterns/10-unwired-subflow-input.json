@@ -1,0 +1,71 @@
+{
+ "workflows": [
+  {
+   "execution_model": "visual-dataflow",
+   "framework": "example",
+   "nodes": [
+    {
+     "id": "ag",
+     "type_name": "Step",
+     "kind": "agent"
+    },
+    {
+     "id": "v",
+     "type_name": "Step",
+     "kind": "subflow",
+     "subflow_ref": {
+      "workflow": "sub",
+      "in_bindings": []
+     }
+    }
+   ],
+   "edges": [
+    {
+     "from": {
+      "node": "v",
+      "socket": ""
+     },
+     "to": {
+      "node": "ag",
+      "socket": ""
+     },
+     "kind": "tool"
+    }
+   ],
+   "id": "main"
+  },
+  {
+   "execution_model": "visual-dataflow",
+   "framework": "example",
+   "nodes": [
+    {
+     "id": "in",
+     "type_name": "Step",
+     "kind": "start"
+    },
+    {
+     "id": "work",
+     "type_name": "Step",
+     "kind": "component"
+    }
+   ],
+   "edges": [
+    {
+     "from": {
+      "node": "in",
+      "socket": ""
+     },
+     "to": {
+      "node": "work",
+      "socket": ""
+     },
+     "kind": "control"
+    }
+   ],
+   "start_nodes": [
+    "in"
+   ],
+   "id": "sub"
+  }
+ ]
+}

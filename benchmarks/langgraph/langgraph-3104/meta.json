@@ -1,0 +1,11 @@
+{
+  "id": "langgraph-3104",
+  "issue_url": "https://github.com/langchain-ai/langgraph/issues/3104",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [
+    "readiness-liveness"
+  ],
+  "note": "The router `node_b_edge` routes on `private_b`, which `node_b` writes, but it receives the input view of `node_b`, `NodeBInput(a=1, private_a=1)`, a pydantic model without `private_b`, so the read raises `AttributeError`."
+}

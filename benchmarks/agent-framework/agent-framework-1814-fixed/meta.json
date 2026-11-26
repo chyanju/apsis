@@ -1,0 +1,9 @@
+{
+  "id": "agent-framework-1814-fixed",
+  "of": "agent-framework-1814",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.0-preview.251028.1",
+  "entry": "Workflow.csproj:WorkflowConcurrentSample.Case.Build",
+  "expected_detectors": [],
+  "fix_note": "`ConcurrentAggregationExecutor` is an `Executor<List<ChatMessage>>` and adds the messages of each response; it yields the output once both agents have answered."
+}

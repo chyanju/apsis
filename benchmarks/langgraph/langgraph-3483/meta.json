@@ -1,0 +1,11 @@
+{
+  "id": "langgraph-3483",
+  "issue_url": "https://github.com/langchain-ai/langgraph/issues/3483",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [
+    "readiness-liveness"
+  ],
+  "note": "`node_1` writes the hidden key `messages`, but `router` on its conditional edge is annotated with the input schema `InputType`, so it receives only `input`, cannot see `messages` and never routes to `node_2`."
+}

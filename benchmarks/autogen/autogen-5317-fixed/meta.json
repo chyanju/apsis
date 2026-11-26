@@ -1,0 +1,9 @@
+{
+  "id": "autogen-5317-fixed",
+  "of": "autogen-5317",
+  "fix_kind": "workflow",
+  "framework_version": "0.4.2",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [],
+  "fix_note": "Each modifier subscribes and publishes to a topic of its own (`TypeSubscription`); `checker` subscribes to both and republishes on the topic a value came from, so the run ends when `checker` stops."
+}

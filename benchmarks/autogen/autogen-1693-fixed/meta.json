@@ -1,0 +1,9 @@
+{
+  "id": "autogen-1693-fixed",
+  "of": "autogen-1693",
+  "fix_kind": "workflow",
+  "framework_version": "0.2.13",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [],
+  "fix_note": "Adds a key for `user_proxy` to the allowed transitions (to either assistant) and lets each assistant hand back to `user_proxy`, so every member has an allowed next speaker."
+}

@@ -1,0 +1,47 @@
+using Microsoft.Agents.AI.Workflows;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
+namespace AgentFramework3620;
+
+public sealed record Order(string Item, int Quantity);
+
+public sealed record Priced(string Item, decimal Total);
+
+internal sealed class PricingStartExecutor() : Executor<Order, Priced>("pricing_start")
+{
+    public override ValueTask<Priced> HandleAsync(Order message, IWorkflowContext context, CancellationToken cancellationToken = default)
+        => ValueTask.FromResult(new Priced(message.Item, message.Quantity * 9.99m));
+}
+
+internal sealed class PricingEndExecutor() : Executor<Priced>("pricing_end")
+{
+    public override ValueTask HandleAsync(Priced message, IWorkflowContext context, CancellationToken cancellationToken = default)
+        => context.YieldOutputAsync(message, cancellationToken);
+}
+
+public static class Case
+{
+    private const string WorkflowName = "pricing";
+
+    private static readonly Lazy<IServiceProvider> Services = new(() =>
+    {
+        HostApplicationBuilder builder = Host.CreateEmptyApplicationBuilder(new HostApplicationBuilderSettings());
+
+        builder.Services.AddKeyedTransient<Workflow>(WorkflowName, (sp, key) => BuildPricingWorkflow((string)key!));
+        return builder.Build().Services;
+    });
+
+    private static Workflow BuildPricingWorkflow(string name)
+    {
+        PricingStartExecutor start = new();
+        PricingEndExecutor end = new();
+        return new WorkflowBuilder(start)
+            .WithName(name)
+            .AddEdge(start, end)
+            .WithOutputFrom(end)
+            .Build();
+    }
+
+    public static Workflow Build() => Services.Value.GetRequiredKeyedService<Workflow>(WorkflowName);
+}

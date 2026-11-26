@@ -1,0 +1,11 @@
+{
+  "id": "flowise-3939",
+  "issue_url": "https://github.com/FlowiseAI/Flowise/issues/3939",
+  "fix_kind": "workflow",
+  "framework_version": "2.2.2",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "target-resolution"
+  ],
+  "note": "The canvas holds a second End node `seqEnd_1` with an empty required `sequentialNode` input and no incoming edge, so the node is never instantiated. Building the graph reads the name of the missing instance and fails with 'Cannot read properties of undefined (reading name)'."
+}

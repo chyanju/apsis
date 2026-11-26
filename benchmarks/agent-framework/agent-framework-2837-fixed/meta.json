@@ -1,0 +1,9 @@
+{
+  "id": "agent-framework-2837-fixed",
+  "of": "agent-framework-2837",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.0-preview.251204.1",
+  "entry": "Workflow.csproj:AgentFramework2837.Case.Build",
+  "expected_detectors": [],
+  "fix_note": "The only handler of `IntrospectionExecutor` declares `DerivedClass`, the exact type the edge from `DispatchExecutor` delivers."
+}

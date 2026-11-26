@@ -1,0 +1,11 @@
+{
+  "id": "agent-framework-1863",
+  "issue_url": "https://github.com/microsoft/agent-framework/issues/1863",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.0-preview.251028.1",
+  "entry": "Workflow.csproj:AgentFramworkLearning.Case.Build",
+  "expected_detectors": [
+    "type-contract"
+  ],
+  "note": "The agents `Physicist` and `Chemist` each send a `List<ChatMessage>` over the fan-in edge to `ConcurrentAggregationExecutor`, whose only handler takes a single `ChatMessage`. The edge drops every message (\"dropped type mismatch\"), the aggregator never runs and the workflow yields no output."
+}

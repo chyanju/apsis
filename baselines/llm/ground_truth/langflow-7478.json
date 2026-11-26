@@ -1,0 +1,10 @@
+{
+  "base": "langflow-7478",
+  "framework": "langflow",
+  "families": [
+    "liveness_termination"
+  ],
+  "location_ids": [
+    "LoopComponent-files1->LoopComponent-rows2"
+  ]
+}

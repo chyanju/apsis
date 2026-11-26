@@ -1,0 +1,11 @@
+{
+  "id": "haystack-8024",
+  "issue_url": "https://github.com/deepset-ai/haystack/issues/8024",
+  "fix_kind": "workflow",
+  "framework_version": "2.3.1",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [
+    "readiness-liveness"
+  ],
+  "note": "On the loop `loop_joiner -> refiner -> router -> loop_joiner`, `refiner.scratchpad` is connected from `loop_joiner` and has the default `None`. Haystack counts it as satisfied from the start, so `refiner` can run before `loop_joiner` delivers, more than once and in an undetermined order."
+}

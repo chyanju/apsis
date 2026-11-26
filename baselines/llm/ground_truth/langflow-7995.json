@@ -1,0 +1,11 @@
+{
+  "base": "langflow-7995",
+  "framework": "langflow",
+  "families": [
+    "liveness_termination"
+  ],
+  "location_ids": [
+    "Prompt-outerNz",
+    "Prompt-outerNz->Prompt-bodyTk"
+  ]
+}

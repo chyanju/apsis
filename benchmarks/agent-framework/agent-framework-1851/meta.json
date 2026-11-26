@@ -1,0 +1,11 @@
+{
+  "id": "agent-framework-1851",
+  "issue_url": "https://github.com/microsoft/agent-framework/issues/1851",
+  "fix_kind": "workflow",
+  "framework_version": "1.9.0",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [
+    "target-resolution"
+  ],
+  "note": "The `HandoffBuilder` workflow declares only the handoff `refund_agent` -> `triage_agent`, so the start agent `triage_agent` has no handoff targets and cannot reach any specialist. As the issue reports, no specialist responds and the run stops in `IDLE_WITH_PENDING_REQUESTS`."
+}

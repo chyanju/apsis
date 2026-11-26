@@ -1,0 +1,11 @@
+{
+  "id": "langflow-3636",
+  "issue_url": "https://github.com/langflow-ai/langflow/issues/3636",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.17",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "binding-capability"
+  ],
+  "note": "`BingSearchAPI-bing1` and `WikipediaAPI-wiki1` both feed `ToolCallingAgent-agent1.tools` from an output `api_build_tool` that neither declares (each declares only the `Data` output `api_run_model`). The two edges resolve to one output name, so the agent recognizes only one of the two tools."
+}

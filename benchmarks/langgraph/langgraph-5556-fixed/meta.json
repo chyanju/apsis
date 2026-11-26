@@ -1,0 +1,9 @@
+{
+  "id": "langgraph-5556-fixed",
+  "of": "langgraph-5556",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [],
+  "fix_note": "Corrects the goto target in `researcher_llm_call` to `researcher_tools`, the name its tool node was added under, so the handoff resolves."
+}

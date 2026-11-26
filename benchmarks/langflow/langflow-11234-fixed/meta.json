@@ -1,0 +1,9 @@
+{
+  "id": "langflow-11234-fixed",
+  "of": "langflow-11234",
+  "fix_kind": "mixed",
+  "framework_version": "1.8.0",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "From Langflow 1.8.0, the twin's pin, `RunFlow-rf001` has an `input_value` handle for `Message`; it is wired from `Prompt-main2.prompt` and forwards the text as the `str` that `TextInput-sub1.input_value` takes."
+}

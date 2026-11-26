@@ -1,0 +1,11 @@
+{
+  "id": "haystack-8556",
+  "issue_url": "https://github.com/deepset-ai/haystack/issues/8556",
+  "fix_kind": "workflow",
+  "framework_version": "2.30.2",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [
+    "readiness-liveness"
+  ],
+  "note": "The `ConditionalRouter` makes `path`, a variable of its routes, a mandatory input with no connection, though it is meant as an optional run-time parameter with a `{{ True }}` fallback route. A run without `path` fails with `ValueError: Missing mandatory input 'path' for component 'router'.`"
+}

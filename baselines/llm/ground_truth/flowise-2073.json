@@ -1,0 +1,11 @@
+{
+  "base": "flowise-2073",
+  "framework": "flowise",
+  "families": [
+    "liveness_termination"
+  ],
+  "location_ids": [
+    "llmChain_2->chatPromptTemplate_1",
+    "llmChain_2->customFunction_0"
+  ]
+}

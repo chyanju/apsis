@@ -1,0 +1,9 @@
+{
+  "id": "autogen-6716-fixed",
+  "of": "autogen-6716",
+  "fix_kind": "workflow",
+  "framework_version": "0.6.1",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [],
+  "fix_note": "`web_surfer` is added with `activation=\"any\"`, so one incoming edge makes it ready: the edge from `generator` first, then the loop-back edge from `reviewer` on every further round."
+}

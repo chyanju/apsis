@@ -1,0 +1,11 @@
+{
+  "id": "haystack-6433",
+  "issue_url": "https://github.com/deepset-ai/haystack/issues/6433",
+  "fix_kind": "mixed",
+  "framework_version": "2.0.0b5",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [
+    "readiness-liveness"
+  ],
+  "note": "`source.run()` takes no inputs, and Haystack 2.0.0b5 never schedules a component without input sockets. `source` is skipped without an error, so `writer`, connected to `source.documents`, never receives any data."
+}

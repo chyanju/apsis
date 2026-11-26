@@ -1,0 +1,11 @@
+{
+  "base": "langflow-10406",
+  "framework": "langflow",
+  "families": [
+    "liveness_termination"
+  ],
+  "location_ids": [
+    "Notify-Wn3kp->ChatOutput-hFryt",
+    "Notify-Wn3kp->ConditionalRouter-zRRVB"
+  ]
+}

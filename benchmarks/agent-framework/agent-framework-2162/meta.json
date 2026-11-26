@@ -1,0 +1,11 @@
+{
+  "id": "agent-framework-2162",
+  "issue_url": "https://github.com/microsoft/agent-framework/issues/2162",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.0-preview.251112.1",
+  "entry": "Workflow.csproj:AgentFramework2162.Case.Build",
+  "expected_detectors": [
+    "read-after-write"
+  ],
+  "note": "`StoreTextExecutor` writes the text with `QueueStateUpdateAsync` and `WordCountExecutor` reads it with `ReadStateAsync`, both without `scopeName`, so each call uses its executor's private scope. The read returns null and `WordCountExecutor` throws \"Text not found in state\"."
+}

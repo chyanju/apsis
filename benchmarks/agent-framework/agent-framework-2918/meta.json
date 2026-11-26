@@ -1,0 +1,11 @@
+{
+  "id": "agent-framework-2918",
+  "issue_url": "https://github.com/microsoft/agent-framework/issues/2918",
+  "fix_kind": "workflow",
+  "framework_version": "1.9.0",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [
+    "subflow-port-binding"
+  ],
+  "note": "The parent executor `intake` writes the state key `report_currency` with `ctx.set_state`, and `fundamentals`, inside the sub-workflow of the `WorkflowExecutor` `research_subworkflow`, reads it with `ctx.get_state`. Shared state does not cross that boundary, so the read returns `None`."
+}

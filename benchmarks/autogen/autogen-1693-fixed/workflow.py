@@ -1,0 +1,40 @@
+from autogen import ConversableAgent, GroupChat, GroupChatManager
+
+llm_config = {"config_list": [{"model": "gpt-4", "api_key": "PLACEHOLDER"}]}
+
+user_proxy = ConversableAgent(
+    name="user_proxy",
+    system_message="You start and coordinate the two-day trip planning.",
+    human_input_mode="NEVER",
+    llm_config=False,
+)
+local_assistant = ConversableAgent(
+    name="local_assistant",
+    system_message="You suggest local attractions and sights.",
+    llm_config=llm_config,
+)
+language_assistant = ConversableAgent(
+    name="language_assistant",
+    system_message="You add language and cultural notes.",
+    llm_config=llm_config,
+)
+
+agents = [user_proxy, local_assistant, language_assistant]
+
+allowed_speaker_transitions = {
+    user_proxy: [local_assistant, language_assistant],
+    local_assistant: [language_assistant, user_proxy],
+    language_assistant: [local_assistant, user_proxy],
+}
+
+groupchat = GroupChat(
+    agents=agents,
+    messages=[],
+    max_round=12,
+    allowed_or_disallowed_speaker_transitions=allowed_speaker_transitions,
+    speaker_transitions_type="allowed",
+)
+
+manager = GroupChatManager(groupchat=groupchat, llm_config=llm_config)
+
+workflow = manager

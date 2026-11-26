@@ -1,0 +1,11 @@
+{
+  "id": "autogen-941",
+  "issue_url": "https://github.com/microsoft/autogen/issues/941",
+  "fix_kind": "workflow",
+  "framework_version": "0.2.2",
+  "entry": "workflow.py:workflow",
+  "expected_detectors": [
+    "target-resolution"
+  ],
+  "note": "`StubAgentBuilder`, standing in for AutoGen's `AgentBuilder`, names one generated agent `\" Content_Generator\"`, with a leading space. The group chat puts the name unchanged into each message's `name` field, which the model provider rejects with a 400 `BadRequestError`."
+}

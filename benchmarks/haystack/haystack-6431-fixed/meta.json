@@ -1,0 +1,9 @@
+{
+  "id": "haystack-6431-fixed",
+  "of": "haystack-6431",
+  "fix_kind": "workflow",
+  "framework_version": "2.0.0b5",
+  "entry": "pipeline.py:pipeline",
+  "expected_detectors": [],
+  "fix_note": "`build_indexing` and `build_evaluation` each create their own `Cleaner()`, so no component object belongs to both pipelines."
+}

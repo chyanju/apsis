@@ -1,0 +1,9 @@
+{
+  "id": "flowise-3592-fixed",
+  "of": "flowise-3592",
+  "fix_kind": "workflow",
+  "framework_version": "2.1.5",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "Adds the edge from `seqLLMNode_0` into the `sequentialNode` input of `seqConditionAgent_0` and sets that input to `{{seqLLMNode_0.data.instance}}`, so the Condition Agent has a predecessor."
+}

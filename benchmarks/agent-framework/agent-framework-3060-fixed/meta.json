@@ -1,0 +1,9 @@
+{
+  "id": "agent-framework-3060-fixed",
+  "of": "agent-framework-3060",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.0-preview.251219.1",
+  "entry": "Workflow.csproj:AgentFramework3060.Case.Build",
+  "expected_detectors": [],
+  "fix_note": "A direct edge from each debater replaces the fan-in edge, and `Merge_Round` collects the two stances itself; direct edges keep no state, so every round completes."
+}

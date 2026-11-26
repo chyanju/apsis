@@ -1,0 +1,10 @@
+{
+  "base": "langgraph-4377",
+  "framework": "langgraph",
+  "families": [
+    "routing_resolution"
+  ],
+  "location_ids": [
+    "active_agent"
+  ]
+}

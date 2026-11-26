@@ -1,0 +1,9 @@
+{
+  "id": "flowise-4787-fixed",
+  "of": "flowise-4787",
+  "fix_kind": "workflow",
+  "framework_version": "3.0.2",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "Removes `humanInputAgentflow_1`, leaving one Human Input node: `humanInputAgentflow_0` sends proceed through `agentAgentflow_1` to `directReplyAgentflow_0` and reject to `directReplyAgentflow_1`."
+}

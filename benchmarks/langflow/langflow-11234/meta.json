@@ -1,0 +1,11 @@
+{
+  "id": "langflow-11234",
+  "issue_url": "https://github.com/langflow-ai/langflow/issues/11234",
+  "fix_kind": "mixed",
+  "framework_version": "1.7.1",
+  "entry": "flow.json",
+  "expected_detectors": [
+    "type-contract"
+  ],
+  "note": "`RunFlow-rf001` has no input handle (only `flow_name_selected` and `session_id`) for `TextInput-sub1.input_value`, the required `str` input of `Summarizer Subflow`, so `Prompt-main2.prompt` cannot be wired in. It passes a `Message` instead, and the run fails with \"Expected string\"."
+}

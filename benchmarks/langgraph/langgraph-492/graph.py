@@ -1,0 +1,44 @@
+from typing import TypedDict
+
+from langgraph.graph import StateGraph, START, END
+
+
+class State(TypedDict):
+    documents: list
+
+
+def path1(state: State) -> dict:
+    return {"documents": ["path1"]}
+
+
+def path2(state: State) -> dict:
+    return {"documents": ["path2"]}
+
+
+def middle_router(state: State):
+    return ["path1", "path2"]
+
+
+def rendezvous(state: State) -> dict:
+    return {}
+
+
+def build():
+    g = StateGraph(State)
+    g.add_node("start", lambda state: {})
+    g.add_node("path1", path1)
+    g.add_node("path2", path2)
+    g.add_node("rendezvous", rendezvous)
+    g.add_edge(START, "start")
+    g.add_conditional_edges(
+        "start",
+        middle_router,
+        {"path1": "path1", "path2": "path2"},
+    )
+    g.add_edge("path1", "rendezvous")
+    g.add_edge("path2", "rendezvous")
+    g.add_edge("rendezvous", END)
+    return g.compile()
+
+
+graph = build()

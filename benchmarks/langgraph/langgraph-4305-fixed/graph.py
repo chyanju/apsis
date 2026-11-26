@@ -1,0 +1,28 @@
+from typing import Annotated, List
+
+from typing_extensions import TypedDict
+
+from langgraph.graph import StateGraph, START, END
+
+
+def append(current, update):
+    return current + [update]
+
+
+class State(TypedDict):
+    tags: Annotated[List[str], append]
+
+
+def emit(state: State) -> dict:
+    return {"tags": "a"}
+
+
+def build():
+    g = StateGraph(State)
+    g.add_node("emit", emit)
+    g.add_edge(START, "emit")
+    g.add_edge("emit", END)
+    return g.compile()
+
+
+graph = build()

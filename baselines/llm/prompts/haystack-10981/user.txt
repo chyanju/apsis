@@ -1,0 +1,45 @@
+# This is a Haystack agent workflow (Python definition).
+# Analyze the workflow below for bugs, working only from this source.
+
+from typing import List
+from haystack import Pipeline, component, Document
+from haystack.components.routers.conditional_router import ConditionalRouter
+from haystack.core.super_component import SuperComponent
+from haystack.tools import ComponentTool
+from haystack.components.agents import Agent
+from haystack.dataclasses import ChatMessage
+
+@component
+class MockWebSearch:
+
+    @component.output_types(documents=List[Document], no_results=bool)
+    def run(self, query: str):
+        return {'documents': [], 'no_results': True}
+
+@component
+class DocFilter:
+
+    @component.output_types(documents=List[Document])
+    def run(self, documents: List[Document]):
+        return {'documents': documents}
+
+@component
+class MockChatGenerator:
+
+    @component.output_types(replies=List[ChatMessage])
+    def run(self, messages, tools=None, **kwargs):
+        return {'replies': [ChatMessage.from_assistant('done')]}
+
+def build_subpipeline() -> Pipeline:
+    router = ConditionalRouter(routes=[{'condition': '{{documents|length > 0}}', 'output': '{{documents}}', 'output_type': List[Document], 'output_name': 'has_docs'}, {'condition': '{{documents|length == 0}}', 'output': '{{query}}', 'output_type': str, 'output_name': 'no_docs'}])
+    sp = Pipeline()
+    sp.add_component('search', MockWebSearch())
+    sp.add_component('router', router)
+    sp.add_component('filter', DocFilter())
+    sp.connect('search.documents', 'router.documents')
+    sp.connect('router.has_docs', 'filter.documents')
+    return sp
+pipeline = build_subpipeline()
+super_component = SuperComponent(pipeline=pipeline, input_mapping={'query': ['search.query', 'router.query']}, output_mapping={'filter.documents': 'documents_output'})
+tool = ComponentTool(component=super_component, name='retrieval', description='web search retrieval', outputs_to_state={'documents': {'source': 'documents_output'}}, outputs_to_string={'source': 'documents_output'})
+agent = Agent(chat_generator=MockChatGenerator(), tools=[tool], state_schema={'documents': {'type': List[Document]}}, exit_conditions=['text'])

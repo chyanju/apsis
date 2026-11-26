@@ -1,0 +1,280 @@
+# This is a Langflow agent workflow (exported flow.json).
+# Analyze the workflow below for bugs, working only from this source.
+
+{
+  "data": {
+    "nodes": [
+      {
+        "id": "ChatInput-vAd7W",
+        "data": {
+          "type": "ChatInput",
+          "node": {
+            "template": {
+              "input_value": {
+                "type": "str",
+                "required": false,
+                "list": false,
+                "input_types": [
+                  "Message"
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "name": "message",
+                "types": [
+                  "Message"
+                ],
+                "method": "message_response"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "ConditionalRouter-zRRVB",
+        "data": {
+          "type": "ConditionalRouter",
+          "node": {
+            "template": {
+              "input_text": {
+                "type": "str",
+                "required": true,
+                "list": false,
+                "input_types": [
+                  "Message"
+                ]
+              },
+              "match_text": {
+                "type": "str",
+                "required": true,
+                "list": false,
+                "input_types": [
+                  "Message"
+                ]
+              },
+              "operator": {
+                "type": "str",
+                "required": false,
+                "list": false,
+                "input_types": []
+              },
+              "case_sensitive": {
+                "type": "bool",
+                "required": false,
+                "list": false,
+                "input_types": []
+              },
+              "true_case_message": {
+                "type": "str",
+                "required": false,
+                "list": false,
+                "input_types": [
+                  "Message"
+                ]
+              },
+              "false_case_message": {
+                "type": "str",
+                "required": false,
+                "list": false,
+                "input_types": [
+                  "Message"
+                ]
+              },
+              "max_iterations": {
+                "type": "int",
+                "required": false,
+                "list": false,
+                "input_types": []
+              },
+              "default_route": {
+                "type": "str",
+                "required": false,
+                "list": false,
+                "input_types": []
+              }
+            },
+            "outputs": [
+              {
+                "name": "true_result",
+                "types": [
+                  "Message"
+                ],
+                "method": "true_response",
+                "allows_loop": true
+              },
+              {
+                "name": "false_result",
+                "types": [
+                  "Message"
+                ],
+                "method": "false_response",
+                "allows_loop": true
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "Notify-Wn3kp",
+        "data": {
+          "type": "Notify",
+          "node": {
+            "template": {
+              "context_key": {
+                "type": "str",
+                "required": true,
+                "list": false,
+                "input_types": []
+              },
+              "input_value": {
+                "type": "str",
+                "required": false,
+                "list": false,
+                "input_types": [
+                  "Data",
+                  "Message",
+                  "DataFrame"
+                ]
+              },
+              "append": {
+                "type": "bool",
+                "required": false,
+                "list": false,
+                "input_types": []
+              }
+            },
+            "outputs": [
+              {
+                "name": "result",
+                "types": [
+                  "Data"
+                ],
+                "method": "notify_components"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "ChatOutput-hFryt",
+        "data": {
+          "type": "ChatOutput",
+          "node": {
+            "template": {
+              "input_value": {
+                "type": "str",
+                "required": false,
+                "list": false,
+                "input_types": [
+                  "Message"
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "name": "message",
+                "types": [
+                  "Message"
+                ],
+                "method": "message_response"
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "edges": [
+      {
+        "source": "ChatInput-vAd7W",
+        "target": "ConditionalRouter-zRRVB",
+        "sourceHandle": "message",
+        "targetHandle": "input_text",
+        "data": {
+          "sourceHandle": {
+            "dataType": "ChatInput",
+            "name": "message",
+            "output_types": [
+              "Message"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "input_text",
+            "inputTypes": [
+              "Message"
+            ],
+            "type": "str"
+          }
+        }
+      },
+      {
+        "source": "ConditionalRouter-zRRVB",
+        "target": "Notify-Wn3kp",
+        "sourceHandle": "true_result",
+        "targetHandle": "input_value",
+        "data": {
+          "sourceHandle": {
+            "dataType": "ConditionalRouter",
+            "name": "true_result",
+            "output_types": [
+              "Message"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "input_value",
+            "inputTypes": [
+              "Data",
+              "Message",
+              "DataFrame"
+            ],
+            "type": "str"
+          }
+        }
+      },
+      {
+        "source": "Notify-Wn3kp",
+        "target": "ChatOutput-hFryt",
+        "sourceHandle": "result",
+        "targetHandle": "input_value",
+        "data": {
+          "sourceHandle": {
+            "dataType": "Notify",
+            "name": "result",
+            "output_types": [
+              "Data"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "input_value",
+            "inputTypes": [
+              "Message"
+            ],
+            "type": "str"
+          }
+        }
+      },
+      {
+        "source": "ConditionalRouter-zRRVB",
+        "target": "ChatOutput-hFryt",
+        "sourceHandle": "false_result",
+        "targetHandle": "input_value",
+        "data": {
+          "sourceHandle": {
+            "dataType": "ConditionalRouter",
+            "name": "false_result",
+            "output_types": [
+              "Message"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "input_value",
+            "inputTypes": [
+              "Message"
+            ],
+            "type": "str"
+          }
+        }
+      }
+    ]
+  }
+}

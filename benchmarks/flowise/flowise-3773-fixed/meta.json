@@ -1,0 +1,9 @@
+{
+  "id": "flowise-3773-fixed",
+  "of": "flowise-3773",
+  "fix_kind": "workflow",
+  "framework_version": "2.2.0",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "Adds the edge `seqCondition_0-output-1` -> `seqAgent_1` and ends that branch at a new End node `seqEnd_1`. Both routes of `seqCondition_0` now have a destination."
+}

@@ -1,0 +1,77 @@
+{
+ "execution_model": "bsp-superstep",
+ "framework": "example",
+ "nodes": [
+  {
+   "id": "r",
+   "type_name": "Step",
+   "kind": "router"
+  },
+  {
+   "id": "p1",
+   "type_name": "Step",
+   "kind": "component"
+  },
+  {
+   "id": "p2",
+   "type_name": "Step",
+   "kind": "component"
+  },
+  {
+   "id": "j",
+   "type_name": "Step",
+   "kind": "component",
+   "attrs": {
+    "barrier_join": "true"
+   }
+  }
+ ],
+ "edges": [
+  {
+   "from": {
+    "node": "r",
+    "socket": ""
+   },
+   "to": {
+    "node": "p1",
+    "socket": ""
+   },
+   "kind": "conditional",
+   "branch": "l1"
+  },
+  {
+   "from": {
+    "node": "r",
+    "socket": ""
+   },
+   "to": {
+    "node": "p2",
+    "socket": ""
+   },
+   "kind": "conditional",
+   "branch": "l2"
+  },
+  {
+   "from": {
+    "node": "p1",
+    "socket": ""
+   },
+   "to": {
+    "node": "j",
+    "socket": ""
+   },
+   "kind": "control"
+  },
+  {
+   "from": {
+    "node": "p2",
+    "socket": ""
+   },
+   "to": {
+    "node": "j",
+    "socket": ""
+   },
+   "kind": "control"
+  }
+ ]
+}

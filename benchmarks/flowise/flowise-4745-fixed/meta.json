@@ -1,0 +1,9 @@
+{
+  "id": "flowise-4745-fixed",
+  "of": "flowise-4745",
+  "fix_kind": "workflow",
+  "framework_version": "3.0.2",
+  "entry": "flow.json",
+  "expected_detectors": [],
+  "fix_note": "Fills `toolUpdateState` of `toolAgentflow_0` with the ten state keys the custom tool assigns, so their new values are written back to the flow state."
+}

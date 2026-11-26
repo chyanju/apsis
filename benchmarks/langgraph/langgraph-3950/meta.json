@@ -1,0 +1,11 @@
+{
+  "id": "langgraph-3950",
+  "issue_url": "https://github.com/langchain-ai/langgraph/issues/3950",
+  "fix_kind": "workflow",
+  "framework_version": "0.3.18",
+  "entry": "graph.py:graph",
+  "expected_detectors": [
+    "channel-write-merge"
+  ],
+  "note": "`node_a` and `node_b` pass whole `State` models as `Command(update=...)`; LangGraph up to 0.3.29 also writes the fields a node did not set, with their default None, so `node_b` resets `foo` and the final state is `{'foo': None, 'bar': 'bar'}`."
+}

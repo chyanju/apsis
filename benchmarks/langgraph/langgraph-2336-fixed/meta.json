@@ -1,0 +1,9 @@
+{
+  "id": "langgraph-2336-fixed",
+  "of": "langgraph-2336",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [],
+  "fix_note": "Declares a reducer on `count_b` (`Annotated[list[int], operator.add]`), so the writes of `c` and `d` in the same superstep are merged."
+}

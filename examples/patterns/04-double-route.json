@@ -1,0 +1,60 @@
+{
+ "execution_model": "bsp-superstep",
+ "framework": "example",
+ "nodes": [
+  {
+   "id": "v",
+   "type_name": "Step",
+   "kind": "component",
+   "declared_targets": [
+    "t",
+    "u"
+   ]
+  },
+  {
+   "id": "t",
+   "type_name": "Step",
+   "kind": "component"
+  },
+  {
+   "id": "u",
+   "type_name": "Step",
+   "kind": "component"
+  }
+ ],
+ "edges": [
+  {
+   "from": {
+    "node": "__start__",
+    "socket": ""
+   },
+   "to": {
+    "node": "v",
+    "socket": ""
+   },
+   "kind": "control"
+  },
+  {
+   "from": {
+    "node": "v",
+    "socket": ""
+   },
+   "to": {
+    "node": "t",
+    "socket": ""
+   },
+   "kind": "control"
+  },
+  {
+   "from": {
+    "node": "v",
+    "socket": ""
+   },
+   "to": {
+    "node": "u",
+    "socket": ""
+   },
+   "kind": "handoff"
+  }
+ ]
+}

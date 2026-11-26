@@ -1,0 +1,11 @@
+{
+  "id": "langgraph-987",
+  "issue_url": "https://github.com/langchain-ai/langgraph/issues/987",
+  "fix_kind": "workflow",
+  "framework_version": "1.2.6",
+  "entry": "graph.py:graph",
+  "expected_detectors": [
+    "target-resolution"
+  ],
+  "note": "`add_conditional_edges(\"node4\", route)` has no path map and `route` has no `Literal` return annotation, so LangGraph cannot infer its targets: it wires `node4` to every other node and accepts any value `route` returns."
+}

@@ -1,0 +1,25 @@
+{
+  "base": "haystack-6356",
+  "framework": "haystack",
+  "families": [
+    "liveness_termination"
+  ],
+  "location_ids": [
+    "condition",
+    "done",
+    "done.replies",
+    "exit",
+    "output",
+    "output_name",
+    "output_type",
+    "result",
+    "retry",
+    "router",
+    "router.exit",
+    "router.replies",
+    "router.retry",
+    "router.valid",
+    "valid",
+    "validator.valid"
+  ]
+}

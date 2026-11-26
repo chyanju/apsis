@@ -1,0 +1,11 @@
+{
+  "id": "agent-framework-4144",
+  "issue_url": "https://github.com/microsoft/agent-framework/issues/4144",
+  "fix_kind": "workflow",
+  "framework_version": "1.0.0-rc1",
+  "entry": "Workflow.csproj:WorkflowHumanInTheLoopBasicSample.Case.Build",
+  "expected_detectors": [
+    "type-contract"
+  ],
+  "note": "`JudgeExecutor`, an `Executor<int>` in a loop with the request port `GuessNumber`, sends `NumberSignal` and yields a `string` but declares neither type, and release candidate 1 allows only declared types. A wrong guess fails with \"Executor 'Judge' cannot send messages of type '...NumberSignal'\"."
+}
